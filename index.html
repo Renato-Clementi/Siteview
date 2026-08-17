@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sopralluoghi BABOO — Diario tecnico-commerciale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F5F2EB; --ink:#2A2723; --brass:#988060; --cream:#EDE7DB;
+  --hair:#D8CDB8; --muted:#8C8475; --blue:#9CB4CC; --lilac:#C0A8CC;
+  --caldo:#986040; --tiepido:#988060; --freddo:#8CA4BC;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'EB Garamond',Georgia,serif;font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:0 14px 80px}
+
+/* ── Testata ─────────────────────────── */
+header{background:var(--ink);color:var(--cream);padding:22px 14px 18px}
+.hd{max-width:760px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.logo{font-family:'Playfair Display',serif;font-size:30px;font-weight:600;letter-spacing:.5px;line-height:1}
+.logo .dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--lilac);margin-left:3px;position:relative;top:-14px}
+.logo .dot2{background:var(--blue);margin-left:-4px;top:-2px;width:9px;height:9px}
+.eyebrow{font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--brass);margin-top:6px}
+.help-btn{background:none;border:1px solid var(--brass);color:var(--cream);width:34px;height:34px;border-radius:50%;font-family:'Playfair Display',serif;font-size:17px;cursor:pointer;flex:none}
+
+/* ── Barra di stato ──────────────────── */
+.status{background:var(--ink);color:var(--cream);border-top:1px solid #3d382f}
+.status-in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);padding:12px 14px 16px;gap:6px}
+.stat .n{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;line-height:1.1}
+.stat .l{font-family:Helvetica,Arial,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--brass)}
+
+/* ── Comandi ─────────────────────────── */
+.controls{display:flex;flex-wrap:wrap;gap:8px;padding:16px 0 6px}
+button{font-family:'EB Garamond',Georgia,serif;font-size:16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.btn{background:var(--ink);color:var(--cream);border:none;padding:11px 18px;min-height:44px;border-radius:2px;letter-spacing:.3px}
+.btn.brass{background:var(--brass)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--hair)}
+.btn:active{opacity:.8}
+.btn[disabled]{opacity:.4;cursor:default}
+.panel{display:none;border:1px solid var(--hair);background:#FBF9F4;padding:14px;margin:8px 0;border-radius:2px}
+.panel.open{display:block}
+.panel label{font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin:8px 0 3px}
+.panel input,.panel select{width:100%;padding:9px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:16px;border-radius:2px}
+.gps-note{font-style:italic;color:var(--muted);font-size:14px;padding:4px 0 10px}
+
+/* ── Timeline ────────────────────────── */
+.tl{position:relative;margin-top:18px;padding-left:34px}
+.tl::before{content:"";position:absolute;left:11px;top:0;bottom:0;width:2px;background:repeating-linear-gradient(to bottom,var(--brass) 0 26px,var(--hair) 26px 30px)}
+.daysep{position:relative;margin:26px 0 14px -34px;text-align:center}
+.daysep span{background:var(--paper);padding:0 14px;font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--brass)}
+.daysep::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--hair);z-index:-1}
+
+/* ── Scheda edificio ─────────────────── */
+.card{background:#FBF9F4;border:1px solid var(--hair);border-radius:2px;margin-bottom:22px;position:relative;overflow:hidden}
+.card::before{content:"⌂";position:absolute;left:-34px;top:14px;width:24px;height:24px;background:var(--paper);border:2px solid var(--brass);border-radius:50%;color:var(--brass);font-size:13px;line-height:20px;text-align:center}
+.card-hd{background:var(--ink);color:var(--cream);padding:12px 16px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.card-hd h3{font-family:'Playfair Display',serif;font-size:19px;font-weight:600}
+.card-hd .time{font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:2px;color:var(--brass);flex:none}
+.card-bd{padding:14px 16px 16px}
+.coords{font-size:13px;color:var(--muted);font-style:italic;margin-bottom:10px}
+
+/* Esito + complessità */
+.esito-row{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 12px;align-items:center}
+.esito{border:1px solid var(--hair);background:#fff;padding:6px 13px;border-radius:20px;font-size:14px;color:var(--muted)}
+.esito.sel-caldo{background:var(--caldo);border-color:var(--caldo);color:var(--cream)}
+.esito.sel-tiepido{background:var(--tiepido);border-color:var(--tiepido);color:var(--cream)}
+.esito.sel-freddo{background:var(--freddo);border-color:var(--freddo);color:#fff}
+.cx{margin-left:auto;display:flex;gap:4px;align-items:center}
+.cx .lab{font-family:Helvetica,Arial,sans-serif;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-right:2px}
+.cx b{width:13px;height:13px;border-radius:50%;border:1px solid var(--brass);background:transparent;cursor:pointer;padding:0}
+.cx b.on{background:var(--brass)}
+
+/* Campi struttura */
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.f label{font-family:Helvetica,Arial,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:2px}
+.f input,.f select{width:100%;padding:7px 8px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:15px;border-radius:2px}
+.f.wide{grid-column:1/-1}
+
+/* Linee prodotto */
+.linee{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.linea{font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:1.5px;padding:5px 10px;border:1px solid var(--hair);background:#fff;color:var(--muted);border-radius:2px}
+.linea.on{background:var(--brass);border-color:var(--brass);color:var(--cream)}
+
+/* Sezione AI */
+.ai-box{border-left:3px solid var(--brass);padding:10px 12px;background:var(--cream);margin:10px 0}
+.ai-box h4{font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--brass);margin-bottom:4px}
+.ai-box p{font-size:15.5px;margin-bottom:8px}
+.ai-box p:last-child{margin-bottom:0}
+.ai-note{font-size:12.5px;font-style:italic;color:var(--muted)}
+
+/* Media */
+.photos{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.photos img{width:72px;height:72px;object-fit:cover;border:1px solid var(--hair);border-radius:2px;cursor:pointer}
+.nota{font-style:italic;border-left:3px solid #8a9a7a;padding:6px 10px;margin:8px 0;color:#4a463f;background:#fff;font-size:15px}
+.memo{display:flex;align-items:center;gap:8px;margin:6px 0}
+.memo audio{height:34px;flex:1}
+textarea.nota-edit{width:100%;border:1px solid var(--hair);padding:8px;font-family:inherit;font-size:15px;min-height:64px;border-radius:2px;margin:6px 0}
+
+/* Azioni scheda */
+.card-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--hair)}
+.mini{background:transparent;border:1px solid var(--hair);color:var(--ink);padding:7px 11px;font-size:14px;border-radius:2px;min-height:38px}
+.mini.rec{background:#a33;color:#fff;border-color:#a33}
+.del{margin-left:auto;color:var(--muted);border-color:transparent}
+
+/* Modal */
+.modal{display:none;position:fixed;inset:0;background:rgba(42,39,35,.75);z-index:50;padding:20px;overflow:auto}
+.modal.open{display:flex;align-items:flex-start;justify-content:center}
+.modal-in{background:var(--paper);max-width:640px;width:100%;padding:26px;border-radius:2px;position:relative;margin:auto}
+.modal-in h2{font-family:'Playfair Display',serif;font-size:24px;margin-bottom:12px}
+.modal-in h3{font-family:'Playfair Display',serif;font-size:17px;margin:16px 0 4px}
+.modal-in p,.modal-in li{font-size:15.5px;margin-bottom:6px}
+.modal-in ul{padding-left:20px}
+.modal-x{position:absolute;top:12px;right:14px;background:none;border:none;font-size:22px;color:var(--muted)}
+.lightbox img{max-width:100%;max-height:85vh;display:block;margin:auto}
+
+.empty{font-style:italic;color:var(--muted);text-align:center;padding:40px 20px}
+footer{max-width:760px;margin:30px auto 0;padding:14px;border-top:1px solid var(--hair);font-family:Helvetica,Arial,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-align:center}
+@media(max-width:520px){.fields{grid-template-columns:1fr}.status-in{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd">
+    <div>
+      <div class="logo">baboo<span class="dot"></span><span class="dot dot2"></span></div>
+      <div class="eyebrow">Sopralluoghi · Diario tecnico-commerciale ESCo</div>
+    </div>
+    <button class="help-btn" onclick="openModal('guida')">?</button>
+  </div>
+</header>
+<div class="status"><div class="status-in">
+  <div class="stat"><div class="n" id="st-km">0,0</div><div class="l">km giro</div></div>
+  <div class="stat"><div class="n" id="st-ed">0</div><div class="l">edifici</div></div>
+  <div class="stat"><div class="n" id="st-caldi">0</div><div class="l">esiti caldi</div></div>
+  <div class="stat"><div class="n" id="st-pipe">€ 0</div><div class="l">pipeline stimata</div></div>
+</div></div>
+
+<div class="wrap">
+  <div class="controls">
+    <button class="btn" id="btn-track" onclick="toggleTrack()">▶ Avvia giro</button>
+    <button class="btn brass" onclick="markBuilding()">⌂ Registra edificio</button>
+    <button class="btn ghost" onclick="togglePanel('tools')">Strumenti</button>
+    <button class="btn ghost" onclick="togglePanel('sett')">Impostazioni</button>
+  </div>
+  <div class="gps-note" id="gps-note">GPS spento — le soste presso gli edifici verranno rilevate automaticamente all'avvio del giro.</div>
+
+  <div class="panel" id="p-tools">
+    <label>Inserisci coordinate (lat, lng)</label>
+    <input id="in-coords" placeholder="45.8926, 8.4089">
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+      <button class="mini" onclick="addFromCoords()">Aggiungi edificio</button>
+      <button class="mini" onclick="exportMD()">Scarica report (.md)</button>
+      <button class="mini" onclick="exportHTML()">Scarica con foto (.html)</button>
+      <button class="mini" onclick="clearAll()">Svuota diario</button>
+    </div>
+    <label style="margin-top:14px">Chiave API Anthropic (facoltativa — resta sul dispositivo)</label>
+    <input id="in-key" type="password" placeholder="sk-ant-…" onchange="S.apiKey=this.value;save()">
+  </div>
+
+  <div class="panel" id="p-sett">
+    <label>Raggio sosta (metri)</label>
+    <input id="in-radius" type="number" value="60" onchange="S.radius=+this.value;save()">
+    <label>Minuti di sosta per rilevare un edificio</label>
+    <input id="in-min" type="number" value="4" onchange="S.minutes=+this.value;save()">
+  </div>
+
+  <div class="tl" id="timeline"></div>
+  <div class="empty" id="empty" style="display:none">Nessun edificio nel diario.<br>Avvia il giro o registra il primo edificio.</div>
+</div>
+
+<footer>Baboo ESCo S.r.l. · Via Prati 1, Omegna (VB) · UNI CEI 11352</footer>
+
+<!-- Guida -->
+<div class="modal" id="m-guida" onclick="if(event.target===this)closeModal('guida')">
+  <div class="modal-in">
+    <button class="modal-x" onclick="closeModal('guida')">✕</button>
+    <h2>Guida rapida</h2>
+    <h3>Il giro</h3>
+    <p><b>▶ Avvia giro</b> attiva il GPS: percorso in km nella barra di stato. Se resti fermo entro il raggio impostato per i minuti impostati, l'app registra da sola l'edificio visitato.</p>
+    <h3>La scheda edificio</h3>
+    <ul>
+      <li><b>Esito</b>: caldo / tiepido / freddo — colora la scheda e alimenta i contatori.</li>
+      <li><b>Complessità</b> (1–5 pallini): stima l'onere d'installazione, come nel KIT sopralluogo.</li>
+      <li><b>Linee BABOO</b>: tocca le linee proponibili (CLIMA, SOLERO…). Entrano nel report.</li>
+      <li><b>Scheda AI</b>: con la chiave API genera profilo energetico e opportunità (con ricerca web); senza chiave usa un promemoria compilabile.</li>
+      <li><b>Foto, nota, memo vocale</b>: documentazione di sopralluogo, tutto salvato in locale.</li>
+    </ul>
+    <h3>Fine giornata</h3>
+    <p><b>Scarica report (.md)</b> produce il riepilogo del giro per il commerciale (lead pronti per Odoo); <b>Scarica con foto (.html)</b> il dossier completo da archiviare.</p>
+    <p class="ai-note">I dati vivono nel browser di questo dispositivo (IndexedDB). Gli export sono il backup.</p>
+  </div>
+</div>
+<div class="modal lightbox" id="m-light" onclick="this.classList.remove('open')"><div class="modal-in" style="background:transparent;padding:0"><img id="light-img"></div></div>
+
+<script>
+/* ══════════ Stato & persistenza ══════════ */
+let S={buildings:[],path:[],tracking:false,radius:60,minutes:4,apiKey:'',demo:true};
+let watchId=null,stopAnchor=null,stopSince=null,saveT=null;
+const $=id=>document.getElementById(id);
+const db=indexedDB.open('baboo-sopralluoghi',1);
+db.onupgradeneeded=e=>e.target.result.createObjectStore('state');
+db.onsuccess=()=>load();
+function idb(mode,fn){const d=db.result,tx=d.transaction('state',mode);fn(tx.objectStore('state'))}
+function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{idb('readwrite',st=>st.put(JSON.stringify(S),'v1'))}catch(e){}},800)}
+function load(){try{idb('readonly',st=>{const r=st.get('v1');r.onsuccess=()=>{if(r.result){S=JSON.parse(r.result);S.tracking=false}else seedDemo();$('in-radius').value=S.radius;$('in-min').value=S.minutes;$('in-key').value=S.apiKey||'';render()}})}catch(e){seedDemo();render()}}
+
+/* ══════════ Dati dimostrativi ══════════ */
+function seedDemo(){
+  const oggi=new Date();const t=(h,m)=>{const d=new Date(oggi);d.setHours(h,m,0,0);return d.getTime()};
+  S.buildings=[
+   {id:1,ts:t(9,10),name:'Condominio Via Petitti 5',addr:'Milano (MI)',lat:45.4886,lng:9.1524,auto:true,
+    tipologia:'Condominio',anno:'1965',sup:'2.400',impianto:'Caldaia gasolio centralizzata',pod:'IT001E—',ref:'Amm. Pansini (SE.GE.CO.)',val:48000,
+    esito:'caldo',cx:4,linee:['SOLERO','CLIMA','MONITOR'],
+    ai:{profilo:"Edificio residenziale anni '60, 24 unità su 8 piani, involucro non isolato e centrale termica a gasolio a fine vita. Copertura piana ~380 m² ben esposta, zona climatica E. Classe energetica stimata F/G.",
+        opp:"Candidato ideale per CER condominiale con impianto FV SOLERO in copertura (comodato d'uso, gestione 45%) e sostituzione della centrale con pompa di calore CLIMA. MONITOR per la telemetria dei flussi energetici condivisi.",
+        inc:"Conto Termico 3.0 sulla pompa di calore; incentivo CER GSE sull'energia condivisa (verifica cumulabilità con eventuali fondi PNRR)."},
+    photos:[],notes:"L'amministratore chiede il kit assembleare entro fine mese. Verificare licenza officina elettrica >20 kWp.",memos:[]},
+   {id:2,ts:t(11,40),name:'Villetta Fam. Rigamonti',addr:'Gravellona Toce (VB)',lat:45.9296,lng:8.4326,auto:true,
+    tipologia:'Villetta',anno:'1998',sup:'160',impianto:'Caldaia metano + split obsoleti',pod:'',ref:'Sig.ra Rigamonti',val:32000,
+    esito:'tiepido',cx:2,linee:['SOLERO','CLIMA','THERMO'],
+    ai:{profilo:"Villetta bifamiliare su due livelli, serramenti in PVC recenti, tetto a falda sud-est ~45 m² liberi. Riscaldamento a metano con caldaia del 2011, raffrescamento con split di vecchia generazione.",
+        opp:"Pacchetto chiavi in mano residenziale: FV 6 kWp + accumulo SOLERO, pompa di calore CLIMA full-electric in sostituzione caldaia. In alternativa soluzione ibrida THERMO se il cliente vuole gradualità.",
+        inc:"Conto Termico 3.0 (SCOP da verificare a catalogo) oppure detrazione fiscale; simulare entrambi gli scenari con il simulatore parametrico."},
+    photos:[],notes:"",memos:[]},
+   {id:3,ts:t(15,5),name:'Capannone F.lli Osella S.n.c.',addr:'Omegna (VB)',lat:45.8763,lng:8.4092,auto:false,
+    tipologia:'PMI / capannone',anno:'1984',sup:'1.100',impianto:'Aerotermi a gas, no clima estivo',pod:'IT001E—',ref:'Sig. Osella (titolare)',val:95000,
+    esito:'freddo',cx:3,linee:['MAXICLIMA','SOLERO'],
+    ai:{profilo:"Capannone produttivo con uffici annessi, copertura in lamiera grecata ~900 m² idonea al FV, consumi elettrici diurni elevati (macchine utensili). Nessun raffrescamento negli uffici.",
+        opp:"On-site PPA / SEU con riservato dominio per FV SOLERO senza esborso iniziale; MAXICLIMA VRV per gli uffici. Da riproporre a settembre: il titolare rimanda ogni decisione dopo le ferie.",
+        inc:"Valutare Transizione 5.0 vs incentivo CER (non cumulabili con PNRR): serve il profilo di prelievo dal distributore."},
+    photos:[],notes:"Richiamare dopo il 7 settembre. Diffidente sui vincoli contrattuali lunghi.",memos:[]}
+  ];
+  save();
+}
+
+/* ══════════ GPS & rilevamento soste ══════════ */
+function dist(a,b){const R=6371e3,r=x=>x*Math.PI/180,dφ=r(b.lat-a.lat),dλ=r(b.lng-a.lng);
+  const h=Math.sin(dφ/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dλ/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
+function toggleTrack(){
+  if(S.tracking){navigator.geolocation&&watchId!=null&&navigator.geolocation.clearWatch(watchId);S.tracking=false;$('btn-track').textContent='▶ Avvia giro';$('gps-note').textContent='Giro in pausa. Il diario resta salvato.';return}
+  if(!navigator.geolocation){$('gps-note').textContent='GPS non disponibile in questo contesto (serve HTTPS su telefono). Usa ⌂ Registra edificio o le coordinate manuali.';return}
+  S.tracking=true;$('btn-track').textContent='■ Ferma giro';$('gps-note').textContent='GPS attivo — schermo acceso per il tracciamento.';
+  watchId=navigator.geolocation.watchPosition(onPos,e=>{$('gps-note').textContent='GPS negato o non disponibile: puoi comunque registrare gli edifici a mano.'},{enableHighAccuracy:true,maximumAge:3000});
+}
+function onPos(p){
+  const pt={lat:p.coords.latitude,lng:p.coords.longitude,t:Date.now()};
+  const last=S.path[S.path.length-1];
+  if(!last||dist(last,pt)>=3)S.path.push(pt);
+  // rilevamento sosta
+  if(!stopAnchor||dist(stopAnchor,pt)>S.radius){stopAnchor=pt;stopSince=pt.t}
+  else if(pt.t-stopSince>=S.minutes*60000){
+    const near=S.buildings.find(b=>dist(b,pt)<S.radius*1.5);
+    if(!near){createBuilding(pt.lat,pt.lng,true)}
+    stopSince=pt.t+1e12; // anti-doppione fino a nuovo spostamento
+  }
+  save();renderStats();
+}
+function markBuilding(){
+  if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>createBuilding(p.coords.latitude,p.coords.longitude,false),
+    ()=>createBuilding(null,null,false),{enableHighAccuracy:true,timeout:5000})}
+  else createBuilding(null,null,false);
+}
+function addFromCoords(){const v=$('in-coords').value.split(',').map(x=>parseFloat(x.trim()));
+  if(v.length===2&&!isNaN(v[0]))createBuilding(v[0],v[1],false);else alert('Formato: lat, lng')}
+function createBuilding(lat,lng,auto){
+  S.buildings.push({id:Date.now(),ts:Date.now(),name:'Nuovo edificio',addr:'',lat,lng,auto,
+    tipologia:'',anno:'',sup:'',impianto:'',pod:'',ref:'',val:0,esito:'',cx:0,linee:[],ai:null,photos:[],notes:'',memos:[]});
+  save();render();window.scrollTo({top:document.querySelector('.tl').offsetTop,behavior:'smooth'});
+}
+
+/* ══════════ Render ══════════ */
+const LINEE=['MINICLIMA','MAXICLIMA','CLIMA','SOLERO','THERMO','MONITOR'];
+const fmt€=n=>'€ '+(n||0).toLocaleString('it-IT');
+function renderStats(){
+  let km=0;for(let i=1;i<S.path.length;i++)km+=dist(S.path[i-1],S.path[i]);
+  $('st-km').textContent=(km/1000).toFixed(1).replace('.',',');
+  $('st-ed').textContent=S.buildings.length;
+  $('st-caldi').textContent=S.buildings.filter(b=>b.esito==='caldo').length;
+  $('st-pipe').textContent=fmt€(S.buildings.reduce((s,b)=>s+(+b.val||0),0));
+}
+function render(){
+  renderStats();
+  const tl=$('timeline');tl.innerHTML='';
+  $('empty').style.display=S.buildings.length?'none':'block';
+  const sorted=[...S.buildings].sort((a,b)=>b.ts-a.ts);
+  let lastDay='';
+  sorted.forEach(b=>{
+    const d=new Date(b.ts),day=d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
+    if(day!==lastDay){lastDay=day;tl.insertAdjacentHTML('beforeend',`<div class="daysep"><span>${day}</span></div>`)}
+    tl.insertAdjacentHTML('beforeend',cardHTML(b));
+  });
+}
+function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function cardHTML(b){
+  const time=new Date(b.ts).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+  const coords=b.lat?`${b.lat.toFixed(5)}, ${b.lng.toFixed(5)} · ${b.auto?'sosta rilevata':'registrato a mano'}`:'posizione non disponibile';
+  return `<div class="card" data-id="${b.id}">
+    <div class="card-hd"><h3 contenteditable onblur="upd(${b.id},'name',this.textContent)">${esc(b.name)}</h3><span class="time">ORE ${time}</span></div>
+    <div class="card-bd">
+      <div class="coords">${coords}</div>
+      <div class="esito-row">
+        ${['caldo','tiepido','freddo'].map(e=>`<button class="esito ${b.esito===e?'sel-'+e:''}" onclick="upd(${b.id},'esito','${e}')">${e==='caldo'?'🔥':e==='tiepido'?'🌤':'❄'} ${e}</button>`).join('')}
+        <span class="cx"><span class="lab">Complessità</span>${[1,2,3,4,5].map(i=>`<b class="${b.cx>=i?'on':''}" onclick="upd(${b.id},'cx',${i})"></b>`).join('')}</span>
+      </div>
+      <div class="fields">
+        ${[['tipologia','Tipologia'],['anno','Anno costr.'],['sup','Superficie m²'],['impianto','Impianto attuale'],['pod','POD / PDR'],['ref','Referente']].map(([k,l])=>
+          `<div class="f"><label>${l}</label><input value="${esc(b[k])}" onchange="upd(${b.id},'${k}',this.value)"></div>`).join('')}
+        <div class="f"><label>Indirizzo</label><input value="${esc(b.addr)}" onchange="upd(${b.id},'addr',this.value)"></div>
+        <div class="f"><label>Valore stimato €</label><input type="number" value="${b.val||''}" onchange="upd(${b.id},'val',+this.value)"></div>
+      </div>
+      <div class="linee">${LINEE.map(l=>`<button class="linea ${b.linee.includes(l)?'on':''}" onclick="togLinea(${b.id},'${l}')">${l}</button>`).join('')}</div>
+      ${b.ai?`<div class="ai-box"><h4>Profilo energetico</h4><p>${esc(b.ai.profilo)}</p>
+        <h4>Opportunità BABOO</h4><p>${esc(b.ai.opp)}</p>
+        <h4>Incentivi applicabili</h4><p>${esc(b.ai.inc)}</p>
+        <p class="ai-note">Contenuto generato dall'AI — verificare prima dell'offerta.</p></div>`:''}
+      ${b.notes?`<div class="nota">${esc(b.notes)}</div>`:''}
+      <div class="photos">${b.photos.map((p,i)=>`<img src="${p}" onclick="lightbox('${b.id}',${i})">`).join('')}</div>
+      ${b.memos.map((m,i)=>`<div class="memo"><audio controls src="${m}"></audio><button class="mini" onclick="delMemo(${b.id},${i})">✕</button></div>`).join('')}
+      <div class="card-actions">
+        <button class="mini" onclick="genAI(${b.id},this)">↻ Scheda AI</button>
+        <button class="mini" onclick="addPhoto(${b.id})">📷 Foto</button>
+        <button class="mini" onclick="editNote(${b.id})">✏️ Nota</button>
+        <button class="mini" id="memo-${b.id}" onclick="toggleMemo(${b.id})">🎙️ Memo</button>
+        <button class="mini del" onclick="delB(${b.id})">Elimina</button>
+      </div>
+    </div></div>`;
+}
+function upd(id,k,v){const b=S.buildings.find(x=>x.id===id);b[k]=v;save();if(k==='esito'||k==='cx')render();else renderStats()}
+function togLinea(id,l){const b=S.buildings.find(x=>x.id===id);const i=b.linee.indexOf(l);i>=0?b.linee.splice(i,1):b.linee.push(l);save();render()}
+function delB(id){if(confirm('Eliminare questo edificio dal diario?')){S.buildings=S.buildings.filter(x=>x.id!==id);save();render()}}
+function editNote(id){const b=S.buildings.find(x=>x.id===id);const n=prompt('Nota di sopralluogo:',b.notes||'');if(n!==null){b.notes=n;save();render()}}
+
+/* ══════════ Foto ══════════ */
+function addPhoto(id){
+  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.multiple=true;
+  inp.onchange=()=>{[...inp.files].forEach(f=>{
+    const img=new Image();img.onload=()=>{
+      const c=document.createElement('canvas'),k=Math.min(1,1280/Math.max(img.width,img.height));
+      c.width=img.width*k;c.height=img.height*k;c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      S.buildings.find(x=>x.id===id).photos.push(c.toDataURL('image/jpeg',.8));save();render()};
+    img.src=URL.createObjectURL(f)})};
+  inp.click();
+}
+function lightbox(id,i){$('light-img').src=S.buildings.find(x=>x.id==id).photos[i];$('m-light').classList.add('open')}
+
+/* ══════════ Memo vocali ══════════ */
+let rec=null,recId=null;
+async function toggleMemo(id){
+  const btn=$('memo-'+id);
+  if(rec&&recId===id){rec.stop();return}
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    const mime=MediaRecorder.isTypeSupported('audio/mp4')?'audio/mp4':'audio/webm';
+    rec=new MediaRecorder(stream,{mimeType:mime});recId=id;const chunks=[];
+    rec.ondataavailable=e=>chunks.push(e.data);
+    rec.onstop=()=>{stream.getTracks().forEach(t=>t.stop());
+      const r=new FileReader();r.onload=()=>{S.buildings.find(x=>x.id===id).memos.push(r.result);save();render()};
+      r.readAsDataURL(new Blob(chunks,{type:mime}));rec=null;recId=null};
+    rec.start();btn.textContent='■ Ferma';btn.classList.add('rec');
+    setTimeout(()=>{if(rec&&recId===id)rec.stop()},180000);
+  }catch(e){alert('Microfono non disponibile (serve HTTPS su telefono).')}
+}
+function delMemo(id,i){if(confirm('Eliminare il memo?')){S.buildings.find(x=>x.id===id).memos.splice(i,1);save();render()}}
+
+/* ══════════ Scheda AI ══════════ */
+async function genAI(id,btn){
+  const b=S.buildings.find(x=>x.id===id);
+  btn.textContent='… genero';btn.disabled=true;
+  try{
+    const prompt=`Sei il consulente tecnico di BABOO ESCo (UNI 11352), linee prodotto: MINICLIMA, MAXICLIMA, CLIMA (pompe di calore full-electric), SOLERO (FV+accumulo), THERMO (caldaie/ibridi), MONITOR (telemetria). Analizza questo edificio visitato in sopralluogo e, usando la ricerca web dove utile (zona climatica, contesto locale, incentivi vigenti in Italia), rispondi SOLO in italiano nel formato esatto:
+PROFILO: (3-4 frasi: tipologia, involucro, impianto, criticità energetiche)
+OPPORTUNITA: (3-4 frasi: quali linee BABOO proporre e con quale modello — EPC, CER, chiavi in mano, PPA on-site)
+INCENTIVI: (2-3 frasi: incentivi applicabili — Conto Termico 3.0, CER GSE, Transizione 5.0, detrazioni — e cosa verificare)
+Dati: nome=${b.name}; indirizzo=${b.addr}; coordinate=${b.lat},${b.lng}; tipologia=${b.tipologia}; anno=${b.anno}; superficie=${b.sup} m²; impianto attuale=${b.impianto}; note sopralluogo=${b.notes||'—'}; esito visita=${b.esito||'—'}.`;
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,
+        messages:[{role:'user',content:prompt}],
+        tools:[{type:'web_search_20250305',name:'web_search'}]})});
+    const data=await res.json();
+    const txt=(data.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('\n');
+    const get=k=>{const m=txt.match(new RegExp(k+':\\s*([\\s\\S]*?)(?=\\n[A-Z]+:|$)'));return m?m[1].trim():''};
+    const profilo=get('PROFILO'),opp=get('OPPORTUNITA'),inc=get('INCENTIVI');
+    if(profilo||opp){b.ai={profilo,opp,inc}}
+    else throw new Error('vuoto');
+  }catch(e){
+    b.ai=b.ai||{profilo:'(Compila a mano o inserisci la chiave API in Strumenti per la generazione automatica con ricerca web.)',
+      opp:'Linee selezionate: '+(b.linee.join(', ')||'—')+'.',inc:'Verificare Conto Termico 3.0 / CER / detrazioni.'};
+  }
+  save();render();
+}
+
+/* ══════════ Export ══════════ */
+function dl(name,content,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click()}
+function exportMD(){
+  const sorted=[...S.buildings].sort((a,b)=>a.ts-b.ts);
+  let md=`# Report giro sopralluoghi BABOO\n\nPipeline stimata: ${fmt€(S.buildings.reduce((s,b)=>s+(+b.val||0),0))} · Edifici: ${S.buildings.length}\n\n`;
+  sorted.forEach(b=>{const d=new Date(b.ts);
+    md+=`## ${b.name} — ${b.addr}\n*${d.toLocaleString('it-IT')}* · Esito: **${b.esito||'—'}** · Complessità: ${b.cx||'—'}/5 · Valore stimato: ${fmt€(b.val)}\n\n`;
+    md+=`- Tipologia: ${b.tipologia||'—'} · Anno: ${b.anno||'—'} · Sup.: ${b.sup||'—'} m²\n- Impianto attuale: ${b.impianto||'—'}\n- POD/PDR: ${b.pod||'—'} · Referente: ${b.ref||'—'}\n- Linee proposte: ${b.linee.join(', ')||'—'}\n\n`;
+    if(b.ai)md+=`**Profilo energetico.** ${b.ai.profilo}\n\n**Opportunità.** ${b.ai.opp}\n\n**Incentivi.** ${b.ai.inc}\n\n`;
+    if(b.notes)md+=`> Nota: ${b.notes}\n\n`;
+    md+='---\n\n'});
+  dl('report-sopralluoghi.md',md,'text/markdown');
+}
+function exportHTML(){
+  const cards=document.getElementById('timeline').innerHTML;
+  const html=`<!DOCTYPE html><html lang="it"><head><meta charset="utf-8"><title>Dossier sopralluoghi BABOO</title><style>${document.querySelector('style').textContent}</style></head><body><header><div class="hd"><div><div class="logo">baboo</div><div class="eyebrow">Dossier sopralluoghi</div></div></div></header><div class="wrap"><div class="tl">${cards}</div></div><script>function noop(){}<\/script></body></html>`;
+  dl('dossier-sopralluoghi.html',html,'text/html');
+}
+function clearAll(){if(confirm('Cancellare tutto il diario? Operazione irreversibile.')){S.buildings=[];S.path=[];save();render()}}
+
+/* ══════════ UI helpers ══════════ */
+function togglePanel(p){$('p-'+p).classList.toggle('open')}
+function openModal(m){$('m-'+m).classList.add('open')}
+function closeModal(m){$('m-'+m).classList.remove('open')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'))});
+</script>
+</body>
+</html>
