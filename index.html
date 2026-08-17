@@ -200,12 +200,37 @@ footer{max-width:760px;margin:30px auto 0;padding:14px;border-top:1px solid var(
 let S={buildings:[],path:[],tracking:false,radius:60,minutes:4,apiKey:'',demo:true};
 let watchId=null,stopAnchor=null,stopSince=null,saveT=null;
 const $=id=>document.getElementById(id);
-const db=indexedDB.open('baboo-sopralluoghi',1);
-db.onupgradeneeded=e=>e.target.result.createObjectStore('state');
-db.onsuccess=()=>load();
-function idb(mode,fn){const d=db.result,tx=d.transaction('state',mode);fn(tx.objectStore('state'))}
-function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{idb('readwrite',st=>st.put(JSON.stringify(S),'v1'))}catch(e){}},800)}
-function load(){try{idb('readonly',st=>{const r=st.get('v1');r.onsuccess=()=>{if(r.result){S=JSON.parse(r.result);S.tracking=false}else seedDemo();$('in-radius').value=S.radius;$('in-min').value=S.minutes;$('in-key').value=S.apiKey||'';render()}})}catch(e){seedDemo();render()}}
+/* Storage a strati: IndexedDB → localStorage → memoria (mai eccezioni fatali) */
+let dbh=null;
+function initStore(){
+  try{
+    const req=indexedDB.open('baboo-sopralluoghi',1);
+    req.onupgradeneeded=e=>e.target.result.createObjectStore('state');
+    req.onsuccess=()=>{dbh=req.result;loadFromDB()};
+    req.onerror=()=>loadFallback();
+  }catch(e){loadFallback()}
+}
+function persist(json){
+  if(dbh){try{dbh.transaction('state','readwrite').objectStore('state').put(json,'v1');return}catch(e){}}
+  try{localStorage.setItem('baboo-sopralluoghi',json)}catch(e){/* solo memoria: vive finché la pagina è aperta */}
+}
+function save(){clearTimeout(saveT);saveT=setTimeout(()=>persist(JSON.stringify(S)),800)}
+function loadFromDB(){
+  try{
+    const r=dbh.transaction('state','readonly').objectStore('state').get('v1');
+    r.onsuccess=()=>applyLoaded(r.result);
+    r.onerror=()=>loadFallback();
+  }catch(e){loadFallback()}
+}
+function loadFallback(){
+  let j=null;try{j=localStorage.getItem('baboo-sopralluoghi')}catch(e){}
+  applyLoaded(j);
+}
+function applyLoaded(j){
+  try{if(j){S=JSON.parse(j);S.tracking=false}else seedDemo()}catch(e){seedDemo()}
+  $('in-radius').value=S.radius;$('in-min').value=S.minutes;$('in-key').value=S.apiKey||'';
+  render();
+}
 
 /* ══════════ Dati dimostrativi ══════════ */
 function seedDemo(){
@@ -243,7 +268,9 @@ function toggleTrack(){
   if(S.tracking){navigator.geolocation&&watchId!=null&&navigator.geolocation.clearWatch(watchId);S.tracking=false;$('btn-track').textContent='▶ Avvia giro';$('gps-note').textContent='Giro in pausa. Il diario resta salvato.';return}
   if(!navigator.geolocation){$('gps-note').textContent='GPS non disponibile in questo contesto (serve HTTPS su telefono). Usa ⌂ Registra edificio o le coordinate manuali.';return}
   S.tracking=true;$('btn-track').textContent='■ Ferma giro';$('gps-note').textContent='GPS attivo — schermo acceso per il tracciamento.';
-  watchId=navigator.geolocation.watchPosition(onPos,e=>{$('gps-note').textContent='GPS negato o non disponibile: puoi comunque registrare gli edifici a mano.'},{enableHighAccuracy:true,maximumAge:3000});
+  try{
+    watchId=navigator.geolocation.watchPosition(onPos,e=>{$('gps-note').textContent='GPS negato o non disponibile: puoi comunque registrare gli edifici a mano.'},{enableHighAccuracy:true,maximumAge:3000});
+  }catch(e){S.tracking=false;$('btn-track').textContent='▶ Avvia giro';$('gps-note').textContent='GPS bloccato in questo contesto (anteprima). Sul telefono via HTTPS funziona; intanto usa ⌂ Registra edificio.'}
 }
 function onPos(p){
   const pt={lat:p.coords.latitude,lng:p.coords.longitude,t:Date.now()};
@@ -259,9 +286,11 @@ function onPos(p){
   save();renderStats();
 }
 function markBuilding(){
-  if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>createBuilding(p.coords.latitude,p.coords.longitude,false),
-    ()=>createBuilding(null,null,false),{enableHighAccuracy:true,timeout:5000})}
-  else createBuilding(null,null,false);
+  try{
+    if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>createBuilding(p.coords.latitude,p.coords.longitude,false),
+      ()=>createBuilding(null,null,false),{enableHighAccuracy:true,timeout:5000})}
+    else createBuilding(null,null,false);
+  }catch(e){createBuilding(null,null,false)}
 }
 function addFromCoords(){const v=$('in-coords').value.split(',').map(x=>parseFloat(x.trim()));
   if(v.length===2&&!isNaN(v[0]))createBuilding(v[0],v[1],false);else alert('Formato: lat, lng')}
@@ -273,13 +302,13 @@ function createBuilding(lat,lng,auto){
 
 /* ══════════ Render ══════════ */
 const LINEE=['MINICLIMA','MAXICLIMA','CLIMA','SOLERO','THERMO','MONITOR'];
-const fmt€=n=>'€ '+(n||0).toLocaleString('it-IT');
+const fmtEur=n=>'€ '+(n||0).toLocaleString('it-IT');
 function renderStats(){
   let km=0;for(let i=1;i<S.path.length;i++)km+=dist(S.path[i-1],S.path[i]);
   $('st-km').textContent=(km/1000).toFixed(1).replace('.',',');
   $('st-ed').textContent=S.buildings.length;
   $('st-caldi').textContent=S.buildings.filter(b=>b.esito==='caldo').length;
-  $('st-pipe').textContent=fmt€(S.buildings.reduce((s,b)=>s+(+b.val||0),0));
+  $('st-pipe').textContent=fmtEur(S.buildings.reduce((s,b)=>s+(+b.val||0),0));
 }
 function render(){
   renderStats();
@@ -396,9 +425,9 @@ Dati: nome=${b.name}; indirizzo=${b.addr}; coordinate=${b.lat},${b.lng}; tipolog
 function dl(name,content,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click()}
 function exportMD(){
   const sorted=[...S.buildings].sort((a,b)=>a.ts-b.ts);
-  let md=`# Report giro sopralluoghi BABOO\n\nPipeline stimata: ${fmt€(S.buildings.reduce((s,b)=>s+(+b.val||0),0))} · Edifici: ${S.buildings.length}\n\n`;
+  let md=`# Report giro sopralluoghi BABOO\n\nPipeline stimata: ${fmtEur(S.buildings.reduce((s,b)=>s+(+b.val||0),0))} · Edifici: ${S.buildings.length}\n\n`;
   sorted.forEach(b=>{const d=new Date(b.ts);
-    md+=`## ${b.name} — ${b.addr}\n*${d.toLocaleString('it-IT')}* · Esito: **${b.esito||'—'}** · Complessità: ${b.cx||'—'}/5 · Valore stimato: ${fmt€(b.val)}\n\n`;
+    md+=`## ${b.name} — ${b.addr}\n*${d.toLocaleString('it-IT')}* · Esito: **${b.esito||'—'}** · Complessità: ${b.cx||'—'}/5 · Valore stimato: ${fmtEur(b.val)}\n\n`;
     md+=`- Tipologia: ${b.tipologia||'—'} · Anno: ${b.anno||'—'} · Sup.: ${b.sup||'—'} m²\n- Impianto attuale: ${b.impianto||'—'}\n- POD/PDR: ${b.pod||'—'} · Referente: ${b.ref||'—'}\n- Linee proposte: ${b.linee.join(', ')||'—'}\n\n`;
     if(b.ai)md+=`**Profilo energetico.** ${b.ai.profilo}\n\n**Opportunità.** ${b.ai.opp}\n\n**Incentivi.** ${b.ai.inc}\n\n`;
     if(b.notes)md+=`> Nota: ${b.notes}\n\n`;
@@ -417,6 +446,8 @@ function togglePanel(p){$('p-'+p).classList.toggle('open')}
 function openModal(m){$('m-'+m).classList.add('open')}
 function closeModal(m){$('m-'+m).classList.remove('open')}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'))});
+
+initStore();
 </script>
 </body>
 </html>
