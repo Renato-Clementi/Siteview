@@ -55,9 +55,31 @@ button{font-family:'EB Garamond',Georgia,serif;font-size:16px;cursor:pointer;-we
 /* ── Scheda edificio ─────────────────── */
 .card{background:#FBF9F4;border:1px solid var(--hair);border-radius:2px;margin-bottom:22px;position:relative;overflow:hidden}
 .card::before{content:"⌂";position:absolute;left:-34px;top:14px;width:24px;height:24px;background:var(--paper);border:2px solid var(--brass);border-radius:50%;color:var(--brass);font-size:13px;line-height:20px;text-align:center}
-.card-hd{background:var(--ink);color:var(--cream);padding:12px 16px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.card-hd{background:var(--ink);color:var(--cream);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
 .card-hd h3{font-family:'Playfair Display',serif;font-size:19px;font-weight:600}
 .card-hd .time{font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:2px;color:var(--brass);flex:none}
+.hd-l{min-width:0;flex:1}
+.hd-meta{font-size:13px;font-style:italic;color:#bfb6a4;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+details.card>summary{list-style:none;cursor:pointer}
+details.card>summary::-webkit-details-marker{display:none}
+.chev{flex:none;color:var(--brass);font-size:13px;transition:transform .2s}
+details.card[open]>summary .chev{transform:rotate(180deg)}
+details.sec{border:1px solid var(--hair);border-radius:2px;background:#fff;margin:8px 0}
+details.sec>summary{list-style:none;cursor:pointer;padding:9px 12px;font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center;gap:8px}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary::after{content:"+";color:var(--brass);font-size:15px;flex:none}
+details.sec[open]>summary::after{content:"−"}
+.sec-bd{padding:10px 12px;border-top:1px solid var(--hair)}
+.chk-g{font-family:Helvetica,Arial,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--brass);margin:10px 0 4px}
+.chk-g:first-child{margin-top:0}
+.chk{display:flex;gap:9px;align-items:flex-start;padding:5px 0;font-size:15px;cursor:pointer;border-bottom:1px dotted var(--hair)}
+.chk input{accent-color:var(--brass);width:17px;height:17px;flex:none;margin-top:2px}
+.chk.ok .chk-tx{color:var(--muted);text-decoration:line-through}
+.chk-tx{flex:1;min-width:0}
+.chk-cam{flex:none;background:transparent;border:1px solid var(--hair);border-radius:2px;padding:3px 8px;font-size:14px;margin-left:4px}
+.chk-th{width:30px;height:30px;object-fit:cover;border:1px solid var(--brass);border-radius:2px;flex:none;cursor:pointer}
+.photos img.tagged{border-color:var(--brass);border-width:2px}
+.cons-sum{background:var(--cream);border-left:3px solid var(--brass);padding:8px 12px;margin:10px 0;font-size:15px}
 .card-bd{padding:14px 16px 16px}
 .coords{font-size:13px;color:var(--muted);font-style:italic;margin-bottom:10px}
 
@@ -193,7 +215,18 @@ footer{max-width:760px;margin:30px auto 0;padding:14px;border-top:1px solid var(
     <p class="ai-note">I dati vivono nel browser di questo dispositivo (IndexedDB). Gli export sono il backup.</p>
   </div>
 </div>
-<div class="modal lightbox" id="m-light" onclick="this.classList.remove('open')"><div class="modal-in" style="background:transparent;padding:0"><img id="light-img"></div></div>
+<div class="modal lightbox" id="m-light" onclick="if(event.target===this)this.classList.remove('open')"><div class="modal-in" style="background:transparent;padding:0;text-align:center"><img id="light-img"><button class="mini" style="margin-top:10px;background:#a33;color:#fff;border-color:#a33" onclick="delPhotoLB()">✕ Elimina foto</button></div></div>
+
+<!-- Report cliente -->
+<div class="modal" id="m-teaser" style="padding:0">
+  <div style="position:fixed;inset:0;display:flex;flex-direction:column;background:var(--paper)">
+    <div style="flex:none;background:var(--ink);display:flex;gap:8px;justify-content:flex-end;padding:10px 14px;padding-top:max(10px,env(safe-area-inset-top))">
+      <button class="mini" style="background:var(--brass);color:var(--cream);border-color:var(--brass)" onclick="dlTeaser()">⬇ Scarica</button>
+      <button class="mini" style="color:var(--cream);border-color:var(--brass)" onclick="closeModal('teaser')">✕ Chiudi</button>
+    </div>
+    <iframe id="teaser-frame" style="flex:1;border:0;width:100%"></iframe>
+  </div>
+</div>
 
 <script>
 /* ══════════ Stato & persistenza ══════════ */
@@ -223,11 +256,15 @@ function loadFromDB(){
   }catch(e){loadFallback()}
 }
 function loadFallback(){
-  let j=null;try{j=localStorage.getItem('baboo-sopralluoghi')}catch(e){}
+  let j=null,lsOk=true;
+  try{localStorage.setItem('__t','1');localStorage.removeItem('__t');j=localStorage.getItem('baboo-sopralluoghi')}catch(e){lsOk=false}
+  if(!lsOk){const n=$('gps-note');n.textContent='⚠ Salvataggio non disponibile in questo contesto (anteprima o navigazione privata): il diario vive solo finché la pagina resta aperta. Su GitHub Pages i dati vengono conservati.'}
   applyLoaded(j);
 }
 function applyLoaded(j){
   try{if(j){S=JSON.parse(j);S.tracking=false}else seedDemo()}catch(e){seedDemo()}
+  /* migrazione: foto da stringa a {src, tag} */
+  (S.buildings||[]).forEach(b=>{b.photos=(b.photos||[]).map(p=>typeof p==='string'?{src:p,tag:null}:p);b.checks=b.checks||{};b.memos=b.memos||[];b.cons=b.cons||{}});
   $('in-radius').value=S.radius;$('in-min').value=S.minutes;$('in-key').value=S.apiKey||'';
   render();
 }
@@ -239,6 +276,7 @@ function seedDemo(){
    {id:1,ts:t(9,10),name:'Condominio Via Petitti 5',addr:'Milano (MI)',lat:45.4886,lng:9.1524,auto:true,
     tipologia:'Condominio',anno:'1965',sup:'2.400',impianto:'Caldaia gasolio centralizzata',pod:'IT001E—',ref:'Amm. Pansini (SE.GE.CO.)',val:48000,
     esito:'caldo',cx:4,linee:['SOLERO','CLIMA','MONITOR'],
+    cons:{elKwh:'14500',elSpesa:'4350',elPot:'25',elF1:'35',gasSmc:'',gasSpesa:'',gasUso:'',altroTipo:'gasolio (litri)',altroQta:'16800',altroSpesa:'26900'},
     ai:{profilo:"Edificio residenziale anni '60, 24 unità su 8 piani, involucro non isolato e centrale termica a gasolio a fine vita. Copertura piana ~380 m² ben esposta, zona climatica E. Classe energetica stimata F/G.",
         opp:"Candidato ideale per CER condominiale con impianto FV SOLERO in copertura (comodato d'uso, gestione 45%) e sostituzione della centrale con pompa di calore CLIMA. MONITOR per la telemetria dei flussi energetici condivisi.",
         inc:"Conto Termico 3.0 sulla pompa di calore; incentivo CER GSE sull'energia condivisa (verifica cumulabilità con eventuali fondi PNRR)."},
@@ -302,6 +340,109 @@ function createBuilding(lat,lng,auto){
 
 /* ══════════ Render ══════════ */
 const LINEE=['MINICLIMA','MAXICLIMA','CLIMA','SOLERO','THERMO','MONITOR'];
+/* Guida rilievi: cosa fotografare/raccogliere per ogni intervento proposto */
+const CHECKLISTS={
+ GENERALE:['Facciata e contesto dell\u2019edificio','Accessi e viabilit\u00e0 per mezzi/scale','Bolletta energia recente (foto)','Planimetria o schizzo quotato dei locali'],
+ SOLERO:['Copertura da pi\u00f9 angoli (falde, lucernari, camini)','Orientamento e ombreggiamenti (alberi, edifici)','Contatore elettrico e POD leggibile','Locale tecnico per inverter e accumulo','Quadro elettrico generale aperto','Percorso cavi UE\u2192quadro (cavedi, facciata)'],
+ CLIMA:['Generatore attuale con targa dati','Locale tecnico e spazi di manovra','Terminali: radiatori / pavimento / fancoil','Posizione prevista unit\u00e0 esterna (con misure)','Scarico condensa possibile','Quadro elettrico e potenza disponibile'],
+ MINICLIMA:['Pareti interne previste per le UI','Posizione UE (balcone, facciata, staffe)','Percorso tubazioni frigorifere','Scarico condensa per ogni UI'],
+ MAXICLIMA:['Controsoffitti e altezze utili','Copertura/area tecnica per UE (portata)','Distribuzione aeraulica o idronica esistente','Quadro di potenza e sezionamenti','Destinazione d\u2019uso dei locali (foto ambienti)'],
+ THERMO:['Caldaia esistente con targa e matricola','Canna fumaria e sbocco a tetto','Contatore gas e PDR leggibile','Locale caldaia con aerazioni','Terminali e valvole termostatiche'],
+ MONITOR:['Quadro generale: spazio su guida DIN per meter','Copertura segnale (router, presa dati o SIM)','Targhe di inverter/generatori da telemetrare']
+};
+function togCheck(id,key){const b=S.buildings.find(x=>x.id===id);b.checks=b.checks||{};b.checks[key]=!b.checks[key];save();render()}
+/* ── Consumi attuali (baseline per l'analisi finanziaria) ── */
+function updCons(id,k,v){const b=S.buildings.find(x=>x.id===id);b.cons=b.cons||{};b.cons[k]=v;save();render()}
+function consCalc(b){const c=b.cons||{},n=k=>parseFloat(c[k])||0;
+  return {tot:n('elSpesa')+n('gasSpesa')+n('altroSpesa'),
+    cEl:n('elKwh')?n('elSpesa')/n('elKwh'):0, cGas:n('gasSmc')?n('gasSpesa')/n('gasSmc'):0}}
+function consStr(b){const c=b.cons||{},p=[];
+  if(c.elKwh||c.elSpesa)p.push(`elettrico ${c.elKwh||'?'} kWh/anno, spesa ${c.elSpesa||'?'} €/anno${c.elPot?', potenza '+c.elPot+' kW':''}${c.elF1?', '+c.elF1+'% consumo diurno':''}`);
+  if(c.gasSmc||c.gasSpesa)p.push(`gas ${c.gasSmc||'?'} Smc/anno, spesa ${c.gasSpesa||'?'} €/anno${c.gasUso?' ('+c.gasUso+')':''}`);
+  if(c.altroTipo&&c.altroTipo!=='nessuno')p.push(`${c.altroTipo} ${c.altroQta||'?'}/anno, spesa ${c.altroSpesa||'?'} €/anno`);
+  return p.join('; ')||'non ancora rilevati'}
+
+/* ── Report cliente (teaser): stime indicative dai dati raccolti ── */
+function teaserCalc(b){
+  const c=b.cons||{},n=k=>parseFloat(c[k])||0;
+  const el=n('elSpesa'),th=n('gasSpesa')+n('altroSpesa'),tot=el+th;
+  let lo=0,hi=0;const L=b.linee;
+  if(L.includes('SOLERO')){const f=Math.min(Math.max(n('elF1'),20),80)/100;lo+=el*(0.25+0.2*f);hi+=el*(0.40+0.3*f)}
+  if(L.includes('CLIMA')){lo+=th*0.30;hi+=th*0.50}
+  else if(L.includes('THERMO')){lo+=th*0.10;hi+=th*0.22}
+  if(L.includes('MAXICLIMA')||L.includes('MINICLIMA')){lo+=el*0.05;hi+=el*0.12}
+  if(L.includes('MONITOR')){lo+=tot*0.03;hi+=tot*0.06}
+  hi=Math.min(hi,tot*0.75);lo=Math.min(lo,hi*0.85);
+  /* CO2: fattori indicativi kg/unità */
+  const at=c.altroTipo||'',aq=n('altroQta');
+  const fAltro=at.startsWith('gasolio')?2.65:at.startsWith('GPL')?1.61:0;
+  const co2=(n('elKwh')*0.26+n('gasSmc')*1.98+aq*fAltro)/1000; /* t/anno */
+  const co2save=co2*((lo+hi)/2)/(tot||1);
+  const dieci=Math.round(tot*11.46); /* 10 anni a +3%/anno */
+  return {tot,lo:Math.round(lo),hi:Math.round(hi),dieci,co2save,alberi:Math.round(co2save*1000/25)}
+}
+const TEASER_BENEFIT={SOLERO:'Fotovoltaico e accumulo: l\u2019energia che oggi compri, domani la produci in casa',
+ CLIMA:'Pompa di calore full-electric: addio combustibile, un solo vettore ad alta efficienza',
+ THERMO:'Generazione ad alto rendimento o ibrida: comfort subito, consumi in discesa',
+ MAXICLIMA:'Climatizzazione VRV: comfort regolato zona per zona, anche d\u2019estate',
+ MINICLIMA:'Climatizzatori di nuova generazione: fresco senza sorprese in bolletta',
+ MONITOR:'Telemetria MONITOR: ogni kWh sotto controllo, sempre, dal telefono'};
+let _teaser=null;
+function teaserHTML(b){
+  const t=teaserCalc(b);
+  const scad=new Date(Date.now()+15*864e5).toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'});
+  const oggi=new Date().toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'});
+  const hasNum=t.tot>0;
+  return `<!DOCTYPE html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Anteprima riqualificazione — ${esc(b.name)}</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F5F2EB;color:#2A2723;font-family:'EB Garamond',Georgia,serif;font-size:17px;line-height:1.55}
+.w{max-width:620px;margin:0 auto;padding:0 20px 40px}
+.hd{background:#2A2723;color:#EDE7DB;padding:30px 20px 26px;text-align:center}
+.eb{font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:3px;color:#988060;text-transform:uppercase}
+h1{font-family:'Playfair Display',serif;font-size:27px;margin:8px 0 2px;font-weight:600}
+.sub{font-style:italic;color:#bfb6a4;font-size:15px}
+.big{font-family:'Playfair Display',serif;font-weight:700;font-size:42px;line-height:1.05}
+.blk{text-align:center;padding:26px 0 6px;border-bottom:1px solid #D8CDB8}
+.lb{font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:#8C8475;margin-bottom:6px}
+.brass{color:#988060}.red{color:#986040}
+.note{font-size:14px;font-style:italic;color:#8C8475;margin-top:4px}
+.iv{margin:22px 0;border-left:3px solid #988060;background:#fff;padding:12px 16px}
+.iv b{font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#988060;display:block}
+.cta{background:#2A2723;color:#EDE7DB;text-align:center;padding:26px 20px;margin-top:28px;border-radius:2px}
+.cta .big{font-size:24px;font-family:'Playfair Display',serif}
+.btn{display:inline-block;background:#988060;color:#EDE7DB;text-decoration:none;padding:13px 30px;margin-top:14px;font-family:Helvetica,Arial,sans-serif;letter-spacing:2px;font-size:12px;text-transform:uppercase;border-radius:2px}
+.fine{font-size:12.5px;color:#8C8475;font-style:italic;margin-top:22px;text-align:center}
+footer{text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#8C8475;padding:16px}</style></head><body>
+<div class="hd"><div class="eb">Baboo ESCo · Anteprima di riqualificazione energetica</div>
+<h1>${esc(b.name)}</h1><div class="sub">${esc(b.addr)} · sopralluogo del ${oggi}</div></div>
+<div class="w">
+${hasNum?`
+<div class="blk"><div class="lb">Oggi questo edificio spende</div><div class="big red">${fmtEur(Math.round(t.tot))}<span style="font-size:20px">/anno</span></div>
+<div class="note">Continuando cos\u00ec, nei prossimi 10 anni usciranno circa <b>${fmtEur(t.dieci)}</b>.</div></div>
+<div class="blk"><div class="lb">Con la riqualificazione proposta, risparmio stimato</div>
+<div class="big brass">${fmtEur(t.lo)} – ${fmtEur(t.hi)}<span style="font-size:20px">/anno</span></div>
+${t.alberi?`<div class="note">E ${t.co2save.toFixed(1).replace('.',',')} tonnellate di CO\u2082 in meno ogni anno: come piantare ${t.alberi} alberi.</div>`:''}</div>`
+:`<div class="blk"><div class="lb">Il potenziale del tuo edificio</div><div class="note">Le stime economiche verranno calcolate sui tuoi consumi reali: tieni a portata di mano una bolletta per lo studio gratuito.</div></div>`}
+<div style="margin-top:22px"><div class="lb" style="text-align:center">Cosa abbiamo individuato per te</div>
+${b.linee.map(l=>`<div class="iv"><b>${l}</b>${TEASER_BENEFIT[l]||''}</div>`).join('')||'<div class="note" style="text-align:center">Interventi in corso di definizione.</div>'}</div>
+<div class="iv"><b>Incentivi: ce ne occupiamo noi</b>${esc((b.ai&&b.ai.inc)||'Conto Termico 3.0, incentivi per le Comunit\u00e0 Energetiche e detrazioni fiscali: BABOO gestisce le pratiche come Soggetto Responsabile, tu incassi il beneficio.')}</div>
+<div class="cta"><div class="eb">Il prossimo passo non costa nulla</div>
+<div class="big">Studio di fattibilit\u00e0 gratuito</div>
+<div class="sub">Proposta tecnico-economica su misura, con garanzia di prestazione UNI CEI 11352.<br>Prenota entro il <b style="color:#EDE7DB">${scad}</b>.</div>
+<a class="btn" href="tel:032363934">Chiama ora · 0323 63934</a></div>
+<div class="fine">Stime indicative e non vincolanti, elaborate sui dati raccolti in sopralluogo; la proposta definitiva segue lo studio di fattibilit\u00e0.</div>
+</div><footer>Baboo ESCo S.r.l. · Via Prati 1, 28887 Omegna (VB) · P.IVA 02300450034</footer></body></html>`;
+}
+function showTeaser(id){
+  const b=S.buildings.find(x=>x.id===id);
+  const t=teaserCalc(b);
+  if(!t.tot&&!confirm('Consumi non ancora inseriti: il report uscir\u00e0 senza stime economiche. Procedere comunque?'))return;
+  _teaser={html:teaserHTML(b),name:b.name};
+  $('teaser-frame').srcdoc=_teaser.html;
+  $('m-teaser').classList.add('open');
+}
+function dlTeaser(){if(_teaser)dl('anteprima-'+_teaser.name.replace(/[^\w]+/g,'-').toLowerCase()+'.html',_teaser.html,'text/html')}
 const fmtEur=n=>'€ '+(n||0).toLocaleString('it-IT');
 function renderStats(){
   let km=0;for(let i=1;i<S.path.length;i++)km+=dist(S.path[i-1],S.path[i]);
@@ -316,46 +457,98 @@ function render(){
   $('empty').style.display=S.buildings.length?'none':'block';
   const sorted=[...S.buildings].sort((a,b)=>b.ts-a.ts);
   let lastDay='';
-  sorted.forEach(b=>{
+  sorted.forEach((b,i)=>{
     const d=new Date(b.ts),day=d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
     if(day!==lastDay){lastDay=day;tl.insertAdjacentHTML('beforeend',`<div class="daysep"><span>${day}</span></div>`)}
-    tl.insertAdjacentHTML('beforeend',cardHTML(b));
+    tl.insertAdjacentHTML('beforeend',cardHTML(b,i===0));
   });
 }
-function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-function cardHTML(b){
+function esc(s){return (''+(s??'')).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+/* Stato di apertura degli accordion (sopravvive ai re-render) */
+const UI={card:{},sec:{}};
+function cardHTML(b,isNewest){
   const time=new Date(b.ts).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
   const coords=b.lat?`${b.lat.toFixed(5)}, ${b.lng.toFixed(5)} · ${b.auto?'sosta rilevata':'registrato a mano'}`:'posizione non disponibile';
-  return `<div class="card" data-id="${b.id}">
-    <div class="card-hd"><h3 contenteditable onblur="upd(${b.id},'name',this.textContent)">${esc(b.name)}</h3><span class="time">ORE ${time}</span></div>
+  const cardOpen=(UI.card[b.id]??isNewest)?'open':'';
+  const eIcon=b.esito==='caldo'?'🔥':b.esito==='tiepido'?'🌤':b.esito==='freddo'?'❄':'◦';
+  const meta=`${eIcon} ${b.esito||'da valutare'} · ${fmtEur(b.val)}${b.linee.length?' · '+b.linee.join(', '):''}`;
+  const nDoc=(b.photos.length?b.photos.length+' foto':'')+(b.notes?' · nota':'')+(b.memos.length?' · '+b.memos.length+' memo':'');
+  const hasDoc=!!(b.notes||b.photos.length||b.memos.length);
+  const sec=(key,def,label,inner)=>`<details class="sec" ${ (UI.sec[b.id+'-'+key]??def)?'open':'' } ontoggle="UI.sec['${b.id}-${key}']=this.open">
+    <summary>${label}</summary><div class="sec-bd">${inner}</div></details>`;
+  return `<details class="card" ${cardOpen} data-id="${b.id}" ontoggle="UI.card[${b.id}]=this.open">
+    <summary class="card-hd">
+      <div class="hd-l">
+        <h3 contenteditable onclick="event.preventDefault();event.stopPropagation()" onblur="upd(${b.id},'name',this.textContent)">${esc(b.name)}</h3>
+        <div class="hd-meta">${meta}</div>
+      </div>
+      <span class="time">ORE ${time}</span><span class="chev">▾</span>
+    </summary>
     <div class="card-bd">
       <div class="coords">${coords}</div>
       <div class="esito-row">
         ${['caldo','tiepido','freddo'].map(e=>`<button class="esito ${b.esito===e?'sel-'+e:''}" onclick="upd(${b.id},'esito','${e}')">${e==='caldo'?'🔥':e==='tiepido'?'🌤':'❄'} ${e}</button>`).join('')}
         <span class="cx"><span class="lab">Complessità</span>${[1,2,3,4,5].map(i=>`<b class="${b.cx>=i?'on':''}" onclick="upd(${b.id},'cx',${i})"></b>`).join('')}</span>
       </div>
-      <div class="fields">
+      ${sec('dati',false,'Dati edificio',
+        `<div class="fields">
         ${[['tipologia','Tipologia'],['anno','Anno costr.'],['sup','Superficie m²'],['impianto','Impianto attuale'],['pod','POD / PDR'],['ref','Referente']].map(([k,l])=>
           `<div class="f"><label>${l}</label><input value="${esc(b[k])}" onchange="upd(${b.id},'${k}',this.value)"></div>`).join('')}
         <div class="f"><label>Indirizzo</label><input value="${esc(b.addr)}" onchange="upd(${b.id},'addr',this.value)"></div>
         <div class="f"><label>Valore stimato €</label><input type="number" value="${b.val||''}" onchange="upd(${b.id},'val',+this.value)"></div>
-      </div>
-      <div class="linee">${LINEE.map(l=>`<button class="linea ${b.linee.includes(l)?'on':''}" onclick="togLinea(${b.id},'${l}')">${l}</button>`).join('')}</div>
-      ${b.ai?`<div class="ai-box"><h4>Profilo energetico</h4><p>${esc(b.ai.profilo)}</p>
+        </div>
+        <div class="linee">${LINEE.map(l=>`<button class="linea ${b.linee.includes(l)?'on':''}" onclick="togLinea(${b.id},'${l}')">${l}</button>`).join('')}</div>`)}
+      ${(()=>{ /* Consumi attuali */
+        b.cons=b.cons||{};const c=b.cons,cc=consCalc(b);
+        const F=(k,l,ph)=>`<div class="f"><label>${l}</label><input inputmode="decimal" value="${esc(c[k]??'')}" placeholder="${ph||''}" onchange="updCons(${b.id},'${k}',this.value)"></div>`;
+        const title='Consumi attuali'+(cc.tot?` · ${fmtEur(Math.round(cc.tot))}/anno`:'');
+        const inner=`<div class="chk-g">Elettrico</div><div class="fields">
+            ${F('elKwh','kWh / anno')}${F('elSpesa','Spesa € / anno')}${F('elPot','Potenza kW')}${F('elF1','% consumo diurno','per autoconsumo FV')}
+          </div>
+          <div class="chk-g">Gas</div><div class="fields">
+            ${F('gasSmc','Smc / anno')}${F('gasSpesa','Spesa € / anno')}
+            <div class="f wide"><label>Uso del gas</label><select onchange="updCons(${b.id},'gasUso',this.value)">
+              ${['','riscaldamento + ACS','solo ACS / cottura','processo produttivo'].map(o=>`<option ${c.gasUso===o?'selected':''}>${o}</option>`).join('')}</select></div>
+          </div>
+          <div class="chk-g">Altro combustibile</div><div class="fields">
+            <div class="f"><label>Tipo</label><select onchange="updCons(${b.id},'altroTipo',this.value)">
+              ${['nessuno','gasolio (litri)','GPL (litri)','pellet (kg)','legna (q.li)'].map(o=>`<option ${c.altroTipo===o?'selected':''}>${o}</option>`).join('')}</select></div>
+            ${F('altroQta','Quantità / anno')}${F('altroSpesa','Spesa € / anno')}
+          </div>
+          ${cc.tot?`<div class="cons-sum">Baseline: <b>${fmtEur(Math.round(cc.tot))}/anno</b>${cc.cEl?' · '+cc.cEl.toFixed(3).replace('.',',')+' €/kWh':''}${cc.cGas?' · '+cc.cGas.toFixed(3).replace('.',',')+' €/Smc':''}</div>`:''}
+          <button class="mini" onclick="readBill(${b.id},this)">📄 Leggi bolletta con AI</button>
+          <span class="ai-note"> Fotografa la bolletta: i campi si compilano da soli e la foto va nella guida rilievi.</span>`;
+        return sec('cons',false,title,inner)})()}
+      ${(()=>{ /* Guida rilievi in base alle linee proposte */
+        b.checks=b.checks||{};
+        const groups=[['GENERALE','Sempre'],...b.linee.map(l=>[l,l])];
+        let tot=0,done=0,inner='';
+        groups.forEach(([g,label])=>{const items=CHECKLISTS[g]||[];if(!items.length)return;
+          inner+=`<div class="chk-g">${label}</div>`+items.map((it,i)=>{const k=g+'-'+i;tot++;if(b.checks[k])done++;
+            const nf=b.photos.filter(p=>p.tag===k).length;
+            const ths=b.photos.map((p,pi)=>p.tag===k?`<img class="chk-th" src="${p.src}" onclick="event.preventDefault();event.stopPropagation();lightbox('${b.id}',${pi})">`:'').join('');
+            return `<label class="chk ${b.checks[k]?'ok':''}"><input type="checkbox" ${b.checks[k]?'checked':''} onchange="togCheck(${b.id},'${k}')"><span class="chk-tx">${it}</span>${ths}<button class="chk-cam" onclick="event.preventDefault();event.stopPropagation();addPhoto(${b.id},'${k}')">📷${nf?' '+nf+'/3':''}</button></label>`}).join('')});
+        if(!b.linee.length)inner+='<span class="ai-note">Seleziona le linee prodotto in \u201cDati edificio\u201d: la guida si comporr\u00e0 da sola.</span>';
+        return sec('guide',done<tot,'Guida rilievi \u00b7 '+done+'/'+tot,inner)})()}
+      ${b.ai?sec('ai',true,'Scheda AI',
+        `<div class="ai-box"><h4>Profilo energetico</h4><p>${esc(b.ai.profilo)}</p>
         <h4>Opportunità BABOO</h4><p>${esc(b.ai.opp)}</p>
         <h4>Incentivi applicabili</h4><p>${esc(b.ai.inc)}</p>
-        <p class="ai-note">Contenuto generato dall'AI — verificare prima dell'offerta.</p></div>`:''}
-      ${b.notes?`<div class="nota">${esc(b.notes)}</div>`:''}
-      <div class="photos">${b.photos.map((p,i)=>`<img src="${p}" onclick="lightbox('${b.id}',${i})">`).join('')}</div>
-      ${b.memos.map((m,i)=>`<div class="memo"><audio controls src="${m}"></audio><button class="mini" onclick="delMemo(${b.id},${i})">✕</button></div>`).join('')}
+        <p class="ai-note">Contenuto generato dall'AI${b.ai.nfoto?` analizzando ${b.ai.nfoto} foto`:''} — verificare prima dell'offerta.</p></div>`):''}
+      ${sec('doc',hasDoc,'Documentazione'+(nDoc?' · '+nDoc.replace(/^ · /,''):''),
+        `${b.notes?`<div class="nota">${esc(b.notes)}</div>`:''}
+        <div class="photos">${b.photos.map((p,i)=>`<img src="${p.src}" class="${p.tag?'tagged':''}" title="${p.tag?'Agganciata alla guida rilievi':''}" onclick="lightbox('${b.id}',${i})">`).join('')}</div>
+        ${b.memos.map((m,i)=>`<div class="memo"><audio controls src="${m}"></audio><button class="mini" onclick="delMemo(${b.id},${i})">✕</button></div>`).join('')}
+        ${hasDoc?'':'<span class="ai-note">Ancora niente: aggiungi foto, note o memo con i pulsanti qui sotto.</span>'}`)}
       <div class="card-actions">
         <button class="mini" onclick="genAI(${b.id},this)">↻ Scheda AI</button>
+        <button class="mini" style="border-color:var(--brass);color:var(--brass)" onclick="showTeaser(${b.id})">✨ Report cliente</button>
         <button class="mini" onclick="addPhoto(${b.id})">📷 Foto</button>
         <button class="mini" onclick="editNote(${b.id})">✏️ Nota</button>
         <button class="mini" id="memo-${b.id}" onclick="toggleMemo(${b.id})">🎙️ Memo</button>
         <button class="mini del" onclick="delB(${b.id})">Elimina</button>
       </div>
-    </div></div>`;
+    </div></details>`;
 }
 function upd(id,k,v){const b=S.buildings.find(x=>x.id===id);b[k]=v;save();if(k==='esito'||k==='cx')render();else renderStats()}
 function togLinea(id,l){const b=S.buildings.find(x=>x.id===id);const i=b.linee.indexOf(l);i>=0?b.linee.splice(i,1):b.linee.push(l);save();render()}
@@ -363,17 +556,84 @@ function delB(id){if(confirm('Eliminare questo edificio dal diario?')){S.buildin
 function editNote(id){const b=S.buildings.find(x=>x.id===id);const n=prompt('Nota di sopralluogo:',b.notes||'');if(n!==null){b.notes=n;save();render()}}
 
 /* ══════════ Foto ══════════ */
-function addPhoto(id){
+const MAX_FOTO_VOCE=3;
+let _inp=null; /* riferimento vivo: su iOS Safari l'input staccato dal DOM viene raccolto dal GC e l'onchange non arriva */
+function addPhoto(id,tag){
+  const b=S.buildings.find(x=>x.id===id);
+  let slots=Infinity;
+  if(tag){
+    const gia=b.photos.filter(p=>p.tag===tag).length;
+    slots=MAX_FOTO_VOCE-gia;
+    if(slots<=0){alert('Massimo '+MAX_FOTO_VOCE+' foto per questa voce. Elimina uno scatto per sostituirlo.');return}
+  }
+  if(_inp)_inp.remove();
   const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.multiple=true;
-  inp.onchange=()=>{[...inp.files].forEach(f=>{
-    const img=new Image();img.onload=()=>{
-      const c=document.createElement('canvas'),k=Math.min(1,1280/Math.max(img.width,img.height));
-      c.width=img.width*k;c.height=img.height*k;c.getContext('2d').drawImage(img,0,0,c.width,c.height);
-      S.buildings.find(x=>x.id===id).photos.push(c.toDataURL('image/jpeg',.8));save();render()};
-    img.src=URL.createObjectURL(f)})};
+  inp.style.display='none';document.body.appendChild(inp);_inp=inp;
+  inp.onchange=()=>{
+    [...inp.files].slice(0,slots).forEach(f=>{
+      const img=new Image();
+      img.onload=()=>{
+        const c=document.createElement('canvas'),k=Math.min(1,1280/Math.max(img.width,img.height));
+        c.width=img.width*k;c.height=img.height*k;c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+        b.photos.push({src:c.toDataURL('image/jpeg',.8),tag:tag||null});
+        if(tag){b.checks=b.checks||{};b.checks[tag]=true}
+        URL.revokeObjectURL(img.src);save();render()};
+      img.onerror=()=>alert('Formato foto non leggibile dal browser.');
+      img.src=URL.createObjectURL(f)});
+    if(tag&&inp.files.length>slots)alert('Aggiunte solo '+slots+' foto: limite di '+MAX_FOTO_VOCE+' per voce.');
+    inp.remove();_inp=null;
+  };
   inp.click();
 }
-function lightbox(id,i){$('light-img').src=S.buildings.find(x=>x.id==id).photos[i];$('m-light').classList.add('open')}
+let LB=null;
+function lightbox(id,i){LB={id:+id,i};$('light-img').src=S.buildings.find(x=>x.id==id).photos[i].src;$('m-light').classList.add('open')}
+function delPhotoLB(){if(!LB)return;if(confirm('Eliminare questa foto?')){S.buildings.find(x=>x.id===LB.id).photos.splice(LB.i,1);LB=null;$('m-light').classList.remove('open');save();render()}}
+
+/* ══════════ Lettura bolletta con AI ══════════ */
+async function readBill(id,btn){
+  const b=S.buildings.find(x=>x.id===id);
+  if(_inp)_inp.remove();
+  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+  inp.style.display='none';document.body.appendChild(inp);_inp=inp;
+  inp.onchange=()=>{
+    const f=inp.files[0];inp.remove();_inp=null;if(!f)return;
+    const img=new Image();
+    img.onload=async()=>{
+      const c=document.createElement('canvas'),k=Math.min(1,1568/Math.max(img.width,img.height));
+      c.width=img.width*k;c.height=img.height*k;c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      const dataUrl=c.toDataURL('image/jpeg',.85);URL.revokeObjectURL(img.src);
+      btn.textContent='… leggo la bolletta';btn.disabled=true;
+      try{
+        const m=dataUrl.match(/^data:(image\/[\w.+-]+);base64,(.*)$/);
+        const hdrs={'Content-Type':'application/json'};
+        if(S.apiKey){hdrs['x-api-key']=S.apiKey;hdrs['anthropic-version']='2023-06-01';hdrs['anthropic-dangerous-direct-browser-access']='true'}
+        const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:hdrs,
+          body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:500,messages:[{role:'user',content:[
+            {type:'image',source:{type:'base64',media_type:m[1],data:m[2]}},
+            {type:'text',text:'Questa è una bolletta energetica italiana. Estrai i dati e rispondi SOLO con un oggetto JSON, senza testo attorno né backtick: {"pod":string|null,"pdr":string|null,"kwh_anno":number|null,"potenza_kw":number|null,"spesa_elettrica_anno":number|null,"smc_anno":number|null,"spesa_gas_anno":number|null}. Se la bolletta copre un periodo parziale, annualizza i consumi in modo proporzionale. Numeri puri senza unità né separatori delle migliaia.'}]}]})});
+        const data=await res.json();
+        const txt=(data.content||[]).filter(x=>x.type==='text').map(x=>x.text).join('').replace(/```json|```/g,'').trim();
+        const j=JSON.parse(txt);
+        b.cons=b.cons||{};
+        if(j.kwh_anno)b.cons.elKwh=String(Math.round(j.kwh_anno));
+        if(j.spesa_elettrica_anno)b.cons.elSpesa=String(Math.round(j.spesa_elettrica_anno));
+        if(j.potenza_kw)b.cons.elPot=String(j.potenza_kw);
+        if(j.smc_anno)b.cons.gasSmc=String(Math.round(j.smc_anno));
+        if(j.spesa_gas_anno)b.cons.gasSpesa=String(Math.round(j.spesa_gas_anno));
+        const idc=[j.pod,j.pdr].filter(Boolean).join(' / ');if(idc&&!b.pod)b.pod=idc;
+        b.photos.push({src:dataUrl,tag:'GENERALE-2'});b.checks=b.checks||{};b.checks['GENERALE-2']=true;
+        alert('Bolletta letta: campi compilati. Verifica i valori.');
+      }catch(e){
+        b.photos.push({src:dataUrl,tag:'GENERALE-2'});b.checks=b.checks||{};b.checks['GENERALE-2']=true;
+        alert('Foto salvata, ma lettura AI non riuscita'+(S.apiKey?'':' (inserisci la chiave API in Strumenti)')+'. Compila i campi a mano.');
+      }
+      save();render();
+    };
+    img.onerror=()=>alert('Formato foto non leggibile dal browser.');
+    img.src=URL.createObjectURL(f);
+  };
+  inp.click();
+}
 
 /* ══════════ Memo vocali ══════════ */
 let rec=null,recId=null;
@@ -399,22 +659,32 @@ async function genAI(id,btn){
   const b=S.buildings.find(x=>x.id===id);
   btn.textContent='… genero';btn.disabled=true;
   try{
+    /* Foto → blocchi immagine con didascalia dalla guida rilievi (prima le etichettate, max 8) */
+    const tagLabel=t=>{if(!t)return 'scatto libero, senza etichetta';const p=t.split('-'),g=p[0],i=+p[1];
+      return (CHECKLISTS[g]&&CHECKLISTS[g][i])?g+' — '+CHECKLISTS[g][i]:g};
+    const phs=[...b.photos].sort((a,c)=>(a.tag?0:1)-(c.tag?0:1)).slice(0,8);
+    const content=[];
+    phs.forEach((p,i)=>{const m=p.src.match(/^data:(image\/[\w.+-]+);base64,(.*)$/);
+      if(m){content.push({type:'text',text:`Foto ${i+1} [${tagLabel(p.tag)}]:`});
+            content.push({type:'image',source:{type:'base64',media_type:m[1],data:m[2]}})}});
     const prompt=`Sei il consulente tecnico di BABOO ESCo (UNI 11352), linee prodotto: MINICLIMA, MAXICLIMA, CLIMA (pompe di calore full-electric), SOLERO (FV+accumulo), THERMO (caldaie/ibridi), MONITOR (telemetria). Analizza questo edificio visitato in sopralluogo e, usando la ricerca web dove utile (zona climatica, contesto locale, incentivi vigenti in Italia), rispondi SOLO in italiano nel formato esatto:
 PROFILO: (3-4 frasi: tipologia, involucro, impianto, criticità energetiche)
 OPPORTUNITA: (3-4 frasi: quali linee BABOO proporre e con quale modello — EPC, CER, chiavi in mano, PPA on-site)
 INCENTIVI: (2-3 frasi: incentivi applicabili — Conto Termico 3.0, CER GSE, Transizione 5.0, detrazioni — e cosa verificare)
-Dati: nome=${b.name}; indirizzo=${b.addr}; coordinate=${b.lat},${b.lng}; tipologia=${b.tipologia}; anno=${b.anno}; superficie=${b.sup} m²; impianto attuale=${b.impianto}; note sopralluogo=${b.notes||'—'}; esito visita=${b.esito||'—'}.`;
+Dati: nome=${b.name}; indirizzo=${b.addr}; coordinate=${b.lat},${b.lng}; tipologia=${b.tipologia}; anno=${b.anno}; superficie=${b.sup} m²; impianto attuale=${b.impianto}; consumi attuali=${consStr(b)}; note sopralluogo=${b.notes||'—'}; esito visita=${b.esito||'—'}.`+
+      (phs.length?`\nSopra trovi ${phs.length} foto del sopralluogo, ognuna preceduta dall'etichetta della voce di rilievo: basa il PROFILO su ciò che si vede davvero (stato della copertura, targhe, quadri, terminali) e cita i dettagli osservati; non inventare elementi non visibili.`:'');
+    content.push({type:'text',text:prompt});
     const hdrs={'Content-Type':'application/json'};
     if(S.apiKey){hdrs['x-api-key']=S.apiKey;hdrs['anthropic-version']='2023-06-01';hdrs['anthropic-dangerous-direct-browser-access']='true'}
     const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:hdrs,
       body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,
-        messages:[{role:'user',content:prompt}],
+        messages:[{role:'user',content}],
         tools:[{type:'web_search_20250305',name:'web_search'}]})});
     const data=await res.json();
     const txt=(data.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('\n');
     const get=k=>{const m=txt.match(new RegExp(k+':\\s*([\\s\\S]*?)(?=\\n[A-Z]+:|$)'));return m?m[1].trim():''};
     const profilo=get('PROFILO'),opp=get('OPPORTUNITA'),inc=get('INCENTIVI');
-    if(profilo||opp){b.ai={profilo,opp,inc}}
+    if(profilo||opp){b.ai={profilo,opp,inc,nfoto:phs.length}}
     else throw new Error('vuoto');
   }catch(e){
     b.ai=b.ai||{profilo:'(Compila a mano o inserisci la chiave API in Strumenti per la generazione automatica con ricerca web.)',
@@ -431,13 +701,19 @@ function exportMD(){
   sorted.forEach(b=>{const d=new Date(b.ts);
     md+=`## ${b.name} — ${b.addr}\n*${d.toLocaleString('it-IT')}* · Esito: **${b.esito||'—'}** · Complessità: ${b.cx||'—'}/5 · Valore stimato: ${fmtEur(b.val)}\n\n`;
     md+=`- Tipologia: ${b.tipologia||'—'} · Anno: ${b.anno||'—'} · Sup.: ${b.sup||'—'} m²\n- Impianto attuale: ${b.impianto||'—'}\n- POD/PDR: ${b.pod||'—'} · Referente: ${b.ref||'—'}\n- Linee proposte: ${b.linee.join(', ')||'—'}\n\n`;
+    {const cc=consCalc(b);
+      md+=`**Consumi attuali (baseline):** ${consStr(b)}${cc.tot?` — Spesa totale ${fmtEur(Math.round(cc.tot))}/anno${cc.cEl?', '+cc.cEl.toFixed(3)+' €/kWh':''}${cc.cGas?', '+cc.cGas.toFixed(3)+' €/Smc':''}`:''}\n\n`;}
+    {const ck=b.checks||{};const groups=[['GENERALE','Sempre'],...b.linee.map(l=>[l,l])];let cmd='';
+      groups.forEach(([g,label])=>{(CHECKLISTS[g]||[]).forEach((it,i)=>{const k=g+'-'+i;const nf=b.photos.filter(p=>p.tag===k).length;
+        cmd+=`- [${ck[k]?'x':' '}] (${label}) ${it}${nf?` — ${nf} foto`:''}\n`})});
+      if(cmd)md+=`**Guida rilievi (foto/documenti per la proposta):**\n${cmd}\n`;}
     if(b.ai)md+=`**Profilo energetico.** ${b.ai.profilo}\n\n**Opportunità.** ${b.ai.opp}\n\n**Incentivi.** ${b.ai.inc}\n\n`;
     if(b.notes)md+=`> Nota: ${b.notes}\n\n`;
     md+='---\n\n'});
   dl('report-sopralluoghi.md',md,'text/markdown');
 }
 function exportHTML(){
-  const cards=document.getElementById('timeline').innerHTML;
+  const cards=document.getElementById('timeline').innerHTML.replace(/<details(?![^>]*\bopen\b)/g,'<details open');
   const html=`<!DOCTYPE html><html lang="it"><head><meta charset="utf-8"><title>Dossier sopralluoghi BABOO</title><style>${document.querySelector('style').textContent}</style></head><body><header><div class="hd"><div><div class="logo">baboo</div><div class="eyebrow">Dossier sopralluoghi</div></div></div></header><div class="wrap"><div class="tl">${cards}</div></div><script>function noop(){}<\/script></body></html>`;
   dl('dossier-sopralluoghi.html',html,'text/html');
 }
