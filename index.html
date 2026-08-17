@@ -404,7 +404,9 @@ PROFILO: (3-4 frasi: tipologia, involucro, impianto, criticità energetiche)
 OPPORTUNITA: (3-4 frasi: quali linee BABOO proporre e con quale modello — EPC, CER, chiavi in mano, PPA on-site)
 INCENTIVI: (2-3 frasi: incentivi applicabili — Conto Termico 3.0, CER GSE, Transizione 5.0, detrazioni — e cosa verificare)
 Dati: nome=${b.name}; indirizzo=${b.addr}; coordinate=${b.lat},${b.lng}; tipologia=${b.tipologia}; anno=${b.anno}; superficie=${b.sup} m²; impianto attuale=${b.impianto}; note sopralluogo=${b.notes||'—'}; esito visita=${b.esito||'—'}.`;
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+    const hdrs={'Content-Type':'application/json'};
+    if(S.apiKey){hdrs['x-api-key']=S.apiKey;hdrs['anthropic-version']='2023-06-01';hdrs['anthropic-dangerous-direct-browser-access']='true'}
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:hdrs,
       body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,
         messages:[{role:'user',content:prompt}],
         tools:[{type:'web_search_20250305',name:'web_search'}]})});
