@@ -619,6 +619,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
     <details class="sec"><summary>6 · Guida rilievi e foto</summary><div class="sec-bd">
       <p>La checklist di cosa fotografare e raccogliere, su <b>tre strati</b>: <i>Sempre</i> + <i>Tipo edificio</i> + <i>Linee proposte</i> (con blocchi extra per gli optional SOLERO). Il contatore nel titolo mostra l'avanzamento; il soffietto si chiude da solo a checklist completa.</p>
       <p>Ogni voce ha il suo <b>📷</b>: fino a <b>3 foto per voce</b> (scatto o selezione multipla); lo scatto spunta la voce da solo e la miniatura resta accanto. Tocca una miniatura per ingrandirla o eliminarla (✕). Per farsi accompagnare voce per voce c'è il passo <b>Foto guidate</b> della cascata (capitolo 2).</p>
+      <p><b>🎬 Video:</b> apre ricerche YouTube costruite sui dati della scheda (interventi proposti, tipologia, impianto): "pompa di calore in condominio", "serramenti prima e dopo"… Da usare davanti al cliente per <i>far vedere</i> l'intervento, non solo raccontarlo. Serve la rete; i video si aprono nell'app YouTube.</p>
       <p><b>✏ Annota:</b> apri una foto e tocca Annota — penna a mano libera, <b>freccia</b> (trascina dalla coda alla punta) e <b>testo</b> (tocca il punto e scrivi), in terracotta ben visibile. ↩ annulla l'ultimo tratto; ✓ salva l'annotazione <i>dentro</i> la foto, così viaggia com'è in export, Scheda AI e report — "UE qui", "crepa", "passaggio tubi" arrivano in ufficio senza spiegazioni.</p>
       <p>In <b>Documentazione</b> trovi tutte le foto (bordo ottone = agganciate a una voce), le note (✏️) e i memo vocali (🎙️, max 3 minuti). Il 📷 in fondo alla scheda è per gli scatti liberi, senza limite.</p>
     </div></details>
@@ -706,6 +707,14 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
 <!-- Coach come schermata (modalità semplice) -->
 <div class="modal" id="m-coach" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="modal-in"><button class="modal-x" onclick="$('m-coach').classList.remove('open')">✕</button><div id="coach-body"></div></div>
+</div>
+
+<!-- Video dimostrativi -->
+<div class="modal" id="m-video" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal-in"><button class="modal-x" onclick="$('m-video').classList.remove('open')">✕</button>
+    <h2>🎬 Video da mostrare</h2>
+    <div id="video-body"></div>
+  </div>
 </div>
 
 <!-- Racconta: raccolta conversazionale -->
@@ -1456,6 +1465,7 @@ function cardHTML(b,isNewest){
       <div class="card-actions">
         <button class="mini" onclick="openWizard(${b.id})">\ud83e\ude84 Wizard</button>
         <button class="mini" onclick="raccOpen(${b.id})">\u{1F399} Racconta</button>
+        <button class="mini" onclick="openVideos(${b.id})">\u{1F3AC} Video</button>
         <button class="mini" onclick="genAI(${b.id},this)">↻ Scheda AI</button>
         <button class="mini" style="border-color:var(--brass);color:var(--brass)" onclick="showTeaser(${b.id})">✨ Report cliente</button>
         <button class="mini" onclick="addPhoto(${b.id})">📷 Foto</button>
@@ -1468,6 +1478,7 @@ function cardHTML(b,isNewest){
       <div class="card-actions">
         <button class="mini" onclick="openWizard(${b.id})">\ud83e\ude84 Wizard</button>
         <button class="mini" onclick="raccOpen(${b.id})">\u{1F399} Racconta</button>
+        <button class="mini" onclick="openVideos(${b.id})">\u{1F3AC} Video</button>
         <button class="mini" onclick="openCoach(${b.id})">💬 Coach</button>
         <button class="mini" onclick="addPhoto(${b.id})">📷 Foto${b.photos.length?' ('+b.photos.length+')':''}</button>
         <button class="mini" style="border-color:var(--brass);color:var(--brass)" onclick="showTeaser(${b.id})">✨ Report</button>
@@ -1548,6 +1559,31 @@ function editName(id){const el=$('nm-'+id);if(!el)return;
   el.contentEditable=true;el.focus();
   try{const r=document.createRange();r.selectNodeContents(el);r.collapse(false);
     const sl=window.getSelection();sl.removeAllRanges();sl.addRange(r)}catch(e){}}
+function videoQueries(b){
+  const out=[];const push=(label,q)=>{if(!out.some(x=>x.q===q))out.push({label,q})};
+  const tip=(b.tipologia||'').toLowerCase();
+  const ctx=tip.includes('condominio')?'condominio':tip.includes('villa')?'villetta':tip.includes('pmi')||tip.includes('capannone')?'azienda capannone':tip.includes('commerciale')||tip.includes('negozio')?'negozio':'casa';
+  const imp=(b.impianto||'').toLowerCase();
+  const li=b.linee||[];
+  if(li.includes('CLIMA')||li.includes('MAXICLIMA')){
+    if(imp.includes('gasolio'))push('Addio gasolio: passaggio a pompa di calore','addio gasolio pompa di calore '+ctx);
+    else push('Pompa di calore al posto della caldaia','sostituzione caldaia con pompa di calore '+ctx)}
+  if(li.includes('SOLERO')){
+    push('Fotovoltaico'+(b.solOpt&&b.solOpt.storage?' con accumulo':'')+': installazione e resa','impianto fotovoltaico '+(b.solOpt&&b.solOpt.storage?'con accumulo ':'')+ctx+' installazione');
+    if(b.solOpt&&b.solOpt.ev)push('Ricarica auto elettrica a casa','wallbox ricarica auto elettrica fotovoltaico')}
+  if(li.includes('MOUNTAINVIEW'))push('Serramenti nuovi: cosa cambia','sostituzione infissi serramenti risparmio energetico prima e dopo');
+  if(li.includes('THERMO'))push('Caldaia a condensazione e ibrido','caldaia a condensazione sistema ibrido pompa di calore');
+  if(li.includes('MONITOR'))push('Monitorare i consumi di casa','monitoraggio consumi energia elettrica smart home');
+  push('Riqualificazione energetica: prima e dopo','riqualificazione energetica '+ctx+' prima e dopo');
+  return out.slice(0,4);
+}
+function openVideos(id){
+  const b=S.buildings.find(x=>x.id===id);if(!b)return;
+  const qs=videoQueries(b);
+  $('video-body').innerHTML='<div class="wiz-sub" style="margin-bottom:12px">Ricerche YouTube costruite sui dati di <b>'+esc(b.name)+'</b> \u2014 da mostrare al cliente per far vedere, non solo raccontare.</div>'+
+    qs.map(x=>'<a class="wiz-big" style="display:block;text-decoration:none" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query='+encodeURIComponent(x.q)+'">\u{1F3AC} '+esc(x.label)+'</a>').join('');
+  $('m-video').classList.add('open');
+}
 function setVista(id,v){const b=S.buildings.find(x=>x.id===id);if(!b)return;
   if((b.vista||(S.mode||'semplice'))===v)return;b.vista=v;save();render()}
 function togVista(id){const b=S.buildings.find(x=>x.id===id);
