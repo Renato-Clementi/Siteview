@@ -428,12 +428,33 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
 .tour-n{font-family:var(--sans);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--brass);margin-bottom:6px}
 .tour-t{font-size:16.5px;line-height:1.5}
 .tour-btns{display:flex;gap:8px;margin-top:14px}
+/* \u2500\u2500 Splash di marca \u2500\u2500 */
+#splash{position:fixed;inset:0;z-index:90;background:linear-gradient(175deg,#332E28 0%,var(--ink) 62%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;transition:opacity .5s ease}
+#splash.off{opacity:0;pointer-events:none}
+#splash svg{animation:spUp .55s ease both}
+.sp-name{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:30px;color:var(--cream);letter-spacing:1px;animation:spUp .55s ease .12s both}
+.sp-line{width:64px;height:1.5px;background:var(--brass);animation:spLine .6s ease .3s both}
+.sp-sub{font-family:var(--sans);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--brass);animation:spUp .55s ease .34s both}
+@keyframes spUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes spLine{from{width:0;opacity:0}to{width:64px;opacity:1}}
 @media (prefers-reduced-motion:reduce){
+#splash svg,.sp-name,.sp-line,.sp-sub{animation:none}
   *,*::before,*::after{transition:none!important;animation:none!important}
 }
 </style>
 </head>
 <body>
+
+<div id="splash" aria-hidden="true">
+  <svg viewBox="0 0 96 96" width="92" height="92">
+    <path d="M14 40 L48 14 L82 40" fill="none" stroke="#988060" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M24 44 L24 76 L72 76 L72 44" fill="none" stroke="#988060" stroke-width="6" stroke-linecap="round"/>
+    <path d="M36 58 L45 66 L62 48" fill="none" stroke="#EDE7DB" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <div class="sp-name">GIRO ESCo</div>
+  <div class="sp-line"></div>
+  <div class="sp-sub">diario tecnico commerciale · baboo</div>
+</div>
 
 <header>
   <div class="hd">
@@ -746,6 +767,12 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
 /* ══════════ Stato & persistenza ══════════ */
 let S={buildings:[],path:[],tracking:false,radius:60,minutes:4,apiKey:'',demo:true};
 let watchId=null,stopAnchor=null,stopSince=null,saveT=null;
+const SPLASH_T0=Date.now();
+function splashDone(){const el=document.getElementById('splash');
+  if(!el||el.dataset.done)return;el.dataset.done='1';
+  const wait=Math.max(0,1800-(Date.now()-SPLASH_T0));
+  setTimeout(()=>{el.classList.add('off');setTimeout(()=>el.remove(),600)},wait)}
+setTimeout(splashDone,3600);
 const $=id=>document.getElementById(id);
 /* Storage a strati: IndexedDB → localStorage → memoria (mai eccezioni fatali) */
 let dbh=null;
@@ -786,6 +813,7 @@ function applyLoaded(j){
   $('in-radius').value=S.radius;$('in-min').value=S.minutes;$('in-key').value=S.apiKey||'';
   $('in-oakey').value=S.openaiKey||'';$('in-stturl').value=S.sttUrl||'';$('in-sttmode').value=S.sttMode||'openai';$('in-mode').value=S.mode||'semplice';
   render();
+  splashDone();
 }
 
 /* ══════════ Dati dimostrativi ══════════ */
