@@ -499,6 +499,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
       <p>Ogni edificio è una scheda a soffietto: la fascia scura mostra nome (toccalo per rinominare), esito, valore e linee; tocca la fascia per aprire/chiudere. Il campo <b>🔍 Cerca</b> sopra la timeline filtra per nome, indirizzo, referente, tipologia, linea o POD.</p>
       <p><b>Esito</b> (🔥 caldo · 🌤 tiepido · ❄ freddo) colora i contatori e cambia la frase di chiusura del Suggeritore. <b>Complessità</b> (1–5 pallini) stima l'onere d'installazione. <b>Valore stimato €</b> alimenta la pipeline del giorno.</p>
       <p><b>☎ Ricontatto:</b> ogni scheda ha data e motivo del prossimo contatto, con i tasti rapidi +2g / +1s / +1m (anche nell'ultimo passo del wizard). La data appare sulla fascia scura; quando arriva (o è passata) la <b>Bussola</b> apre la giornata con i richiami da fare, e ai tiepidi rimasti senza data lo fa notare: i tiepidi si raffreddano da soli.</p>
+      <p><b>📸 Leggi targa tecnica con AI</b> (in Dati edificio): fotografa la targa della caldaia, dello split, dell'inverter o del macchinario — l'AI estrae tipo, marca, modello, potenza e anno e compila "Impianto attuale" da sola. Più targhe si accodano una dopo l'altra; per le PMI alimentano anche i macchinari del profilo d'uso. La foto resta in Documentazione.</p>
       <p>Gli <b>Interventi proposti</b> sono a vista sotto l'esito: le linee BABOO (con gli optional SOLERO: ⚡ Accumulo e 🔌 Ricarica EV) compongono guida rilievi, stime, Scheda AI e Report cliente. In <b>Dati edificio</b>: la <b>Tipologia</b> (Condominio, Villa singola, PMI produttiva, Attività commerciale) pilota checklist, stime e suggerimenti — sceglila per prima.</p>
     </div></details>
 
@@ -1220,6 +1221,7 @@ function cardHTML(b,isNewest){
         <div class="f"><label>Indirizzo</label><input value="${esc(b.addr)}" onchange="upd(${b.id},'addr',this.value)"></div>
         <div class="f"><label>Valore stimato €</label><input type="number" value="${b.val||''}" onchange="upd(${b.id},'val',+this.value)"></div>
         </div>
+        <button class="mini" onclick="readPlate(${b.id},this)">\U0001F4F8 Leggi targa tecnica con AI</button>
 `)}
       ${(()=>{ /* Consumi attuali */
         b.cons=b.cons||{};const c=b.cons,cc=consCalc(b);
@@ -1354,6 +1356,44 @@ function lightbox(id,i){LB={id:+id,i};$('light-img').src=S.buildings.find(x=>x.i
 function delPhotoLB(){if(!LB)return;if(confirm('Eliminare questa foto?')){S.buildings.find(x=>x.id===LB.id).photos.splice(LB.i,1);LB=null;$('m-light').classList.remove('open');save();render()}}
 
 /* ══════════ Lettura bolletta con AI ══════════ */
+async function readPlate(id,btn){
+  const b=S.buildings.find(x=>x.id===id);
+  if(_inp)_inp.remove();
+  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+  inp.style.display='none';document.body.appendChild(inp);_inp=inp;
+  inp.onchange=()=>{
+    const f=inp.files[0];inp.remove();_inp=null;if(!f)return;
+    const img=new Image();
+    img.onload=async()=>{
+      const c=document.createElement('canvas'),k=Math.min(1,1568/Math.max(img.width,img.height));
+      c.width=img.width*k;c.height=img.height*k;c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      const dataUrl=c.toDataURL('image/jpeg',.85);URL.revokeObjectURL(img.src);
+      btn.textContent='\u2026 leggo la targa';btn.disabled=true;
+      try{
+        const m=dataUrl.match(/^data:(image\/[\w.+-]+);base64,(.*)$/);
+        const hdrs={'Content-Type':'application/json'};
+        if(S.apiKey){hdrs['x-api-key']=S.apiKey;hdrs['anthropic-version']='2023-06-01';hdrs['anthropic-dangerous-direct-browser-access']='true'}
+        const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:hdrs,
+          body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:300,messages:[{role:'user',content:[
+            {type:'image',source:{type:'base64',media_type:m[1],data:m[2]}},
+            {type:'text',text:'Questa \u00e8 la targa tecnica (o etichetta dati) di un apparecchio: caldaia, climatizzatore, pompa di calore, inverter, contatore o macchinario. Estrai i dati leggibili e rispondi SOLO con JSON, senza testo attorno n\u00e9 backtick: {"tipo":string|null,"marca":string|null,"modello":string|null,"potenza_kw":number|null,"anno":number|null,"combustibile":string|null}. tipo in italiano (es. "caldaia a condensazione", "split", "inverter fotovoltaico"). potenza_kw \u00e8 la potenza termica o elettrica nominale in kW, numero puro.'}]}]})});
+        const data=await res.json();
+        const txt=(data.content||[]).filter(x=>x.type==='text').map(x=>x.text).join('').replace(/```json|```/g,'').trim();
+        const j=JSON.parse(txt);
+        const parts=[j.tipo,j.marca,j.modello,j.potenza_kw?j.potenza_kw+' kW':null,j.combustibile,j.anno?'('+j.anno+')':null].filter(Boolean);
+        if(!parts.length)throw new Error('targa non leggibile');
+        const riga=parts.join(' ');
+        b.impianto=b.impianto?b.impianto+'; '+riga:riga;
+        if(tipoKey(b.tipologia)==='PMI'){b.extra=b.extra||{};b.extra.macchine=b.extra.macchine?b.extra.macchine+'; '+riga:riga}
+        b.photos.push({src:dataUrl,tag:''});
+        save();render();
+        alert('Targa letta: '+riga+'. Verifica e rifotografa le altre targhe, si accodano da sole.');
+      }catch(e){alert('Lettura targa non riuscita'+(S.apiKey?'':' (chiave API mancante: inseriscila in Strumenti)')+'. Riprova in piano e con luce, o compila a mano.');render()}
+    };
+    img.src=URL.createObjectURL(f);
+  };
+  inp.click();
+}
 async function readApe(id,btn){
   const b=S.buildings.find(x=>x.id===id);
   if(_inp)_inp.remove();
