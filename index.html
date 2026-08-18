@@ -309,6 +309,62 @@ textarea.nota-edit{font-size:15px;line-height:1.45}
 details.sec[open]>.sec-bd{animation:softFade .24s ease}
 details.card[open]>.card-bd{animation:softFade .24s ease}
 
+/* ── Orchestrazione all'avvio (solo primo render: niente flicker in uso) ── */
+@keyframes riseIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+body.boot header{animation:softFade .4s ease both}
+body.boot .status{animation:softFade .45s ease .08s both}
+body.boot .controls,body.boot .searchbar{animation:riseIn .4s ease .16s both}
+body.boot .daysep{animation:softFade .4s ease .22s both}
+body.boot .card{animation:riseIn .45s ease both}
+body.boot .card:nth-of-type(2){animation-delay:.1s}
+body.boot .card:nth-of-type(3){animation-delay:.18s}
+body.boot .card:nth-of-type(n+4){animation-delay:.26s}
+body.boot .dock{animation:riseIn .4s ease .3s both}
+body.boot .bus-fab{animation:riseIn .4s ease .42s both}
+
+/* ── Eventi: piccoli gesti che confermano ── */
+@keyframes pop{0%{transform:scale(1)}55%{transform:scale(1.28)}100%{transform:scale(1)}}
+.chk input:checked{animation:pop .2s ease}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.bus-fab .bdg.show{animation:pop .25s ease}
+.lb{animation:softFade .2s ease}
+.lb img{animation:riseIn .22s ease}
+.photos img:active,.chk-th:active{transform:scale(.96)}
+.photos img,.chk-th{transition:transform .12s ease,box-shadow .18s ease}
+.mv:nth-child(2){animation-delay:.05s}
+.mv:nth-child(3){animation-delay:.1s}
+.mv:nth-child(4){animation-delay:.15s}
+.mv:nth-child(5){animation-delay:.2s}
+.bus-ans{animation:softIn .22s ease}
+.cons-sum,.compl{transition:color .2s ease}
+.ai-box{animation:softFade .3s ease}
+.nota{animation:softFade .25s ease}
+.esito.sel-caldo,.esito.sel-tiepido,.esito.sel-freddo{animation:pop .18s ease}
+.linea.on{animation:pop .16s ease}
+.wiz-big.on::after{animation:pop .2s ease}
+
+/* ── Soffietti: apertura che si dispiega ── */
+@keyframes unfold{from{opacity:0;transform:translateY(-8px) scaleY(.94)}to{opacity:1;transform:none}}
+details.sec>.sec-bd,details.card>.card-bd{transform-origin:top}
+details.sec[open]>.sec-bd{animation:unfold .24s ease}
+details.card[open]>.card-bd{animation:unfold .26s ease}
+
+/* il "+" ruota in "\u00d7" invece di scattare in "\u2212" */
+details.sec>summary::after{transition:transform .28s cubic-bezier(.34,1.4,.6,1)}
+details.sec[open]>summary::after{content:"+";transform:rotate(45deg)}
+
+/* fascia del soffietto: si scalda all'apertura */
+details.sec>summary{transition:background-color .22s ease,color .22s ease}
+details.sec[open]>summary{background:#F5F1E8}
+
+/* chevron delle schede: rotazione pi\u00f9 morbida ed elastica */
+.chev{transition:transform .3s cubic-bezier(.34,1.4,.6,1)}
+
+/* voci interne dei soffietti: leggera cascata */
+details.sec[open]>.sec-bd>.chk-g,details.sec[open]>.sec-bd>.chk,details.sec[open]>.sec-bd>.tip{animation:softIn .28s ease both}
+details.sec[open]>.sec-bd>.tip:nth-of-type(2){animation-delay:.05s}
+details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{transition:none!important;animation:none!important}
 }
@@ -530,6 +586,7 @@ let watchId=null,stopAnchor=null,stopSince=null,saveT=null;
 const $=id=>document.getElementById(id);
 /* Storage a strati: IndexedDB → localStorage → memoria (mai eccezioni fatali) */
 let dbh=null;
+document.addEventListener('DOMContentLoaded',()=>{document.body.classList.add('boot');setTimeout(()=>document.body.classList.remove('boot'),1100)});
 function initStore(){
   try{
     const req=indexedDB.open('baboo-sopralluoghi',1);
