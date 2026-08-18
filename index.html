@@ -24,7 +24,7 @@ body{background:var(--paper);color:var(--ink);font-family:'EB Garamond',Georgia,
 .wrap{max-width:760px;margin:0 auto;padding:0 12px 130px}
 
 /* ── Testata ─────────────────────────── */
-header{background:var(--ink);color:var(--cream);padding:22px 14px 18px}
+header{position:sticky;top:0;z-index:44;background:var(--ink);color:var(--cream);padding:14px 14px 12px;padding-top:max(14px,env(safe-area-inset-top));box-shadow:0 4px 14px -8px rgba(42,39,35,.5)}
 .hd{max-width:760px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
 .logo{font-family:'Playfair Display',serif;font-size:30px;font-weight:600;letter-spacing:.5px;line-height:1}
 .logo .dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--lilac);margin-left:3px;position:relative;top:-14px}
@@ -67,9 +67,7 @@ button{font-family:'EB Garamond',Georgia,serif;font-size:17px;cursor:pointer;-we
 .hd-meta{font-size:14.5px;font-style:italic;color:#bfb6a4;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 details.card>summary{list-style:none;cursor:pointer}
 details.card>summary::-webkit-details-marker{display:none}
-.chev{flex:none;color:var(--brass);font-size:13px;transition:transform .2s}
-details.card[open]>summary .chev{transform:rotate(180deg)}
-details.sec{border:1px solid var(--hair);border-radius:2px;background:#fff;margin:8px 0}
+detailsdetails.sec{border:1px solid var(--hair);border-radius:2px;background:#fff;margin:8px 0}
 details.sec>summary{list-style:none;cursor:pointer;padding:13px 14px;font-family:Helvetica,Arial,sans-serif;font-size:11px;min-height:46px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center;gap:8px}
 details.sec>summary::-webkit-details-marker{display:none}
 details.sec>summary::after{content:"+";color:var(--brass);font-size:15px;flex:none}
@@ -181,6 +179,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brass)!i
 
 /* testata come quadro strumenti */
 header{background:linear-gradient(180deg,#332E28 0%,var(--ink) 100%)}
+.logo{font-size:26px}
+.eyebrow{font-size:10px}
 .status{border-top:1px solid rgba(152,128,96,.45)}
 .stat .n{font-variant-numeric:tabular-nums lining-nums}
 .logo{text-shadow:0 1px 0 rgba(0,0,0,.35)}
@@ -364,8 +364,6 @@ details.sec[open]>summary::after{content:"+";transform:rotate(45deg)}
 details.sec>summary{transition:background-color .22s ease,color .22s ease}
 details.sec[open]>summary{background:#F5F1E8}
 
-/* chevron delle schede: rotazione pi\u00f9 morbida ed elastica */
-.chev{transition:transform .3s cubic-bezier(.34,1.4,.6,1)}
 
 /* voci interne dei soffietti: leggera cascata */
 details.sec[open]>.sec-bd>.chk-g,details.sec[open]>.sec-bd>.chk,details.sec[open]>.sec-bd>.tip{animation:softIn .28s ease both}
@@ -403,6 +401,16 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
 .v-q{width:52px;text-align:center;background:var(--cream)}
 .v-x{color:var(--muted);font-family:var(--sans)}
 .v-del{min-height:40px;padding:6px 10px;flex:none}
+/* ── Modalit\u00e0 semplice ── */
+.hd-mode{flex:none;width:38px;height:38px;border-radius:50%;border:1px solid rgba(152,128,96,.55);background:transparent;color:var(--cream);font-size:16px;margin-right:8px}
+.hd-mode:active{opacity:.7}
+.hd-btns{display:flex;gap:8px}
+.card-hd{-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.card-hd h3[contenteditable="true"]{-webkit-user-select:text;user-select:text;outline:1px dashed var(--brass);outline-offset:3px;border-radius:2px}
+.hd-edit{background:none;border:none;color:rgba(237,231,219,.55);font-size:14px;padding:2px 6px;margin-left:4px;vertical-align:middle}
+.card-hd h3[contenteditable="true"] .hd-edit{display:none}
+.modal-in .panel{display:block;border:none;background:none;padding:0;margin:6px 0 0}
+.mode-link{display:block;width:100%;background:none;border:none;color:var(--brass);font-family:var(--sans);font-size:13.5px;text-align:center;padding:10px 0 2px;margin-top:4px}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{transition:none!important;animation:none!important}
 }
@@ -414,9 +422,13 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
   <div class="hd">
     <div>
       <div class="logo">baboo<span class="dot"></span><span class="dot dot2"></span></div>
-      <div class="eyebrow">Sopralluoghi · Diario tecnico-commerciale ESCo</div>
+      <div class="eyebrow">Diario tecnico commerciale ESCo</div>
     </div>
-    <button class="help-btn" onclick="openModal('guida')">?</button>
+    <div class="hd-btns">
+      <button class="help-btn" title="Strumenti" onclick="openModal('tools')">🧰</button>
+      <button class="help-btn" title="Impostazioni" onclick="openModal('sett')">⚙︎</button>
+      <button class="help-btn" title="Guida" onclick="openModal('guida')">?</button>
+    </div>
   </div>
 </header>
 <div class="status"><div class="status-in">
@@ -427,40 +439,9 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
 </div></div>
 
 <div class="wrap">
-  <div class="controls">
-    <button class="btn ghost" style="flex:1" onclick="togglePanel('tools')">Strumenti</button>
-    <button class="btn ghost" style="flex:1" onclick="togglePanel('sett')">Impostazioni</button>
-  </div>
   <div class="gps-note" id="gps-note">GPS spento — le soste presso gli edifici verranno rilevate automaticamente all'avvio del giro.</div>
 
-  <div class="panel" id="p-tools">
-    <label>Inserisci coordinate (lat, lng)</label>
-    <input id="in-coords" placeholder="45.8926, 8.4089">
-    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-      <button class="mini" onclick="addFromCoords()">Aggiungi edificio</button>
-      <button class="mini" onclick="exportMD()">Scarica report (.md)</button>
-      <button class="mini" onclick="exportHTML()">Scarica con foto (.html)</button>
-      <button class="mini" onclick="clearAll()">Svuota diario</button>
-    </div>
-    <label style="margin-top:14px">Chiave API Anthropic (facoltativa — resta sul dispositivo)</label>
-    <input id="in-key" type="password" placeholder="sk-ant-…" onchange="S.apiKey=this.value;save()">
-    <label style="margin-top:14px">Trascrizione conversazioni (Whisper)</label>
-    <select id="in-sttmode" onchange="S.sttMode=this.value;save()">
-      <option value="openai">OpenAI Whisper API</option>
-      <option value="custom">Server BABOO (faster-whisper)</option>
-    </select>
-    <label>Chiave OpenAI (per Whisper API — resta sul dispositivo)</label>
-    <input id="in-oakey" type="password" placeholder="sk-…" onchange="S.openaiKey=this.value;save()">
-    <label>URL server Whisper proprio</label>
-    <input id="in-stturl" placeholder="https://energybrain.baboo.eu/whisper/transcribe" onchange="S.sttUrl=this.value;save()">
-  </div>
 
-  <div class="panel" id="p-sett">
-    <label>Raggio sosta (metri)</label>
-    <input id="in-radius" type="number" value="60" onchange="S.radius=+this.value;save()">
-    <label>Minuti di sosta per rilevare un edificio</label>
-    <input id="in-min" type="number" value="4" onchange="S.minutes=+this.value;save()">
-  </div>
 
   <div class="searchbar"><input class="search" id="in-search" placeholder="🔍 Cerca: nome, indirizzo, tipologia, linea, POD…" oninput="SEARCH=this.value;render()"><span id="search-n"></span></div>
 
@@ -488,6 +469,52 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
   </div>
 </div>
 
+<!-- Strumenti -->
+<div class="modal" id="m-tools" onclick="if(event.target===this)closeModal('tools')">
+  <div class="modal-in"><button class="modal-x" onclick="closeModal('tools')">✕</button>
+    <h2>🧰 Strumenti</h2>
+    <div class="panel open">
+    <label>Inserisci coordinate (lat, lng)</label>
+    <input id="in-coords" placeholder="45.8926, 8.4089">
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
+      <button class="btn brass" onclick="addFromCoords()">⌂ Aggiungi edificio</button>
+      <button class="btn ghost" onclick="exportMD()">⬇ Scarica report (.md)</button>
+      <button class="btn ghost" onclick="exportHTML()">⬇ Scarica con foto (.html)</button>
+      <button class="btn ghost" style="color:#a33;border-color:#c99" onclick="clearAll()">✕ Svuota diario</button>
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- Impostazioni -->
+<div class="modal" id="m-sett" onclick="if(event.target===this)closeModal('sett')">
+  <div class="modal-in"><button class="modal-x" onclick="closeModal('sett')">✕</button>
+    <h2>⚙︎ Impostazioni</h2>
+    <div class="panel open">
+    <label>Raggio sosta (metri)</label>
+    <input id="in-radius" type="number" value="60" onchange="S.radius=+this.value;save()">
+    <label>Minuti di sosta per rilevare un edificio</label>
+    <input id="in-min" type="number" value="4" onchange="S.minutes=+this.value;save()">
+    <label style="margin-top:14px">Modalità predefinita (per le schede senza scelta propria)</label>
+    <select id="in-mode" onchange="S.mode=this.value;save();render()">
+      <option value="semplice">Semplice · tutto con i wizard</option>
+      <option value="completa">Completa · schede estese</option>
+    </select>
+    <label style="margin-top:14px">Chiave API Anthropic (facoltativa — resta sul dispositivo)</label>
+    <input id="in-key" type="password" placeholder="sk-ant-…" onchange="S.apiKey=this.value;save()">
+    <label style="margin-top:14px">Trascrizione conversazioni (Whisper)</label>
+    <select id="in-sttmode" onchange="S.sttMode=this.value;save()">
+      <option value="openai">OpenAI Whisper API</option>
+      <option value="custom">Server BABOO (faster-whisper)</option>
+    </select>
+    <label>Chiave OpenAI (per Whisper API — resta sul dispositivo)</label>
+    <input id="in-oakey" type="password" placeholder="sk-…" onchange="S.openaiKey=this.value;save()">
+    <label>URL server Whisper proprio</label>
+    <input id="in-stturl" placeholder="https://energybrain.baboo.eu/whisper/transcribe" onchange="S.sttUrl=this.value;save()">
+    </div>
+  </div>
+</div>
+
 <!-- Guida -->
 <div class="modal" id="m-guida" onclick="if(event.target===this)closeModal('guida')">
   <div class="modal-in">
@@ -499,6 +526,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
       <p><b>▶ Avvia giro</b> attiva il GPS: la barra scura in alto conta i km, gli edifici visitati, gli esiti caldi e la <b>pipeline stimata</b> del giorno.</p>
       <p>Se resti fermo entro il raggio impostato per i minuti impostati (Impostazioni: default 60 m / 4 min), l'app registra da sola l'edificio, senza interromperti. In alternativa: <b>⌂ Registra edificio</b> nella posizione attuale, oppure Strumenti → coordinate manuali — in questi due casi l'app chiede subito <i>come</i> vuoi raccogliere i dati (capitolo 2).</p>
       <p><b>Indirizzo automatico:</b> quando registri un edificio con il GPS attivo, l'indirizzo si compila da solo (via OpenStreetMap) — se lo scrivi tu, il tuo vince. Manca? Nella riga delle coordinate c'è 📍 Trova indirizzo.</p>
+      <p><b>Due modalità:</b> alla prima apertura scegli tra <b>Semplice</b> — schede essenziali con 4 azioni (🪄 Wizard, 💬 Coach, 📷 Foto, ✨ Report): ogni inserimento passa dai wizard e dalla cascata di completamento — e <b>Completa</b>, con tutte le sezioni a vista. La modalità si governa <b>scheda per scheda</b>: sulla fascia scura di ogni edificio c'è l'interruttore (📋 apre la completa, 🪄 torna alla semplice) e la scelta resta salvata su quell'edificio — il condominio complesso in Completa, le villette in Semplice, insieme. In Impostazioni scegli solo la modalità <i>predefinita</i> per le schede senza scelta propria.</p>
       <p><b>Installa l'app:</b> su iPhone apri in Safari → Condividi → <i>Aggiungi alla schermata Home</i>; su Android, Chrome → menù ⋮ → <i>Installa app</i>. Da lì in poi è un'icona BABOO a tutto schermo che <b>si apre anche senza rete</b>: in cantina o in centrale termica l'app c'è sempre, aspettano il segnale solo le funzioni AI e l'indirizzo automatico.</p>
       <p>Limiti di piattaforma: serve una pagina <b>https://</b> e lo <b>schermo acceso</b> — a schermo spento i browser sospendono il GPS.</p>
     </div></details>
@@ -521,7 +549,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
 
     <details class="sec"><summary>2b · La Bussola (assistente di rotta)</summary><div class="sec-bd">
       <p>La bolla in ottone ✦ sopra il dock è l'assistente: il numero dice quante <b>mosse</b> ha pronte. Toccala e le vedi in ordine di priorità: protezione dei dati (audio da trascrivere), opportunità calde (consumi mancanti su un cliente caldo, assemblea vicina, Report pronto da mostrare), ritmo della giornata (avvia il giro, scarica il report a fine giro), igiene dei dati (esiti mancanti). Ogni mossa ha il pulsante che la esegue subito; la ✕ la silenzia per sempre. La Bussola segnala, non interrompe: mai popup spontanei.</p>
-      <p><b>Chiedi alla Bussola:</b> in fondo al pannello puoi farle domande libere ("come rispondo se dice che il fotovoltaico non rende?"): risponde l'AI con il contesto degli edifici di oggi. Serve la chiave API in Strumenti e la rete.</p>
+      <p><b>Chiedi alla Bussola:</b> in fondo al pannello puoi farle domande libere ("come rispondo se dice che il fotovoltaico non rende?"): risponde l'AI con il contesto degli edifici di oggi. Serve la chiave API in Impostazioni e la rete.</p>
     </div></details>
 
     <details class="sec"><summary>3 · La scheda edificio</summary><div class="sec-bd">
@@ -578,12 +606,12 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
     </div></details>
 
     <details class="sec"><summary>9 · Fine giornata: export</summary><div class="sec-bd">
-      <p>Da Strumenti: <b>Scarica report (.md)</b> — il riepilogo del giro per chi prepara le proposte: dati, profilo d'uso, APE, baseline consumi, profilo finanziario in chiaro, checklist con [x] e conteggio foto, scheda AI, obiezioni e segnali dalla conversazione. <b>Scarica con foto (.html)</b> — il dossier completo con immagini e memo, tutti i soffietti aperti.</p>
+      <p>Dal popup <b>🧰 Strumenti</b> (icona in alto): <b>Scarica report (.md)</b> — il riepilogo del giro per chi prepara le proposte: dati, profilo d'uso, APE, baseline consumi, profilo finanziario in chiaro, checklist con [x] e conteggio foto, scheda AI, obiezioni e segnali dalla conversazione. <b>Scarica con foto (.html)</b> — il dossier completo con immagini e memo, tutti i soffietti aperti.</p>
       <p><b>Svuota diario</b> cancella tutto (irreversibile): esporta prima.</p>
     </div></details>
 
     <details class="sec"><summary>10 · Impostazioni, chiavi e privacy</summary><div class="sec-bd">
-      <p>In <b>Strumenti</b>: chiave API <b>Anthropic</b> (Scheda AI, lettura bolletta/APE, analisi conversazione) e motore <b>Whisper</b> — OpenAI API (serve la chiave OpenAI, ~0,006 $/min) oppure il server BABOO (l'audio resta nel perimetro aziendale). Le chiavi restano <b>solo sul dispositivo</b>.</p>
+      <p>Nel popup <b>⚙︎ Impostazioni</b> (icona in alto, accanto a 🧰 Strumenti e ?): raggio e minuti di sosta, modalità predefinita, chiave API <b>Anthropic</b> (Scheda AI, lettura bolletta/APE, analisi conversazione) e motore <b>Whisper</b> — OpenAI API (serve la chiave OpenAI, ~0,006 $/min) oppure il server BABOO (l'audio resta nel perimetro aziendale). Le chiavi restano <b>solo sul dispositivo</b>.</p>
       <p><b>Dove stanno i dati:</b> tutto nel browser di questo dispositivo (IndexedDB), niente server dell'app, niente account. Cambiando telefono o cancellando i dati di navigazione il diario si perde: <b>gli export sono il backup</b>. In navigazione privata o in anteprima il salvataggio non è disponibile e l'app lo segnala.</p>
       <p><b>Offline:</b> una volta installata (o dopo la prima apertura), l'app tiene una copia di sé sul telefono e si apre anche senza rete; alla riapertura con la rete si aggiorna da sola all'ultima versione pubblicata.</p>
       <p>Chiamate esterne solo quando servono: API Anthropic/OpenAI o server Whisper quando le attivi tu, e OpenStreetMap (solo coordinate, nessun dato del cliente) per l'indirizzo automatico.</p>
@@ -593,7 +621,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
       <p><b>I pulsanti non rispondono / versione vecchia</b> → con la rete attiva l'app prende sempre l'ultima versione da sé; se sembra rimasta indietro, chiudila del tutto e riaprila (o ricarica con <code>?v=nuovo</code>).</p>
       <p><b>GPS/microfono/fotocamera non partono</b> → la pagina dev'essere aperta in https:// e non dall'anteprima di un'app di messaggistica.</p>
       <p><b>Il diario è sparito</b> → navigazione privata, o dati di navigazione cancellati: ripartire dagli export.</p>
-      <p><b>La trascrizione Whisper fallisce</b> → l'audio resta in memoria: controlla chiave/URL in Strumenti e riprova, o scarica l'audio.</p>
+      <p><b>La trascrizione Whisper fallisce</b> → l'audio resta in memoria: controlla chiave/URL in Impostazioni e riprova, o scarica l'audio.</p>
       <p><b>Lettura bolletta/APE imprecisa</b> → rifotografa in piano, con luce, inquadrando la pagina giusta.</p>
       <p><b>Il wizard non compare</b> → appare per gli edifici registrati a mano; per quelli rilevati dal GPS apri la scheda e usa ▸ Completa o 🪄 Wizard.</p>
     </div></details>
@@ -631,6 +659,23 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
     </div>
     <iframe id="teaser-frame" style="flex:1;border:0;width:100%"></iframe>
   </div>
+</div>
+
+<!-- Scelta modalità (prima apertura) -->
+<div class="wiz" id="m-mode" style="z-index:65">
+  <div class="wiz-top"><span class="n">Benvenuto</span><span></span></div>
+  <div class="wiz-bar"><b style="width:0%"></b></div>
+  <div class="wiz-body">
+    <div class="wiz-q">Come preferisci usare l'app?</div>
+    <div class="wiz-sub">Potrai cambiare in ogni momento da Impostazioni.</div>
+    <button class="wiz-big" onclick="chooseMode('semplice')">🪄 <b>Semplice</b><br><span style="font-size:15px;font-style:italic;opacity:.75">Tutto con i wizard: schede essenziali, 4 azioni, zero soffietti</span></button>
+    <button class="wiz-big" onclick="chooseMode('completa')">📋 <b>Completa</b><br><span style="font-size:15px;font-style:italic;opacity:.75">Ogni campo e sezione a portata di mano sulla scheda</span></button>
+  </div>
+</div>
+
+<!-- Coach come schermata (modalità semplice) -->
+<div class="modal" id="m-coach" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal-in"><button class="modal-x" onclick="$('m-coach').classList.remove('open')">✕</button><div id="coach-body"></div></div>
 </div>
 
 <!-- Wizard raccolta rapida -->
@@ -685,7 +730,7 @@ function applyLoaded(j){
   /* migrazione: foto da stringa a {src, tag} */
   (S.buildings||[]).forEach(b=>{b.photos=(b.photos||[]).map(p=>typeof p==='string'?{src:p,tag:null}:p);b.checks=b.checks||{};b.memos=b.memos||[];b.cons=b.cons||{}});
   $('in-radius').value=S.radius;$('in-min').value=S.minutes;$('in-key').value=S.apiKey||'';
-  $('in-oakey').value=S.openaiKey||'';$('in-stturl').value=S.sttUrl||'';$('in-sttmode').value=S.sttMode||'openai';
+  $('in-oakey').value=S.openaiKey||'';$('in-stturl').value=S.sttUrl||'';$('in-sttmode').value=S.sttMode||'openai';$('in-mode').value=S.mode||'semplice';
   render();
 }
 
@@ -950,7 +995,7 @@ async function transcribeConv(id,btn){
   try{
     let text='';
     if((S.sttMode||'openai')==='openai'){
-      if(!S.openaiKey)throw new Error('manca la chiave OpenAI (pannello Strumenti)');
+      if(!S.openaiKey)throw new Error('manca la chiave OpenAI (Impostazioni)');
       const fd=new FormData();
       fd.append('file',c.blob,c.mime.includes('mp4')?'conv.m4a':'conv.webm');
       fd.append('model','whisper-1');fd.append('language','it');
@@ -958,7 +1003,7 @@ async function transcribeConv(id,btn){
         {method:'POST',headers:{'Authorization':'Bearer '+S.openaiKey},body:fd});
       const j=await r.json();if(j.error)throw new Error(j.error.message);text=j.text||'';
     }else{
-      if(!S.sttUrl)throw new Error('configura l’URL del server Whisper (pannello Strumenti)');
+      if(!S.sttUrl)throw new Error('configura l’URL del server Whisper (Impostazioni)');
       const fd=new FormData();fd.append('file',c.blob,c.mime.includes('mp4')?'conv.m4a':'conv.webm');
       const r=await fetch(S.sttUrl,{method:'POST',body:fd});
       const j=await r.json();text=j.text||'';
@@ -1053,7 +1098,7 @@ MOSSA: (LA prossima frase da dire, una sola, tra virgolette, coerente con l'obie
     const get=k=>{const m=txt.match(new RegExp(k+':\\s*([\\s\\S]*?)(?=\\n[A-Z]+:|$)'));return m?m[1].trim():''};
     const A={obiezioni:get('OBIEZIONI'),risposte:get('RISPOSTE'),segnali:get('SEGNALI'),mossa:get('MOSSA')};
     if(A.obiezioni||A.mossa)b.talkAI=A;else throw new Error('vuoto');
-  }catch(e){alert('Analisi non riuscita'+(S.apiKey?'':' (inserisci la chiave API in Strumenti)')+'. La trascrizione resta salvata: riprova.')}
+  }catch(e){alert('Analisi non riuscita'+(S.apiKey?'':' (inserisci la chiave API in Impostazioni)')+'. La trascrizione resta salvata: riprova.')}
   save();render();
 }
 
@@ -1210,13 +1255,16 @@ function render(){
     tl.insertAdjacentHTML('beforeend',cardHTML(b,i===0));
   });
   if(WZ&&WZ.step>=0)wzRender();
+  if(!S.mode&&!window.__modeAsked){window.__modeAsked=true;$('m-mode').classList.add('open')}
   bussolaBadge();
   const bp=$('bus-panel');if(bp&&bp.classList.contains('open'))bussolaRender();
 }
 function esc(s){return (''+(s??'')).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 /* Stato di apertura degli accordion (sopravvive ai re-render) */
-const UI={card:{},sec:{}};
+const UI={card:{},sec:{},full:{}};
 function cardHTML(b,isNewest){
+  const VISTA=b.vista||(S.mode||'semplice');
+  const FULL=VISTA!=='semplice';
   const time=new Date(b.ts).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
   const coords=b.lat?`${b.lat.toFixed(5)}, ${b.lng.toFixed(5)} · ${b.auto?'sosta rilevata':'registrato a mano'}`:'posizione non disponibile';
   const cardOpen=(UI.card[b.id]??isNewest)?'open':'';
@@ -1229,13 +1277,13 @@ function cardHTML(b,isNewest){
   return `<details class="card ${b.esito||''}" ${cardOpen} data-id="${b.id}" ontoggle="UI.card[${b.id}]=this.open">
     <summary class="card-hd">
       <div class="hd-l">
-        <h3 contenteditable onclick="event.preventDefault();event.stopPropagation()" onblur="upd(${b.id},'name',this.textContent)">${esc(b.name)}</h3>
+        <h3 id="nm-${b.id}" onclick="if(this.isContentEditable){event.preventDefault();event.stopPropagation()}" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}" onblur="if(this.isContentEditable){this.contentEditable=false;upd(${b.id},'name',this.textContent.trim()||'Edificio')}">${esc(b.name)}<button class="hd-edit" title="Rinomina" onclick="event.preventDefault();event.stopPropagation();editName(${b.id})">✎</button></h3>
         <div class="hd-meta">${meta}</div>
       </div>
-      <span class="time">ORE ${time}</span><span class="chev">▾</span>
+      <button class="hd-mode" title="${FULL?'Passa alla vista semplice':'Apri la vista completa'}" onclick="event.preventDefault();event.stopPropagation();togVista(${b.id})">${FULL?'\u{1FA84}':'\u{1F4CB}'}</button>
     </summary>
     <div class="card-bd">
-      <div class="coords">${coords}${(b.lat&&!b.addr)?` \u00b7 <button class="mini" style="min-height:32px;padding:4px 10px;font-size:12px" onclick="fetchAddr(${b.id},true).then(()=>render())">\U0001F4CD Trova indirizzo</button>`:''}</div>
+      <div class="coords">ORE ${time} \u00b7 ${coords}${(b.lat&&!b.addr)?` \u00b7 <button class="mini" style="min-height:32px;padding:4px 10px;font-size:12px" onclick="fetchAddr(${b.id},true).then(()=>render())">\U0001F4CD Trova indirizzo</button>`:''}</div>
       ${(()=>{const c=completeness(b);const ks=missingStepKeys(b);
         return `<div class="compl">Completezza <b>${c.pct}%</b>${c.missing.length?' \u00b7 mancano: '+c.missing.slice(0,3).join(', ')+(c.missing.length>3?'\u2026':''):' \u2713'}<div class="compl-bar"><i style="width:${c.pct}%"></i></div></div>`+
         (ks.length?`<div class="linee" style="margin:2px 0 10px">
@@ -1258,7 +1306,7 @@ function cardHTML(b,isNewest){
             ${f.date?`<button class="mini" onclick="fupClear(${b.id})">\u2715</button>`:''}
           </span>
         </div>`})()}
-      <div class="chk-g" style="margin-top:4px">Interventi proposti</div>
+      ${FULL?`<div class="chk-g" style="margin-top:4px">Interventi proposti</div>
       <div class="linee">${LINEE.map(l=>`<button class="linea ${b.linee.includes(l)?'on':''}" onclick="togLinea(${b.id},'${l}')">${l}</button>`).join('')}</div>
       ${b.linee.includes('SOLERO')?`<div class="linee" style="margin-top:6px">
         <button class="linea ${b.solOpt&&b.solOpt.storage?'on':''}" onclick="togSolOpt(${b.id},'storage')">⚡ ACCUMULO</button>
@@ -1371,6 +1419,15 @@ function cardHTML(b,isNewest){
         <button class="mini" id="memo-${b.id}" onclick="toggleMemo(${b.id})">🎙️ Memo</button>
         <button class="mini del" onclick="delB(${b.id})">Elimina</button>
       </div>
+      <button class="mode-link" onclick="togVista(${b.id})">← Torna alla vista semplice</button>`:`
+      ${b.photos.length?`<div class="photos">${b.photos.map((p,i)=>`<img src="${p.src}" onclick="lightbox(${b.id},${i})">`).join('')}</div>`:''}
+      <div class="card-actions">
+        <button class="mini" onclick="openWizard(${b.id})">\ud83e\ude84 Wizard</button>
+        <button class="mini" onclick="openCoach(${b.id})">💬 Coach</button>
+        <button class="mini" onclick="addPhoto(${b.id})">📷 Foto${b.photos.length?' ('+b.photos.length+')':''}</button>
+        <button class="mini" style="border-color:var(--brass);color:var(--brass)" onclick="showTeaser(${b.id})">✨ Report</button>
+      </div>
+      <button class="mode-link" onclick="togVista(${b.id})">Apri la scheda completa →</button>`}
     </div></details>`;
 }
 function upd(id,k,v){const b=S.buildings.find(x=>x.id===id);b[k]=v;save();if(k==='esito'||k==='cx'||k==='tipologia')render();else renderStats()}
@@ -1440,6 +1497,20 @@ function addPhoto(id,tag){
 let LB=null;
 function lightbox(id,i){LB={id:+id,i};$('light-img').src=S.buildings.find(x=>x.id==id).photos[i].src;$('m-light').classList.add('open')}
 function delPhotoLB(){if(!LB)return;if(confirm('Eliminare questa foto?')){S.buildings.find(x=>x.id===LB.id).photos.splice(LB.i,1);LB=null;$('m-light').classList.remove('open');save();render()}}
+
+/* ══════════ Modalit\u00e0 d'uso ══════════ */
+function editName(id){const el=$('nm-'+id);if(!el)return;
+  el.contentEditable=true;el.focus();
+  try{const r=document.createRange();r.selectNodeContents(el);r.collapse(false);
+    const sl=window.getSelection();sl.removeAllRanges();sl.addRange(r)}catch(e){}}
+function togVista(id){const b=S.buildings.find(x=>x.id===id);
+  const cur=b.vista||(S.mode||'semplice');
+  b.vista=cur==='semplice'?'completa':'semplice';save();render()}
+function chooseMode(m){S.mode=m;save();$('m-mode').classList.remove('open');render();
+  const im=$('in-mode');if(im)im.value=m}
+function openCoach(id){const b=S.buildings.find(x=>x.id===id);if(!b)return;
+  $('coach-body').innerHTML='<h2 style="font-family:\'Playfair Display\',serif;margin-bottom:10px">\U0001F4AC Suggeritore \u00b7 '+esc(b.name)+'</h2>'+coachInner(b);
+  $('m-coach').classList.add('open')}
 
 /* ══════════ Annotazione foto ══════════ */
 let ANN=null;
@@ -1565,7 +1636,7 @@ async function readPlate(id,btn){
         b.photos.push({src:dataUrl,tag:''});
         save();render();
         alert('Targa letta: '+riga+'. Verifica e rifotografa le altre targhe, si accodano da sole.');
-      }catch(e){alert('Lettura targa non riuscita'+(S.apiKey?'':' (chiave API mancante: inseriscila in Strumenti)')+'. Riprova in piano e con luce, o compila a mano.');render()}
+      }catch(e){alert('Lettura targa non riuscita'+(S.apiKey?'':' (chiave API mancante: inseriscila in Impostazioni)')+'. Riprova in piano e con luce, o compila a mano.');render()}
     };
     img.src=URL.createObjectURL(f);
   };
@@ -1604,7 +1675,7 @@ async function readApe(id,btn){
         b.checks=b.checks||{};b.checks['GENERALE-4']=true;
         save();render();
         alert('APE letto: classe '+(b.ape.classe||'?')+(b.ape.ep?', EPgl,nren '+b.ape.ep+' kWh/m\u00b2anno':'')+'. Verifica i valori.');
-      }catch(e){alert('Lettura APE non riuscita'+(S.apiKey?'':' (chiave API mancante: inseriscila in Strumenti)')+'. Compila i campi a mano.');render()}
+      }catch(e){alert('Lettura APE non riuscita'+(S.apiKey?'':' (chiave API mancante: inseriscila in Impostazioni)')+'. Compila i campi a mano.');render()}
     };
     img.src=URL.createObjectURL(f);
   };
@@ -1645,7 +1716,7 @@ async function readBill(id,btn){
         alert('Bolletta letta: campi compilati. Verifica i valori.');
       }catch(e){
         b.photos.push({src:dataUrl,tag:'GENERALE-2'});b.checks=b.checks||{};b.checks['GENERALE-2']=true;
-        alert('Foto salvata, ma lettura AI non riuscita'+(S.apiKey?'':' (inserisci la chiave API in Strumenti)')+'. Compila i campi a mano.');
+        alert('Foto salvata, ma lettura AI non riuscita'+(S.apiKey?'':' (inserisci la chiave API in Impostazioni)')+'. Compila i campi a mano.');
       }
       save();render();
     };
@@ -1840,7 +1911,7 @@ Rispondi in italiano, massimo 120 parole, concreto e orientato alla prossima azi
       body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:400,messages:[{role:'user',content:prompt}]})});
     const data=await res.json();
     ans.textContent=(data.content||[]).filter(x=>x.type==='text').map(x=>x.text).join('\n')||'Nessuna risposta: riprova.';
-  }catch(e){ans.textContent='La Bussola non raggiunge l\u2019AI'+(S.apiKey?'':' (inserisci la chiave API in Strumenti)')+'. Riprova quando torni in rete.'}
+  }catch(e){ans.textContent='La Bussola non raggiunge l\u2019AI'+(S.apiKey?'':' (inserisci la chiave API in Impostazioni)')+'. Riprova quando torni in rete.'}
   btn.disabled=false}
 
 /* \u2500\u2500 Wizard raccolta rapida \u2500\u2500 */
