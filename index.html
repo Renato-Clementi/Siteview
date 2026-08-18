@@ -266,6 +266,27 @@ textarea.nota-edit{font-size:15px;line-height:1.45}
 /* Playfair torna firma: logo, nomi edificio, domande del wizard, palcoscenico cliente.
    Garamond resta voce: note, coach, guida, report. */
 
+/* ── Bussola: assistente di rotta ── */
+.bus-fab{position:fixed;right:14px;bottom:calc(92px + env(safe-area-inset-bottom));z-index:45;width:54px;height:54px;border-radius:50%;border:none;background:linear-gradient(180deg,#A38A67,#8F7756);color:var(--cream);font-size:22px;box-shadow:0 6px 16px -6px rgba(42,39,35,.55);display:flex;align-items:center;justify-content:center}
+.bus-fab .bdg{position:absolute;top:-4px;right:-4px;min-width:22px;height:22px;border-radius:11px;background:var(--ink);color:var(--cream);font-family:var(--sans);font-size:12px;font-weight:700;display:none;align-items:center;justify-content:center;padding:0 6px;border:2px solid var(--paper)}
+.bus-fab .bdg.show{display:flex}
+.bus{position:fixed;left:10px;right:10px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:46;max-width:560px;margin:0 auto;background:var(--paper);border:1px solid var(--brass);border-radius:6px;box-shadow:0 20px 44px -18px rgba(42,39,35,.55);display:none;max-height:68vh;overflow:auto}
+.bus.open{display:block}
+.bus-hd{position:sticky;top:0;background:linear-gradient(180deg,#332F29,#2A2723);color:var(--cream);padding:11px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:inset 0 -1px 0 rgba(152,128,96,.35)}
+.bus-hd .t{font-family:var(--sans);font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--brass)}
+.bus-x{background:none;border:none;color:var(--cream);font-size:16px;padding:4px 8px}
+.bus-bd{padding:12px}
+.mv{display:flex;gap:10px;align-items:flex-start;background:#FBF9F4;border:1px solid var(--hair);border-left:3px solid var(--brass);border-radius:2px;padding:11px 12px;margin-bottom:9px}
+.mv.p1{border-left-color:var(--caldo)}
+.mv .ic{flex:none;font-size:17px;line-height:1.3}
+.mv .tt{font-family:var(--sans);font-weight:600;font-size:14.5px}
+.mv .why{font-style:italic;color:var(--muted);font-size:14.5px;margin-top:2px}
+.mv .go{margin-top:8px}
+.mv .dis{flex:none;background:none;border:none;color:var(--muted);font-size:15px;padding:2px 4px}
+.bus-empty{font-style:italic;color:var(--muted);text-align:center;padding:10px 0}
+.bus-ask{border-top:1px solid var(--hair);padding:12px;background:#FBF9F4}
+.bus-ask textarea{width:100%;border:1px solid var(--hair);border-radius:2px;padding:10px;min-height:56px;font-size:15px}
+.bus-ans{margin-top:10px;background:#fff;border:1px solid var(--hair);border-left:3px solid var(--brass);padding:10px 12px;font-size:16px;white-space:pre-wrap}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{transition:none!important;animation:none!important}
 }
@@ -338,6 +359,19 @@ textarea.nota-edit{font-size:15px;line-height:1.45}
   <button class="btn brass" onclick="markBuilding()">⌂ Registra edificio</button>
 </div>
 
+<!-- Bussola: assistente di rotta -->
+<button class="bus-fab" id="bus-fab" onclick="toggleBussola()" aria-label="Bussola, assistente">✦<span class="bdg" id="bus-bdg"></span></button>
+<div class="bus" id="bus-panel">
+  <div class="bus-hd"><span class="t">Bussola · la prossima mossa</span><button class="bus-x" onclick="toggleBussola()">✕</button></div>
+  <div class="bus-bd" id="bus-moves"></div>
+  <div class="bus-ask">
+    <div class="chk-g" style="margin-bottom:6px">Chiedi alla Bussola</div>
+    <textarea id="bus-q" placeholder="Es.: come rispondo se dice che il fotovoltaico non rende?"></textarea>
+    <button class="mini" style="margin-top:8px;border-color:var(--brass);color:var(--brass)" onclick="askBussola(this)">✦ Chiedi</button>
+    <div class="bus-ans" id="bus-ans" style="display:none"></div>
+  </div>
+</div>
+
 <!-- Guida -->
 <div class="modal" id="m-guida" onclick="if(event.target===this)closeModal('guida')">
   <div class="modal-in">
@@ -365,6 +399,11 @@ textarea.nota-edit{font-size:15px;line-height:1.45}
       </ul>
       <p>Il passo <b>Foto guidate</b> (solo in cascata) propone una voce della guida rilievi alla volta — "Centrale termica: locale e generatore · 4 di 14" — con lo scatto grande e "Salta questa voce": lo scatto spunta la voce da solo e passa alla successiva.</p>
       <p>Il wizard completo si rilancia in ogni momento dalla scheda (🪄 Wizard). Wizard e scheda scrivono negli stessi campi: sono due porte sulla stessa stanza.</p>
+    </div></details>
+
+    <details class="sec"><summary>2b · La Bussola (assistente di rotta)</summary><div class="sec-bd">
+      <p>La bolla in ottone ✦ sopra il dock è l'assistente: il numero dice quante <b>mosse</b> ha pronte. Toccala e le vedi in ordine di priorità: protezione dei dati (audio da trascrivere), opportunità calde (consumi mancanti su un cliente caldo, assemblea vicina, Report pronto da mostrare), ritmo della giornata (avvia il giro, scarica il report a fine giro), igiene dei dati (esiti mancanti). Ogni mossa ha il pulsante che la esegue subito; la ✕ la silenzia per sempre. La Bussola segnala, non interrompe: mai popup spontanei.</p>
+      <p><b>Chiedi alla Bussola:</b> in fondo al pannello puoi farle domande libere ("come rispondo se dice che il fotovoltaico non rende?"): risponde l'AI con il contesto degli edifici di oggi. Serve la chiave API in Strumenti e la rete.</p>
     </div></details>
 
     <details class="sec"><summary>3 · La scheda edificio</summary><div class="sec-bd">
@@ -969,6 +1008,8 @@ function render(){
     tl.insertAdjacentHTML('beforeend',cardHTML(b,i===0));
   });
   if(WZ&&WZ.step>=0)wzRender();
+  bussolaBadge();
+  const bp=$('bus-panel');if(bp&&bp.classList.contains('open'))bussolaRender();
 }
 function esc(s){return (''+(s??'')).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 /* Stato di apertura degli accordion (sopravvive ai re-render) */
@@ -1319,6 +1360,90 @@ function togglePanel(p){$('p-'+p).classList.toggle('open')}
 function openModal(m){$('m-'+m).classList.add('open')}
 function closeModal(m){$('m-'+m).classList.remove('open')}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'))});
+
+/* \u2500\u2500 Bussola: assistente di rotta \u2500\u2500 */
+let BUSSOLA_MOVES=[];
+function bussolaMoves(){
+  const mv=[];const ign=S.busIgn||{};
+  const today=new Date().toDateString();
+  const todays=S.buildings.filter(b=>new Date(b.ts).toDateString()===today);
+  const add=(key,prio,ic,tt,why,fn,lbl)=>{if(!ign[key])mv.push({key,prio,ic,tt,why,fn,lbl})};
+  /* P1 \u00b7 protezione dei dati */
+  Object.keys(CONV).forEach(id=>{const b=S.buildings.find(x=>x.id==id);if(b)
+    add('conv-'+id,1,'\u25cf','Trascrivi la conversazione \u00b7 '+b.name,
+      'L\u2019audio vive solo finch\u00e9 la pagina resta aperta: trascrivilo o scaricalo ora.',
+      el=>{bussolaOpen(b.id,'coach');transcribeConv(b.id,el)},'Trascrivi ora')});
+  /* P2 \u00b7 opportunit\u00e0 calde */
+  S.buildings.filter(b=>b.esito==='caldo').forEach(b=>{
+    const c=completeness(b);
+    if(!consCalc(b).tot)add('cons-'+b.id,2,'\U0001F4C4','Consumi mancanti \u00b7 '+b.name,
+      'Cliente caldo ma il Report \u00e8 senza numeri: una foto della bolletta e morde.',
+      ()=>openWizardStep(b.id,'bolletta'),'Fotografa la bolletta');
+    else if(c.missing.length&&c.pct<80)add('compl-'+b.id,2,'\u25b8','Completa '+b.name+' ('+missingStepKeys(b).length+' passi)',
+      'Caldo al '+c.pct+'%: mancano '+c.missing.slice(0,3).join(', ').toLowerCase()+'.',
+      ()=>openWizardMissing(b.id),'Completa ora');
+    if((b.extra||{}).assemblea==='Entro 1 mese')add('chiudi-'+b.id,2,'\U0001F525','Assemblea vicina \u00b7 '+b.name,
+      'C\u2019\u00e8 una scadenza naturale entro un mese: proponi ora lo studio di fattibilit\u00e0.',
+      ()=>bussolaOpen(b.id,'coach'),'Apri il Suggeritore');
+    if(consCalc(b).tot&&+b.val>0)add('teaser-'+b.id,3,'\u2728','Mostra il Report a '+(b.ref||b.name),
+      'Numeri pronti e cliente caldo: il Report sul telefono \u00e8 l\u2019aggancio.',
+      ()=>showTeaser(b.id),'Mostra il Report');
+  });
+  /* P3 \u00b7 ritmo della giornata */
+  const h=new Date().getHours();
+  if(!S.tracking&&!todays.length&&h>=7&&h<=18)
+    add('giro-'+today,3,'\u25b6','Avvia il giro',
+      'Il GPS conta km, soste e pipeline solo se il giro \u00e8 attivo.',
+      ()=>toggleTrack(),'Avvia');
+  if(!S.tracking&&todays.length>=2&&h>=16)
+    add('export-'+today,3,'\u2B07','Chiudi la giornata: report per l\u2019ufficio',
+      todays.length+' edifici oggi: il .md \u00e8 quello che serve a chi prepara le proposte.',
+      ()=>exportMD(),'Scarica il .md');
+  /* P4 \u00b7 igiene dei dati */
+  todays.filter(b=>!b.esito).forEach(b=>add('esito-'+b.id,4,'\u25e6','Esito mancante \u00b7 '+b.name,
+    'Trenta secondi ora valgono pi\u00f9 di dieci minuti di memoria stasera.',
+    ()=>openWizardStep(b.id,'esito'),'Segna l\u2019esito'));
+  mv.sort((a,b)=>a.prio-b.prio);
+  return mv.slice(0,5)}
+function bussolaOpen(id,secKey){UI.card[id]=true;if(secKey)UI.sec[id+'-'+secKey]=true;toggleBussola(false);render();
+  const el=document.querySelector('[data-id="'+id+'"]');if(el&&el.scrollIntoView)el.scrollIntoView({behavior:'smooth',block:'start'})}
+function bussolaBadge(){BUSSOLA_MOVES=bussolaMoves();const n=BUSSOLA_MOVES.length;const b=$('bus-bdg');
+  if(b){b.textContent=n>9?'9+':n;b.classList.toggle('show',n>0)}}
+function bussolaRender(){
+  const box=$('bus-moves');if(!box)return;
+  BUSSOLA_MOVES=bussolaMoves();
+  box.innerHTML=BUSSOLA_MOVES.length?BUSSOLA_MOVES.map((m,i)=>`<div class="mv ${m.prio===1?'p1':''}">
+    <span class="ic">${m.ic}</span>
+    <div style="flex:1"><div class="tt">${m.tt}</div><div class="why">${m.why}</div>
+      <button class="mini go" style="border-color:var(--brass);color:var(--brass)" onclick="bussolaGo(${i},this)">${m.lbl}</button></div>
+    <button class="dis" title="Non mostrare pi\u00f9" onclick="bussolaIgnore('${m.key}')">\u2715</button>
+  </div>`).join(''):'<div class="bus-empty">Rotta libera: nessuna mossa urgente. Buon giro.</div>';
+  bussolaBadge()}
+function bussolaGo(i,el){const m=BUSSOLA_MOVES[i];if(!m)return;
+  if(!('conv-'===m.key.slice(0,5)))toggleBussola(false);
+  m.fn(el)}
+function bussolaIgnore(key){S.busIgn=S.busIgn||{};S.busIgn[key]=1;save();bussolaRender()}
+function toggleBussola(force){const p=$('bus-panel');const open=force!==undefined?force:!p.classList.contains('open');
+  p.classList.toggle('open',open);if(open)bussolaRender()}
+async function askBussola(btn){
+  const q=$('bus-q').value.trim();if(!q)return;
+  const ans=$('bus-ans');ans.style.display='block';ans.textContent='\u2026 la Bussola ci pensa';
+  btn.disabled=true;
+  try{
+    const today=new Date().toDateString();
+    const ctx=S.buildings.slice(0,12).map(b=>{const c=completeness(b);
+      return `\u2022 ${b.name} (${b.tipologia||'n.d.'}, esito ${b.esito||'n.d.'}, ${fmtEur(b.val)}): consumi ${consStr(b).slice(0,160)}; uso ${extraStr(b)||'n.d.'}; finanza ${finStr(b)||'n.d.'}; completezza ${c.pct}%`}).join('\n');
+    const prompt=`Sei la Bussola, l'assistente di rotta di un commerciale BABOO ESCo (UNI CEI 11352, Omegna) in giro per sopralluoghi. Linee: MINICLIMA, MAXICLIMA, CLIMA, SOLERO (+accumulo/EV), THERMO, MOUNTAINVIEW (serramenti), MONITOR. Modelli: CER condominiale, PPA on-site PMI, EPC light commerciale, chiavi in mano villa (CT 3.0).
+Situazione di oggi:\n${ctx}\nDomanda del commerciale: \u00ab${q}\u00bb
+Rispondi in italiano, massimo 120 parole, concreto e orientato alla prossima azione. Se suggerisci una frase da dire al cliente, mettila tra virgolette.`;
+    const hdrs={'Content-Type':'application/json'};
+    if(S.apiKey){hdrs['x-api-key']=S.apiKey;hdrs['anthropic-version']='2023-06-01';hdrs['anthropic-dangerous-direct-browser-access']='true'}
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:hdrs,
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:400,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    ans.textContent=(data.content||[]).filter(x=>x.type==='text').map(x=>x.text).join('\n')||'Nessuna risposta: riprova.';
+  }catch(e){ans.textContent='La Bussola non raggiunge l\u2019AI'+(S.apiKey?'':' (inserisci la chiave API in Strumenti)')+'. Riprova quando torni in rete.'}
+  btn.disabled=false}
 
 /* \u2500\u2500 Wizard raccolta rapida \u2500\u2500 */
 let WZ=null;
