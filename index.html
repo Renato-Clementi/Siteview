@@ -8,9 +8,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Sopralluoghi">
+<meta name="apple-mobile-web-app-title" content="GIRO ESCo">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Sopralluoghi BABOO — Diario tecnico-commerciale</title>
+<title>GIRO ESCo — BABOO · Diario tecnico commerciale</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
@@ -422,7 +422,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
   <div class="hd">
     <div>
       <div class="logo">baboo<span class="dot"></span><span class="dot dot2"></span></div>
-      <div class="eyebrow">Diario tecnico commerciale ESCo</div>
+      <div class="eyebrow">GIRO ESCo · diario tecnico commerciale</div>
     </div>
     <div class="hd-btns">
       <button class="help-btn" title="Strumenti" onclick="openModal('tools')">🧰</button>
@@ -626,7 +626,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
       <p><b>Il wizard non compare</b> → appare per gli edifici registrati a mano; per quelli rilevati dal GPS apri la scheda e usa ▸ Completa o 🪄 Wizard.</p>
     </div></details>
 
-    <p style="margin-top:14px;font-size:13px;color:var(--muted);font-style:italic">Sopralluoghi BABOO · agosto 2026 — un unico file, nessuna installazione. Per assistenza: 0323 63934.</p>
+    <p style="margin-top:14px;font-size:13px;color:var(--muted);font-style:italic">GIRO ESCo · BABOO · agosto 2026 — un unico file, nessuna installazione. Per assistenza: 0323 63934.</p>
   </div>
 </div>
 <div class="modal lightbox" id="m-light" onclick="if(event.target===this)this.classList.remove('open')"><div class="modal-in" style="background:transparent;padding:0;text-align:center"><img id="light-img"><div style="display:flex;gap:8px;justify-content:center;margin-top:10px"><button class="mini" style="background:var(--brass);color:var(--cream);border-color:var(--brass)" onclick="annOpen()">✏ Annota</button><button class="mini" style="background:#a33;color:#fff;border-color:#a33" onclick="delPhotoLB()">✕ Elimina foto</button></div></div></div>
@@ -1807,7 +1807,7 @@ function exportMD(){
 }
 function exportHTML(){
   const cards=document.getElementById('timeline').innerHTML.replace(/<details(?![^>]*\bopen\b)/g,'<details open');
-  const html=`<!DOCTYPE html><html lang="it"><head><meta charset="utf-8"><title>Dossier sopralluoghi BABOO</title><style>${document.querySelector('style').textContent}</style></head><body><header><div class="hd"><div><div class="logo">baboo</div><div class="eyebrow">Dossier sopralluoghi</div></div></div></header><div class="wrap"><div class="tl">${cards}</div></div><script>function noop(){}<\/script></body></html>`;
+  const html=`<!DOCTYPE html><html lang="it"><head><meta charset="utf-8"><title>GIRO ESCo — Dossier sopralluoghi BABOO</title><style>${document.querySelector('style').textContent}</style></head><body><header><div class="hd"><div><div class="logo">baboo</div><div class="eyebrow">Dossier sopralluoghi</div></div></div></header><div class="wrap"><div class="tl">${cards}</div></div><script>function noop(){}<\/script></body></html>`;
   dl('dossier-sopralluoghi.html',html,'text/html');
 }
 function clearAll(){if(confirm('Cancellare tutto il diario? Operazione irreversibile.')){S.buildings=[];S.path=[];save();render()}}

@@ -1,7 +1,7 @@
 {
-  "name": "Sopralluoghi BABOO",
-  "short_name": "Sopralluoghi",
-  "description": "Il taccuino GPS per i sopralluoghi tecnico-commerciali BABOO ESCo",
+  "name": "GIRO ESCo · BABOO",
+  "short_name": "GIRO ESCo",
+  "description": "GIRO ESCo — il diario tecnico commerciale BABOO per i sopralluoghi sul campo",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

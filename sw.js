@@ -1,8 +1,8 @@
-/* Sopralluoghi BABOO · service worker
+/* GIRO ESCo · BABOO · service worker
    Strategia: navigazioni network-first (gli aggiornamenti da GitHub arrivano subito),
    con fallback alla copia in cache quando manca la rete. Icone e manifest cache-first.
    Le chiamate esterne (Anthropic, OpenAI, Nominatim, Whisper) NON vengono intercettate. */
-const CACHE = 'sopralluoghi-baboo-v1';
+const CACHE = 'giro-esco-v1';
 const SHELL = ['./', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-512-maskable.png'];
 
 self.addEventListener('install', e => {
