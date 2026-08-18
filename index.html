@@ -245,7 +245,7 @@ footer{max-width:760px;margin:30px auto 0;padding:14px;border-top:1px solid var(
     <details class="sec"><summary>1 · Il giro e gli edifici</summary><div class="sec-bd">
       <p><b>▶ Avvia giro</b> attiva il GPS: la barra scura in alto conta i km, gli edifici visitati, gli esiti caldi e la <b>pipeline stimata</b> del giorno.</p>
       <p>Se resti fermo entro il raggio impostato per i minuti impostati (Impostazioni: default 60 m / 4 min), l'app registra da sola l'edificio. In alternativa: <b>⌂ Registra edificio</b> nella posizione attuale, oppure Strumenti → coordinate manuali.</p>
-      <p><b>Wizard o scheda?</b> Quando registri un edificio a mano, l'app chiede come preferisci raccogliere i dati: <b>🪄 Wizard rapido</b> — 7 domande (≈2 minuti) con foto bolletta e APE lette dall'AI, tutte saltabili — oppure <b>📋 Raccolta dettagliata</b>, direttamente sulla scheda completa. La scheda mostra sempre la <b>completezza %</b> con cosa manca; il wizard si può rilanciare in ogni momento (🪄 Wizard).</p>
+      <p><b>Wizard o scheda?</b> Quando registri un edificio a mano, l'app chiede come preferisci raccogliere i dati: <b>🪄 Wizard rapido</b> — 8 domande (≈2 minuti) con foto bolletta e APE lette dall'AI, tutte saltabili — oppure <b>📋 Raccolta dettagliata</b>, direttamente sulla scheda completa. La scheda mostra sempre la <b>completezza %</b> con cosa manca — e da lì l'affinamento è a cascata: <b>▸ Completa (N passi)</b> lancia un mini-wizard con i soli passi mancanti, mentre i chip (+ APE, + Consumi, + Foto…) aprono il singolo passo. Il passo <b>Foto guidate</b> propone una voce della guida rilievi alla volta, con scatto immediato. Il wizard completo si rilancia in ogni momento (🪄 Wizard).</p>
       <p>Limiti di piattaforma: serve una pagina <b>https://</b> e lo <b>schermo acceso</b> — a schermo spento i browser sospendono il GPS.</p>
     </div></details>
 
@@ -393,6 +393,7 @@ function seedDemo(){
     esito:'caldo',cx:4,linee:['SOLERO','CLIMA','MOUNTAINVIEW','MONITOR'],
     cons:{elKwh:'14500',elSpesa:'4350',elPot:'25',elF1:'35',gasSmc:'',gasSpesa:'',gasUso:'',altroTipo:'gasolio (litri)',altroQta:'16800',altroSpesa:'26900'},
     ape:{classe:'G',ep:'298',anno:'2021'},
+    extra:{unita:'24',ammin:'SE.GE.CO. · Amm. Pansini',assemblea:'1–3 mesi'},
     fin:{formula:'Zero esborso (EPC/PPA/noleggio)',contributi:'Da deliberare',servizi:['EPC / PPA (paga il risparmio)','Canale contributi (Eco Cred)'],driver:'Risparmio in bolletta',decisore:'Assemblea · Amm. Pansini',tempi:'Entro 3 mesi'},
     ai:{profilo:"Edificio residenziale anni '60, 24 unità su 8 piani, involucro non isolato e centrale termica a gasolio a fine vita. Copertura piana ~380 m² ben esposta, zona climatica E. Classe energetica stimata F/G.",
         opp:"Candidato ideale per CER condominiale con impianto FV SOLERO in copertura (comodato d'uso, gestione 45%) e sostituzione della centrale con pompa di calore CLIMA. MONITOR per la telemetria dei flussi energetici condivisi.",
@@ -847,6 +848,7 @@ function render(){
     if(day!==lastDay){lastDay=day;tl.insertAdjacentHTML('beforeend',`<div class="daysep"><span>${day}</span></div>`)}
     tl.insertAdjacentHTML('beforeend',cardHTML(b,i===0));
   });
+  if(WZ&&WZ.step>=0)wzRender();
 }
 function esc(s){return (''+(s??'')).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 /* Stato di apertura degli accordion (sopravvive ai re-render) */
@@ -871,7 +873,12 @@ function cardHTML(b,isNewest){
     </summary>
     <div class="card-bd">
       <div class="coords">${coords}</div>
-      ${(()=>{const c=completeness(b);return `<div class="compl">Completezza <b>${c.pct}%</b>${c.missing.length?' \u00b7 mancano: '+c.missing.slice(0,3).join(', ')+(c.missing.length>3?'\u2026':''):' \u2713'}<div class="compl-bar"><i style="width:${c.pct}%"></i></div></div>`})()}
+      ${(()=>{const c=completeness(b);const ks=missingStepKeys(b);
+        return `<div class="compl">Completezza <b>${c.pct}%</b>${c.missing.length?' \u00b7 mancano: '+c.missing.slice(0,3).join(', ')+(c.missing.length>3?'\u2026':''):' \u2713'}<div class="compl-bar"><i style="width:${c.pct}%"></i></div></div>`+
+        (ks.length?`<div class="linee" style="margin:2px 0 10px">
+          <button class="linea on" onclick="openWizardMissing(${b.id})">\u25b8 Completa (${ks.length} pass${ks.length>1?'i':'o'})</button>
+          ${ks.map(k=>`<button class="linea" onclick="openWizardStep(${b.id},'${k}')">+ ${WZ_LABEL[k]}</button>`).join('')}
+        </div>`:'')})()}
       <div class="esito-row">
         ${['caldo','tiepido','freddo'].map(e=>`<button class="esito ${b.esito===e?'sel-'+e:''}" onclick="upd(${b.id},'esito','${e}')">${e==='caldo'?'🔥':e==='tiepido'?'🌤':'❄'} ${e}</button>`).join('')}
         <span class="cx"><span class="lab">Complessità</span>${[1,2,3,4,5].map(i=>`<b class="${b.cx>=i?'on':''}" onclick="upd(${b.id},'cx',${i})"></b>`).join('')}</span>
@@ -1137,7 +1144,7 @@ async function genAI(id,btn){
 PROFILO: (3-4 frasi: tipologia, involucro, impianto, criticità energetiche)
 OPPORTUNITA: (3-4 frasi: quali linee BABOO proporre e con quale modello — EPC, CER, chiavi in mano, PPA on-site)
 INCENTIVI: (2-3 frasi: incentivi applicabili — Conto Termico 3.0, CER GSE, Transizione 5.0, detrazioni — e cosa verificare)
-Dati: nome=${b.name}; indirizzo=${b.addr}; coordinate=${b.lat},${b.lng}; tipologia=${b.tipologia}; anno=${b.anno}; superficie=${b.sup} m²; impianto attuale=${b.impianto}; linee proposte (con optional)=${lineeStr(b)||'da definire'}; consumi attuali=${consStr(b)}; profilo finanziario cliente=${finStr(b)||'non rilevato'} (orienta la proposta di conseguenza); note sopralluogo=${b.notes||'—'}; esito visita=${b.esito||'—'}; modello contrattuale preferenziale BABOO per questa tipologia=${tipoProfilo(b).modello} (usalo come prima opzione in OPPORTUNITA, motivandolo; proponi alternative solo se i dati lo giustificano).`+
+Dati: nome=${b.name}; indirizzo=${b.addr}; coordinate=${b.lat},${b.lng}; tipologia=${b.tipologia}; profilo d'uso=${extraStr(b)||'n.d.'}; anno=${b.anno}; superficie=${b.sup} m²; impianto attuale=${b.impianto}; linee proposte (con optional)=${lineeStr(b)||'da definire'}; consumi attuali=${consStr(b)}; profilo finanziario cliente=${finStr(b)||'non rilevato'} (orienta la proposta di conseguenza); note sopralluogo=${b.notes||'—'}; esito visita=${b.esito||'—'}; modello contrattuale preferenziale BABOO per questa tipologia=${tipoProfilo(b).modello} (usalo come prima opzione in OPPORTUNITA, motivandolo; proponi alternative solo se i dati lo giustificano).`+
       (phs.length?`\nSopra trovi ${phs.length} foto del sopralluogo, ognuna preceduta dall'etichetta della voce di rilievo: basa il PROFILO su ciò che si vede davvero (stato della copertura, targhe, quadri, terminali) e cita i dettagli osservati; non inventare elementi non visibili.`:'');
     content.push({type:'text',text:prompt});
     const hdrs={'Content-Type':'application/json'};
@@ -1166,7 +1173,7 @@ function exportMD(){
   let md=`# Report giro sopralluoghi BABOO\n\nPipeline stimata: ${fmtEur(S.buildings.reduce((s,b)=>s+(+b.val||0),0))} · Edifici: ${S.buildings.length}\n\n`;
   sorted.forEach(b=>{const d=new Date(b.ts);
     md+=`## ${b.name} — ${b.addr}\n*${d.toLocaleString('it-IT')}* · Esito: **${b.esito||'—'}** · Complessità: ${b.cx||'—'}/5 · Valore stimato: ${fmtEur(b.val)}\n\n`;
-    md+=`- Tipologia: ${b.tipologia||'—'} · Anno: ${b.anno||'—'} · Sup.: ${b.sup||'—'} m²\n- Impianto attuale: ${b.impianto||'—'}\n- POD/PDR: ${b.pod||'—'} · Referente: ${b.ref||'—'}\n- Linee proposte: ${lineeStr(b)||'—'}\n\n`;
+    md+=`- Tipologia: ${b.tipologia||'—'} · Anno: ${b.anno||'—'} · Sup.: ${b.sup||'—'} m²\n- Impianto attuale: ${b.impianto||'—'}\n- POD/PDR: ${b.pod||'—'} · Referente: ${b.ref||'—'}\n- Linee proposte: ${lineeStr(b)||'—'}${extraStr(b)?'\n- Profilo d\u2019uso: '+extraStr(b):''}\n\n`;
     {const cc=consCalc(b);
       md+=`**Consumi attuali (baseline):** ${consStr(b)}${cc.tot?` — Spesa totale ${fmtEur(Math.round(cc.tot))}/anno${cc.cEl?', '+cc.cEl.toFixed(3)+' €/kWh':''}${cc.cGas?', '+cc.cGas.toFixed(3)+' €/Smc':''}`:''}\n\n`;}
     {const fs=finStr(b);if(fs)md+=`**Profilo finanziario:** ${fs}\n\n`;}
@@ -1196,7 +1203,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelect
 /* \u2500\u2500 Wizard raccolta rapida \u2500\u2500 */
 let WZ=null;
 function wzB(){return S.buildings.find(x=>x.id===WZ.id)}
-function openWizard(id,ask){WZ={id,step:ask?-1:0};$('m-wiz').classList.add('open');wzRender()}
+function openWizard(id,ask){WZ={id,step:ask?-1:0,plan:WZ_STEPS.filter(st=>st.key!=='foto'),fotoSkip:[]};$('m-wiz').classList.add('open');wzRender()}
 function wzStart(){WZ.step=0;wzRender()}
 function closeWizard(openCard){const id=WZ&&WZ.id;$('m-wiz').classList.remove('open');if(openCard&&id)UI.card[id]=true;WZ=null;render()}
 function wzField(k,v){const b=wzB();b[k]=v;save()}
@@ -1207,33 +1214,76 @@ function wzTogLinea(l){togLinea(WZ.id,l);wzRender()}
 function wzTogOpt(k){togSolOpt(WZ.id,k);wzRender()}
 function wzEsito(e){upd(WZ.id,'esito',e);wzRender()}
 const WZ_STEPS=[
- {q:'Come si chiama questo edificio?',sub:'Nome del cliente o dell\u2019edificio, indirizzo, referente.',skip:false,
+ {key:'nome',q:'Come si chiama questo edificio?',sub:'Nome del cliente o dell\u2019edificio, indirizzo, referente.',skip:false,
   html:b=>`<span class="lb">Nome</span><input value="${esc(b.name)}" oninput="wzField('name',this.value)">
    <span class="lb">Indirizzo</span><input value="${esc(b.addr)}" placeholder="via, comune" oninput="wzField('addr',this.value)">
    <span class="lb">Referente</span><input value="${esc(b.ref)}" placeholder="chi hai incontrato" oninput="wzField('ref',this.value)">`},
- {q:'Che tipo di edificio \u00e8?',sub:'La tipologia adatta checklist, stime e suggerimenti.',skip:true,
+ {key:'tipologia',q:'Che tipo di edificio \u00e8?',sub:'La tipologia adatta checklist, stime e suggerimenti.',skip:true,
   html:b=>TIPI.map(t=>`<button class="wiz-big ${b.tipologia===t?'on':''}" onclick="wzPick('tipologia','${t}')">${t}</button>`).join('')},
- {q:'Quali interventi proponi?',sub:'Tocca tutte le linee che hanno senso qui.',skip:true,
+ {key:'interventi',q:'Quali interventi proponi?',sub:'Tocca tutte le linee che hanno senso qui.',skip:true,
   html:b=>LINEE.map(l=>`<button class="wiz-big ${b.linee.includes(l)?'on':''}" onclick="wzTogLinea('${l}')">${l}</button>`).join('')+
    (b.linee.includes('SOLERO')?`<span class="lb">Optional SOLERO</span>
     <button class="wiz-big ${b.solOpt&&b.solOpt.storage?'on':''}" onclick="wzTogOpt('storage')">\u26a1 Accumulo</button>
     <button class="wiz-big ${b.solOpt&&b.solOpt.ev?'on':''}" onclick="wzTogOpt('ev')">\ud83d\udd0c Ricarica EV</button>`:'')},
- {q:'Hai una bolletta sotto mano?',sub:'Una foto e l\u2019AI compila consumi e POD da sola.',skip:true,
+ {key:'uso',q:'Come vive l\u2019edificio?',sub:'Due tocchi sul profilo d\u2019uso: affinano stime e proposta.',skip:true,
+  html:b=>{const e=b.extra||{};const tk=tipoKey(b.tipologia);
+   const picks=(k,arr)=>arr.map(o=>`<button class="wiz-big ${e[k]===o?'on':''}" onclick="wzExtraPick('${k}','${o.replace(/'/g,"\\'")}')">${o}</button>`).join('');
+   if(tk==='CONDOMINIO')return `<span class="lb">Unit\u00e0 abitative</span><input inputmode="numeric" value="${esc(e.unita||'')}" oninput="wzExtra('unita',this.value)">
+    <span class="lb">Amministratore</span><input value="${esc(e.ammin||'')}" oninput="wzExtra('ammin',this.value)">
+    <span class="lb">Prossima assemblea utile</span>`+picks('assemblea',['Entro 1 mese','1\u20133 mesi','Oltre','Da capire']);
+   if(tk==='PMI')return `<span class="lb">Regime di lavoro</span>`+picks('turni',['1 turno diurno','2 turni','Ciclo continuo','Stagionale'])+
+    `<span class="lb">Macchinari energivori (targhe, potenze)</span><input value="${esc(e.macchine||'')}" oninput="wzExtra('macchine',this.value)">`;
+   if(tk==='COMMERCIALE')return `<span class="lb">Giorni e orari di apertura</span><input value="${esc(e.orari||'')}" placeholder="es. lun\u2013sab 8\u201320" oninput="wzExtra('orari',this.value)">
+    <span class="lb">Frigoriferi / celle sempre accesi?</span>`+picks('frigo',['S\u00ec, banchi o celle frigo','No']);
+   if(tk==='VILLA')return `<span class="lb">Occupanti</span><input inputmode="numeric" value="${esc(e.occupanti||'')}" oninput="wzExtra('occupanti',this.value)">
+    <span class="lb">Come \u00e8 vissuta</span>`+picks('uso',['Sempre abitata','Anche smart working','Weekend / saltuaria']);
+   return `<div class="wiz-sub">Scegli prima la tipologia: questo passo si adatta da solo.</div>
+    <span class="lb">Note sull\u2019uso dell\u2019edificio</span><input value="${esc(e.note||'')}" oninput="wzExtra('note',this.value)">`}},
+ {key:'bolletta',q:'Hai una bolletta sotto mano?',sub:'Una foto e l\u2019AI compila consumi e POD da sola.',skip:true,
   html:b=>`<button class="wiz-big" onclick="readBill(${WZ.id},this)">\ud83d\udcc4 Fotografa la bolletta</button>
    ${consCalc(b).tot?`<div class="wiz-sub">\u2713 Baseline presente: ${fmtEur(Math.round(consCalc(b).tot))}/anno</div>`:''}
    <div class="wiz-sub">Puoi anche saltare e inserire i consumi dopo, dalla scheda.</div>`},
- {q:'E l\u2019APE dell\u2019edificio?',sub:'Foto della prima pagina: classe e indici si compilano da soli.',skip:true,
+ {key:'ape',q:'E l\u2019APE dell\u2019edificio?',sub:'Foto della prima pagina: classe e indici si compilano da soli.',skip:true,
   html:b=>`<button class="wiz-big" onclick="readApe(${WZ.id},this)">\ud83d\udcc4 Fotografa l\u2019APE</button>
    ${b.ape&&b.ape.classe?`<div class="wiz-sub">\u2713 Classe rilevata: <b>${b.ape.classe}</b></div>`:''}`},
- {q:'Come preferisce spendere?',sub:'La formula orienta proposta e incentivi.',skip:true,
+ {key:'fin',q:'Come preferisce spendere?',sub:'La formula orienta proposta e incentivi.',skip:true,
   html:b=>{const f=b.fin||{};return FIN_FORMULE.map(o=>`<button class="wiz-big ${f.formula===o?'on':''}" onclick="wzFin('formula','${o.replace(/'/g,"\\'")}')">${o}</button>`).join('')+
    `<span class="lb">Rata mensile sostenibile \u20ac (se ragiona a rate)</span><input inputmode="decimal" value="${esc((f.rata||''))}" oninput="wzFinField('rata',this.value)">`}},
- {q:'Com\u2019\u00e8 andata?',sub:'Esito a caldo e valore stimato dell\u2019opportunit\u00e0.',skip:true,
+ {key:'esito',q:'Com\u2019\u00e8 andata?',sub:'Esito a caldo e valore stimato dell\u2019opportunit\u00e0.',skip:true,
   html:b=>['caldo','tiepido','freddo'].map(e=>`<button class="wiz-big ${b.esito===e?'on':''}" onclick="wzEsito('${e}')">${e==='caldo'?'\ud83d\udd25':e==='tiepido'?'\ud83c\udf24':'\u2744'} ${e}</button>`).join('')+
    `<span class="lb">Valore stimato \u20ac</span><input inputmode="numeric" value="${b.val||''}" oninput="wzField('val',+this.value||0)">`}
+,
+ {key:'foto',q:'Foto guidate',sub:'Una voce della guida rilievi alla volta: scatta o salta.',skip:true,
+  html:b=>{
+   const all=[];guideGroups(b).forEach(([g,lab])=>{(CHECKLISTS[g]||[]).forEach((v,i)=>all.push({k:g+'-'+i,v,lab}))});
+   const left=all.filter(x=>!(b.photos||[]).some(ph=>ph&&ph.tag===x.k)&&!(WZ.fotoSkip||[]).includes(x.k));
+   if(!left.length)return `<div class="wiz-sub" style="margin-top:8px">\u2713 Ogni voce della guida rilievi ha una foto (o \u00e8 stata saltata). Le trovi tutte nella scheda.</div>`;
+   const cur=left[0];
+   return `<span class="lb">${esc(cur.lab)} \u00b7 ${all.length-left.length+1} di ${all.length}</span>
+    <div class="wiz-q" style="font-size:21px;margin:4px 0 14px">${esc(cur.v)}</div>
+    <button class="wiz-big" onclick="wzShot('${cur.k}')">\ud83d\udcf7 Scatta o scegli foto</button>
+    <button class="wiz-big" onclick="wzFotoSkip('${cur.k}')">Salta questa voce \u203a</button>`}}
 ];
+const STEP_FOR_MISSING={'Tipologia':'tipologia','Interventi':'interventi','Profilo d\u2019uso':'uso','Esito':'esito','Valore':'esito','Indirizzo':'nome','Referente':'nome','Consumi':'bolletta','APE':'ape','Profilo finanziario':'fin','Foto':'foto'};
+const WZ_ORDER=['nome','tipologia','interventi','uso','bolletta','ape','fin','esito','foto'];
+const WZ_LABEL={nome:'Contatti',tipologia:'Tipologia',interventi:'Interventi',uso:'Uso',bolletta:'Consumi',ape:'APE',fin:'Finanza',esito:'Esito',foto:'Foto'};
+function missingStepKeys(b){
+  const ks=new Set(completeness(b).missing.map(m=>STEP_FOR_MISSING[m]).filter(Boolean));
+  return WZ_ORDER.filter(k=>ks.has(k))}
+function openWizardPlan(id,keys){
+  const plan=keys.map(k=>WZ_STEPS.find(st=>st.key===k)).filter(Boolean);
+  if(!plan.length)return;
+  WZ={id,step:0,plan,fotoSkip:[]};$('m-wiz').classList.add('open');wzRender()}
+function openWizardMissing(id){const b=S.buildings.find(x=>x.id===id);openWizardPlan(id,missingStepKeys(b))}
+function openWizardStep(id,key){openWizardPlan(id,[key])}
+function wzExtra(k,v){const b=wzB();b.extra=b.extra||{};b.extra[k]=v;save()}
+function wzExtraPick(k,v){wzExtra(k,v);wzRender()}
+function extraStr(b){const e=b.extra||{};const L={unita:'unit\u00e0',ammin:'amministratore',assemblea:'assemblea',turni:'turni',macchine:'macchinari',orari:'apertura',frigo:'frigo',occupanti:'occupanti',uso:'uso',note:'note'};
+  return Object.keys(e).filter(k=>e[k]).map(k=>(L[k]||k)+': '+e[k]).join('; ')}
+function wzShot(k){addPhoto(WZ.id,k)}
+function wzFotoSkip(k){(WZ.fotoSkip=WZ.fotoSkip||[]).push(k);wzRender()}
 function completeness(b){
-  const checks=[['Tipologia',!!b.tipologia],['Interventi',b.linee.length>0],['Esito',!!b.esito],['Valore',+b.val>0],
+  const checks=[['Tipologia',!!b.tipologia],['Interventi',b.linee.length>0],['Profilo d\u2019uso',!!(b.extra&&Object.values(b.extra).some(v=>v))],['Esito',!!b.esito],['Valore',+b.val>0],
    ['Indirizzo',!!b.addr],['Referente',!!b.ref],['Consumi',consCalc(b).tot>0],['APE',!!(b.ape&&b.ape.classe)],
    ['Profilo finanziario',!!(b.fin&&b.fin.formula)],['Foto',b.photos.length>0]];
   const missing=checks.filter(c=>!c[1]).map(c=>c[0]);
@@ -1241,14 +1291,14 @@ function completeness(b){
 function wzRender(){
   if(!WZ)return;
   const b=wzB();if(!b){closeWizard(false);return}
-  const tot=WZ_STEPS.length;
+  const tot=WZ.plan.length;
   const foot=document.querySelector('.wiz-foot');
   if(WZ.step===-1){ /* scelta iniziale: wizard o scheda dettagliata */
     $('wiz-n').textContent='Nuovo edificio';$('wiz-bar').style.width='0%';
     if(foot)foot.style.display='none';
     $('wiz-body').innerHTML=`<div class="wiz-q">Come vuoi raccogliere i dati?</div>
       <div class="wiz-sub">Puoi sempre completare o correggere tutto dalla scheda, in ogni momento.</div>
-      <button class="wiz-big" onclick="wzStart()">\ud83e\ude84 <b>Wizard rapido</b><br><span style="font-size:15px;font-style:italic;color:inherit;opacity:.75">7 domande, ~2 minuti \u00b7 con lettura AI di bolletta e APE</span></button>
+      <button class="wiz-big" onclick="wzStart()">\ud83e\ude84 <b>Wizard rapido</b><br><span style="font-size:15px;font-style:italic;color:inherit;opacity:.75">8 domande, ~2 minuti \u00b7 con lettura AI di bolletta e APE</span></button>
       <button class="wiz-big" onclick="closeWizard(true)">\ud83d\udccb <b>Raccolta dettagliata</b><br><span style="font-size:15px;font-style:italic;color:inherit;opacity:.75">Apri subito la scheda completa e compila con calma</span></button>`;
     return}
   if(foot)foot.style.display='';
@@ -1263,7 +1313,7 @@ function wzRender(){
       <button class="wiz-big" onclick="wzTeaser()">\u2728 Mostra il Report cliente</button>`;
     $('wiz-back').style.display='';$('wiz-next').textContent='Chiudi';
     return}
-  const st=WZ_STEPS[WZ.step];
+  const st=WZ.plan[WZ.step];
   $('wiz-n').textContent='Passo '+(WZ.step+1)+' di '+tot;
   $('wiz-bar').style.width=Math.round(WZ.step/tot*100)+'%';
   $('wiz-body').innerHTML=`<div class="wiz-q">${st.q}</div><div class="wiz-sub">${st.sub}</div>`+st.html(b);
@@ -1271,7 +1321,7 @@ function wzRender(){
   $('wiz-next').textContent=st.skip?'Salta / Avanti \u203a':'Avanti \u203a';
 }
 function wzTeaser(){const id=WZ&&WZ.id;closeWizard(true);if(id)showTeaser(id)}
-function wzNext(){if(!WZ)return;if(WZ.step>=WZ_STEPS.length){closeWizard(true);return}WZ.step++;wzRender()}
+function wzNext(){if(!WZ)return;if(WZ.step>=WZ.plan.length){closeWizard(true);return}WZ.step++;wzRender()}
 function wzPrev(){if(!WZ||WZ.step<1)return;WZ.step--;wzRender()}
 
 initStore();
