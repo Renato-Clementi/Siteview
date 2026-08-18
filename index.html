@@ -470,6 +470,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
     <details class="sec"><summary>1 · Il giro e gli edifici</summary><div class="sec-bd">
       <p><b>▶ Avvia giro</b> attiva il GPS: la barra scura in alto conta i km, gli edifici visitati, gli esiti caldi e la <b>pipeline stimata</b> del giorno.</p>
       <p>Se resti fermo entro il raggio impostato per i minuti impostati (Impostazioni: default 60 m / 4 min), l'app registra da sola l'edificio, senza interromperti. In alternativa: <b>⌂ Registra edificio</b> nella posizione attuale, oppure Strumenti → coordinate manuali — in questi due casi l'app chiede subito <i>come</i> vuoi raccogliere i dati (capitolo 2).</p>
+      <p><b>Indirizzo automatico:</b> quando registri un edificio con il GPS attivo, l'indirizzo si compila da solo (via OpenStreetMap) — se lo scrivi tu, il tuo vince. Manca? Nella riga delle coordinate c'è 📍 Trova indirizzo.</p>
       <p>Limiti di piattaforma: serve una pagina <b>https://</b> e lo <b>schermo acceso</b> — a schermo spento i browser sospendono il GPS.</p>
     </div></details>
 
@@ -552,7 +553,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
     <details class="sec"><summary>10 · Impostazioni, chiavi e privacy</summary><div class="sec-bd">
       <p>In <b>Strumenti</b>: chiave API <b>Anthropic</b> (Scheda AI, lettura bolletta/APE, analisi conversazione) e motore <b>Whisper</b> — OpenAI API (serve la chiave OpenAI, ~0,006 $/min) oppure il server BABOO (l'audio resta nel perimetro aziendale). Le chiavi restano <b>solo sul dispositivo</b>.</p>
       <p><b>Dove stanno i dati:</b> tutto nel browser di questo dispositivo (IndexedDB), niente server dell'app, niente account. Cambiando telefono o cancellando i dati di navigazione il diario si perde: <b>gli export sono il backup</b>. In navigazione privata o in anteprima il salvataggio non è disponibile e l'app lo segnala.</p>
-      <p>Chiamate esterne solo quando le attivi tu: API Anthropic/OpenAI o server Whisper.</p>
+      <p>Chiamate esterne solo quando servono: API Anthropic/OpenAI o server Whisper quando le attivi tu, e OpenStreetMap (solo coordinate, nessun dato del cliente) per l'indirizzo automatico.</p>
     </div></details>
 
     <details class="sec"><summary>11 · Problemi frequenti</summary><div class="sec-bd">
@@ -702,11 +703,28 @@ function markBuilding(){
 }
 function addFromCoords(){const v=$('in-coords').value.split(',').map(x=>parseFloat(x.trim()));
   if(v.length===2&&!isNaN(v[0]))createBuilding(v[0],v[1],false,true);else alert('Formato: lat, lng')}
+async function fetchAddr(id,force){
+  const b=S.buildings.find(x=>x.id===id);
+  if(!b||!b.lat||(b.addr&&!force))return;
+  try{
+    const r=await fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=it&lat='+b.lat+'&lon='+b.lng,{headers:{'Accept':'application/json'}});
+    const j=await r.json();const a=j.address||{};
+    const via=[a.road||a.pedestrian||a.hamlet||'',a.house_number||''].filter(Boolean).join(' ');
+    const com=a.village||a.town||a.city||a.municipality||'';
+    const addr=[via,com].filter(Boolean).join(', ');
+    if(!addr||(b.addr&&!force))return;
+    b.addr=addr;save();
+    const wi=$('wz-addr');
+    if(WZ){if(wi&&WZ.id===id)wi.value=addr;} /* wizard aperto: aggiorno il campo, non ridisegno (il focus resta all'utente) */
+    else render();
+  }catch(e){/* offline o servizio non raggiungibile: si compila a mano */}
+}
 function createBuilding(lat,lng,auto,wiz){
   const nid=Date.now();
   S.buildings.push({id:nid,ts:nid,name:'Nuovo edificio',addr:'',lat,lng,auto,
     tipologia:'',anno:'',sup:'',impianto:'',pod:'',ref:'',val:0,esito:'',cx:0,linee:[],solOpt:{},ai:null,photos:[],notes:'',memos:[],checks:{},cons:{},ape:{},fin:{servizi:[]},talk:''});
   save();render();
+  if(lat)fetchAddr(nid);
   if(wiz)openWizard(nid,true);
   else window.scrollTo({top:document.querySelector('.tl').offsetTop,behavior:'smooth'});
 }
@@ -1163,7 +1181,7 @@ function cardHTML(b,isNewest){
       <span class="time">ORE ${time}</span><span class="chev">▾</span>
     </summary>
     <div class="card-bd">
-      <div class="coords">${coords}</div>
+      <div class="coords">${coords}${(b.lat&&!b.addr)?` \u00b7 <button class="mini" style="min-height:32px;padding:4px 10px;font-size:12px" onclick="fetchAddr(${b.id},true).then(()=>render())">\U0001F4CD Trova indirizzo</button>`:''}</div>
       ${(()=>{const c=completeness(b);const ks=missingStepKeys(b);
         return `<div class="compl">Completezza <b>${c.pct}%</b>${c.missing.length?' \u00b7 mancano: '+c.missing.slice(0,3).join(', ')+(c.missing.length>3?'\u2026':''):' \u2713'}<div class="compl-bar"><i style="width:${c.pct}%"></i></div></div>`+
         (ks.length?`<div class="linee" style="margin:2px 0 10px">
@@ -1625,7 +1643,7 @@ function wzFup(d){fupIn(WZ.id,d);wzRender()}
 const WZ_STEPS=[
  {key:'nome',q:'Come si chiama questo edificio?',sub:'Nome del cliente o dell\u2019edificio, indirizzo, referente.',skip:false,
   html:b=>`<span class="lb">Nome</span><input value="${esc(b.name)}" oninput="wzField('name',this.value)">
-   <span class="lb">Indirizzo</span><input value="${esc(b.addr)}" placeholder="via, comune" oninput="wzField('addr',this.value)">
+   <span class="lb">Indirizzo</span><input id="wz-addr" value="${esc(b.addr)}" placeholder="via, comune \u00b7 arriva dal GPS se lo lasci vuoto" oninput="wzField('addr',this.value)">
    <span class="lb">Referente</span><input value="${esc(b.ref)}" placeholder="chi hai incontrato" oninput="wzField('ref',this.value)">`},
  {key:'tipologia',q:'Che tipo di edificio \u00e8?',sub:'La tipologia adatta checklist, stime e suggerimenti.',skip:true,
   html:b=>TIPI.map(t=>`<button class="wiz-big ${b.tipologia===t?'on':''}" onclick="wzPick('tipologia','${t}')">${t}</button>`).join('')},
