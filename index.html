@@ -2,6 +2,13 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2A2723">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sopralluoghi">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sopralluoghi BABOO — Diario tecnico-commerciale</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -471,6 +478,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
       <p><b>▶ Avvia giro</b> attiva il GPS: la barra scura in alto conta i km, gli edifici visitati, gli esiti caldi e la <b>pipeline stimata</b> del giorno.</p>
       <p>Se resti fermo entro il raggio impostato per i minuti impostati (Impostazioni: default 60 m / 4 min), l'app registra da sola l'edificio, senza interromperti. In alternativa: <b>⌂ Registra edificio</b> nella posizione attuale, oppure Strumenti → coordinate manuali — in questi due casi l'app chiede subito <i>come</i> vuoi raccogliere i dati (capitolo 2).</p>
       <p><b>Indirizzo automatico:</b> quando registri un edificio con il GPS attivo, l'indirizzo si compila da solo (via OpenStreetMap) — se lo scrivi tu, il tuo vince. Manca? Nella riga delle coordinate c'è 📍 Trova indirizzo.</p>
+      <p><b>Installa l'app:</b> su iPhone apri in Safari → Condividi → <i>Aggiungi alla schermata Home</i>; su Android, Chrome → menù ⋮ → <i>Installa app</i>. Da lì in poi è un'icona BABOO a tutto schermo che <b>si apre anche senza rete</b>: in cantina o in centrale termica l'app c'è sempre, aspettano il segnale solo le funzioni AI e l'indirizzo automatico.</p>
       <p>Limiti di piattaforma: serve una pagina <b>https://</b> e lo <b>schermo acceso</b> — a schermo spento i browser sospendono il GPS.</p>
     </div></details>
 
@@ -554,11 +562,12 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
     <details class="sec"><summary>10 · Impostazioni, chiavi e privacy</summary><div class="sec-bd">
       <p>In <b>Strumenti</b>: chiave API <b>Anthropic</b> (Scheda AI, lettura bolletta/APE, analisi conversazione) e motore <b>Whisper</b> — OpenAI API (serve la chiave OpenAI, ~0,006 $/min) oppure il server BABOO (l'audio resta nel perimetro aziendale). Le chiavi restano <b>solo sul dispositivo</b>.</p>
       <p><b>Dove stanno i dati:</b> tutto nel browser di questo dispositivo (IndexedDB), niente server dell'app, niente account. Cambiando telefono o cancellando i dati di navigazione il diario si perde: <b>gli export sono il backup</b>. In navigazione privata o in anteprima il salvataggio non è disponibile e l'app lo segnala.</p>
+      <p><b>Offline:</b> una volta installata (o dopo la prima apertura), l'app tiene una copia di sé sul telefono e si apre anche senza rete; alla riapertura con la rete si aggiorna da sola all'ultima versione pubblicata.</p>
       <p>Chiamate esterne solo quando servono: API Anthropic/OpenAI o server Whisper quando le attivi tu, e OpenStreetMap (solo coordinate, nessun dato del cliente) per l'indirizzo automatico.</p>
     </div></details>
 
     <details class="sec"><summary>11 · Problemi frequenti</summary><div class="sec-bd">
-      <p><b>I pulsanti non rispondono</b> → probabile versione vecchia in cache: ricarica aggiungendo <code>?v=nuovo</code> all'indirizzo o apri in finestra privata.</p>
+      <p><b>I pulsanti non rispondono / versione vecchia</b> → con la rete attiva l'app prende sempre l'ultima versione da sé; se sembra rimasta indietro, chiudila del tutto e riaprila (o ricarica con <code>?v=nuovo</code>).</p>
       <p><b>GPS/microfono/fotocamera non partono</b> → la pagina dev'essere aperta in https:// e non dall'anteprima di un'app di messaggistica.</p>
       <p><b>Il diario è sparito</b> → navigazione privata, o dati di navigazione cancellati: ripartire dagli export.</p>
       <p><b>La trascrizione Whisper fallisce</b> → l'audio resta in memoria: controlla chiave/URL in Strumenti e riprova, o scarica l'audio.</p>
@@ -601,6 +610,8 @@ let watchId=null,stopAnchor=null,stopSince=null,saveT=null;
 const $=id=>document.getElementById(id);
 /* Storage a strati: IndexedDB → localStorage → memoria (mai eccezioni fatali) */
 let dbh=null;
+if('serviceWorker' in navigator&&location.protocol==='https:'){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
 document.addEventListener('DOMContentLoaded',()=>{document.body.classList.add('boot');setTimeout(()=>document.body.classList.remove('boot'),1100)});
 function initStore(){
   try{
@@ -1039,7 +1050,14 @@ function teaserHTML(b){
   const scad=new Date(Date.now()+15*864e5).toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'});
   const oggi=new Date().toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'});
   const hasNum=t.tot>0;
-  return `<!DOCTYPE html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  return `<!DOCTYPE html><html lang="it"><head><meta charset="utf-8"><link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2A2723">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sopralluoghi">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Anteprima riqualificazione — ${esc(b.name)}</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
 <style>body{margin:0;background:#F5F2EB;color:#2A2723;font-family:'EB Garamond',Georgia,serif;font-size:18px;line-height:1.555}
