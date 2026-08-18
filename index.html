@@ -1092,14 +1092,7 @@ function teaserHTML(b){
   const scad=new Date(Date.now()+15*864e5).toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'});
   const oggi=new Date().toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'});
   const hasNum=t.tot>0;
-  return `<!DOCTYPE html><html lang="it"><head><meta charset="utf-8"><link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#2A2723">
-<link rel="apple-touch-icon" href="icon-180.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Sopralluoghi">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+  return `<!DOCTYPE html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Anteprima riqualificazione — ${esc(b.name)}</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
 <style>body{margin:0;background:#F5F2EB;color:#2A2723;font-family:'EB Garamond',Georgia,serif;font-size:18px;line-height:1.555}
