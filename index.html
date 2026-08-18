@@ -395,6 +395,14 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
 .ann-foot{flex:none;display:flex;gap:10px;padding:10px 14px calc(12px + env(safe-area-inset-bottom));background:var(--ink)}
 .ann-foot .btn{flex:1;min-height:52px}
 .ann-foot .btn.ghost{color:var(--cream);border:1px solid rgba(152,128,96,.5)}
+/* ── Misure vani ── */
+.vano{display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.vano input{min-height:44px;padding:9px;border:1px solid var(--hair);border-radius:2px;font-size:15px}
+.v-nome{flex:1;min-width:90px}
+.v-num{width:74px;text-align:center}
+.v-q{width:52px;text-align:center;background:var(--cream)}
+.v-x{color:var(--muted);font-family:var(--sans)}
+.v-del{min-height:40px;padding:6px 10px;flex:none}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{transition:none!important;animation:none!important}
 }
@@ -521,6 +529,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
       <p><b>Esito</b> (🔥 caldo · 🌤 tiepido · ❄ freddo) colora i contatori e cambia la frase di chiusura del Suggeritore. <b>Complessità</b> (1–5 pallini) stima l'onere d'installazione. <b>Valore stimato €</b> alimenta la pipeline del giorno.</p>
       <p><b>☎ Ricontatto:</b> ogni scheda ha data e motivo del prossimo contatto, con i tasti rapidi +2g / +1s / +1m (anche nell'ultimo passo del wizard). La data appare sulla fascia scura; quando arriva (o è passata) la <b>Bussola</b> apre la giornata con i richiami da fare, e ai tiepidi rimasti senza data lo fa notare: i tiepidi si raffreddano da soli.</p>
       <p><b>📸 Leggi targa tecnica con AI</b> (in Dati edificio): fotografa la targa della caldaia, dello split, dell'inverter o del macchinario — l'AI estrae tipo, marca, modello, potenza e anno e compila "Impianto attuale" da sola. Più targhe si accodano una dopo l'altra; per le PMI alimentano anche i macchinari del profilo d'uso. La foto resta in Documentazione.</p>
+      <p><b>Misure vani (MOUNTAINVIEW):</b> se proponi i serramenti, compare il soffietto delle misure — una riga per vano (nome, L×H in cm, quanti uguali), con i preset rapidi Finestra e Portafinestra. In fondo il conteggio: pezzi totali e m² vetrati, pronti per il preventivo; le misure viaggiano nel report e nella Scheda AI, e spuntano da sole la voce della guida rilievi.</p>
       <p>Gli <b>Interventi proposti</b> sono a vista sotto l'esito: le linee BABOO (con gli optional SOLERO: ⚡ Accumulo e 🔌 Ricarica EV) compongono guida rilievi, stime, Scheda AI e Report cliente. In <b>Dati edificio</b>: la <b>Tipologia</b> (Condominio, Villa singola, PMI produttiva, Attività commerciale) pilota checklist, stime e suggerimenti — sceglila per prima.</p>
     </div></details>
 
@@ -690,6 +699,7 @@ function seedDemo(){
     cons:{elKwh:'14500',elSpesa:'4350',elPot:'25',elF1:'35',gasSmc:'',gasSpesa:'',gasUso:'',altroTipo:'gasolio (litri)',altroQta:'16800',altroSpesa:'26900'},
     ape:{classe:'G',ep:'298',anno:'2021'},
     extra:{unita:'24',ammin:'SE.GE.CO. · Amm. Pansini',assemblea:'1–3 mesi'},
+    vani:[{nome:'Tipo scala A',l:'120',h:'140',n:'24'},{nome:'Portafinestra balconi',l:'90',h:'230',n:'24'}],
     fin:{formula:'Zero esborso (EPC/PPA/noleggio)',contributi:'Da deliberare',servizi:['EPC / PPA (paga il risparmio)','Canale contributi (Eco Cred)'],driver:'Risparmio in bolletta',decisore:'Assemblea · Amm. Pansini',tempi:'Entro 3 mesi'},
     ai:{profilo:"Edificio residenziale anni '60, 24 unità su 8 piani, involucro non isolato e centrale termica a gasolio a fine vita. Copertura piana ~380 m² ben esposta, zona climatica E. Classe energetica stimata F/G.",
         opp:"Candidato ideale per CER condominiale con impianto FV SOLERO in copertura (comodato d'uso, gestione 45%) e sostituzione della centrale con pompa di calore CLIMA. MONITOR per la telemetria dei flussi energetici condivisi.",
@@ -1319,6 +1329,25 @@ function cardHTML(b,isNewest){
         </div>`;
         return sec('fin',false,'Profilo finanziario'+(f.formula?' \u00b7 '+f.formula.toLowerCase():''),inner);
       })()}
+      ${b.linee.includes('MOUNTAINVIEW')?(()=>{ /* Misure vani serramenti */
+        const vv=b.vani||[];const c=vaniCalc(b);
+        const inner=`
+        ${vv.map((v,i)=>`<div class="vano">
+          <input class="v-nome" placeholder="vano (es. cucina)" value="${esc(v.nome)}" onchange="updVano(${b.id},${i},'nome',this.value)">
+          <input class="v-num" inputmode="numeric" placeholder="L cm" value="${esc(v.l)}" onchange="updVano(${b.id},${i},'l',this.value)">
+          <span class="v-x">\u00d7</span>
+          <input class="v-num" inputmode="numeric" placeholder="H cm" value="${esc(v.h)}" onchange="updVano(${b.id},${i},'h',this.value)">
+          <input class="v-q" inputmode="numeric" title="quanti uguali" value="${esc(v.n||'1')}" onchange="updVano(${b.id},${i},'n',this.value)">
+          <button class="mini v-del" onclick="delVano(${b.id},${i})">\u2715</button>
+        </div>`).join('')}
+        <div class="linee" style="margin-top:6px">
+          <button class="linea" onclick="addVano(${b.id})">\uFF0B Vano</button>
+          <button class="linea" onclick="addVano(${b.id},{nome:'Finestra',l:'120',h:'140',n:'1'})">\uFF0B Finestra 120\u00d7140</button>
+          <button class="linea" onclick="addVano(${b.id},{nome:'Portafinestra',l:'90',h:'230',n:'1'})">\uFF0B Portafin. 90\u00d7230</button>
+        </div>
+        ${c.pz?`<div class="cons-sum">Serramenti: <b>${c.pz} pezzi</b> \u00b7 \u2248${String(c.mq).replace('.',',')} m\u00b2 di superficie vetrata</div>`:'<span class="ai-note">Misura i vani L\u00d7H in cm: da qui esce il conteggio per il preventivo MOUNTAINVIEW.</span>'}`;
+        return sec('vani',false,'Misure vani \u00b7 '+(c.pz?c.pz+' serramenti':'MOUNTAINVIEW'),inner);
+      })():''}
       ${(()=>{ /* Guida rilievi: Sempre + Tipo edificio + Linee proposte */
         b.checks=b.checks||{};
         const groups=guideGroups(b);
@@ -1362,6 +1391,20 @@ function fupState(b){const f=b.fup||{};if(!f.date)return '';
   const today=new Date().toISOString().slice(0,10);
   return f.date<today?'over':(f.date===today?'due':'plan')}
 function fupFmt(d){if(!d)return'';const[y,m,g]=d.split('-');return g+'/'+m}
+function addVano(id,preset){const b=S.buildings.find(x=>x.id===id);b.vani=b.vani||[];
+  b.vani.push(preset||{nome:'',l:'',h:'',n:'1'});save();render()}
+function updVano(id,i,k,v){const b=S.buildings.find(x=>x.id===id);b.vani=b.vani||[];
+  if(!b.vani[i])return;b.vani[i][k]=v;
+  if(b.vani.some(x=>x.l&&x.h)){b.checks=b.checks||{};b.checks['MOUNTAINVIEW-0']=true}
+  save();if(k==='l'||k==='h'||k==='n')render();else renderStats()}
+function delVano(id,i){const b=S.buildings.find(x=>x.id===id);b.vani.splice(i,1);save();render()}
+function vaniCalc(b){const vv=b.vani||[];let pz=0,mq=0;
+  vv.forEach(v=>{const n=parseInt(v.n)||0,l=parseFloat(v.l)||0,h=parseFloat(v.h)||0;
+    if(n&&l&&h){pz+=n;mq+=n*l*h/10000}});
+  return {pz,mq:Math.round(mq*10)/10}}
+function vaniStr(b){const vv=(b.vani||[]).filter(v=>v.l&&v.h);if(!vv.length)return'';
+  const c=vaniCalc(b);
+  return vv.map(v=>(v.nome||'vano')+' '+v.l+'\u00d7'+v.h+' cm \u00d7'+(v.n||1)).join('; ')+' \u2014 tot '+c.pz+' serramenti, \u2248'+String(c.mq).replace('.',',')+' m\u00b2'}
 function togSolOpt(id,k){const b=S.buildings.find(x=>x.id===id);b.solOpt=b.solOpt||{};b.solOpt[k]=!b.solOpt[k];save();render()}
 function lineeStr(b){return b.linee.map(l=>{
   if(l==='SOLERO'&&b.solOpt&&(b.solOpt.storage||b.solOpt.ev)){
@@ -1655,7 +1698,7 @@ async function genAI(id,btn){
 PROFILO: (3-4 frasi: tipologia, involucro, impianto, criticità energetiche)
 OPPORTUNITA: (3-4 frasi: quali linee BABOO proporre e con quale modello — EPC, CER, chiavi in mano, PPA on-site)
 INCENTIVI: (2-3 frasi: incentivi applicabili — Conto Termico 3.0, CER GSE, Transizione 5.0, detrazioni — e cosa verificare)
-Dati: nome=${b.name}; indirizzo=${b.addr}; coordinate=${b.lat},${b.lng}; tipologia=${b.tipologia}; profilo d'uso=${extraStr(b)||'n.d.'}; anno=${b.anno}; superficie=${b.sup} m²; impianto attuale=${b.impianto}; linee proposte (con optional)=${lineeStr(b)||'da definire'}; consumi attuali=${consStr(b)}; profilo finanziario cliente=${finStr(b)||'non rilevato'} (orienta la proposta di conseguenza); note sopralluogo=${b.notes||'—'}; esito visita=${b.esito||'—'}; modello contrattuale preferenziale BABOO per questa tipologia=${tipoProfilo(b).modello} (usalo come prima opzione in OPPORTUNITA, motivandolo; proponi alternative solo se i dati lo giustificano).`+
+Dati: nome=${b.name}; indirizzo=${b.addr}; coordinate=${b.lat},${b.lng}; tipologia=${b.tipologia}; profilo d'uso=${extraStr(b)||'n.d.'}; anno=${b.anno}; superficie=${b.sup} m²; impianto attuale=${b.impianto}; linee proposte (con optional)=${lineeStr(b)||'da definire'}; misure serramenti=${vaniStr(b)||'n.d.'}; consumi attuali=${consStr(b)}; profilo finanziario cliente=${finStr(b)||'non rilevato'} (orienta la proposta di conseguenza); note sopralluogo=${b.notes||'—'}; esito visita=${b.esito||'—'}; modello contrattuale preferenziale BABOO per questa tipologia=${tipoProfilo(b).modello} (usalo come prima opzione in OPPORTUNITA, motivandolo; proponi alternative solo se i dati lo giustificano).`+
       (phs.length?`\nSopra trovi ${phs.length} foto del sopralluogo, ognuna preceduta dall'etichetta della voce di rilievo: basa il PROFILO su ciò che si vede davvero (stato della copertura, targhe, quadri, terminali) e cita i dettagli osservati; non inventare elementi non visibili.`:'');
     content.push({type:'text',text:prompt});
     const hdrs={'Content-Type':'application/json'};
@@ -1684,7 +1727,7 @@ function exportMD(){
   let md=`# Report giro sopralluoghi BABOO\n\nPipeline stimata: ${fmtEur(S.buildings.reduce((s,b)=>s+(+b.val||0),0))} · Edifici: ${S.buildings.length}\n\n`;
   sorted.forEach(b=>{const d=new Date(b.ts);
     md+=`## ${b.name} — ${b.addr}\n*${d.toLocaleString('it-IT')}* · Esito: **${b.esito||'—'}** · Complessità: ${b.cx||'—'}/5 · Valore stimato: ${fmtEur(b.val)}\n\n`;
-    md+=`- Tipologia: ${b.tipologia||'—'} · Anno: ${b.anno||'—'} · Sup.: ${b.sup||'—'} m²\n- Impianto attuale: ${b.impianto||'—'}\n- POD/PDR: ${b.pod||'—'} · Referente: ${b.ref||'—'}\n- Linee proposte: ${lineeStr(b)||'—'}${(b.fup&&b.fup.date)?'\n- Ricontatto: '+b.fup.date+(b.fup.why?' — '+b.fup.why:''):''}${extraStr(b)?'\n- Profilo d\u2019uso: '+extraStr(b):''}\n\n`;
+    md+=`- Tipologia: ${b.tipologia||'—'} · Anno: ${b.anno||'—'} · Sup.: ${b.sup||'—'} m²\n- Impianto attuale: ${b.impianto||'—'}\n- POD/PDR: ${b.pod||'—'} · Referente: ${b.ref||'—'}\n- Linee proposte: ${lineeStr(b)||'—'}${vaniStr(b)?'\n- Serramenti (misure): '+vaniStr(b):''}${(b.fup&&b.fup.date)?'\n- Ricontatto: '+b.fup.date+(b.fup.why?' — '+b.fup.why:''):''}${extraStr(b)?'\n- Profilo d\u2019uso: '+extraStr(b):''}\n\n`;
     {const cc=consCalc(b);
       md+=`**Consumi attuali (baseline):** ${consStr(b)}${cc.tot?` — Spesa totale ${fmtEur(Math.round(cc.tot))}/anno${cc.cEl?', '+cc.cEl.toFixed(3)+' €/kWh':''}${cc.cGas?', '+cc.cGas.toFixed(3)+' €/Smc':''}`:''}\n\n`;}
     {const fs=finStr(b);if(fs)md+=`**Profilo finanziario:** ${fs}\n\n`;}
