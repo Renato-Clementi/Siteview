@@ -540,6 +540,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
 
     <details class="sec"><summary>8 · Report cliente (l'aggancio)</summary><div class="sec-bd">
       <p><b>✨ Report cliente</b> genera l'anteprima persuasiva da mostrare sul telefono o scaricare e inviare: quanto spende oggi (con la classe APE se rilevata), quanto costerà non fare nulla in 10 anni, la <b>forchetta di risparmio</b> stimata (tarata su tipologia e % diurna, con il risparmio al mese se il cliente ragiona a rata), la CO₂ tradotta in alberi, gli interventi, <b>la formula contrattuale per la sua tipologia</b> e la chiamata all'azione con scadenza a 15 giorni e telefono BABOO.</p>
+      <p><b>📤 Invia al cliente:</b> dal report, il pulsante di condivisione apre il foglio nativo del telefono (WhatsApp, mail, ecc.) con un <b>messaggio già scritto</b> — spesa attuale, proiezione a 10 anni, forchetta di risparmio, formula per la sua tipologia, telefono BABOO e scadenza a 15 giorni — più il file dell'anteprima dove il sistema lo consente. Così i numeri arrivano anche a chi non era presente al sopralluogo, che spesso è chi decide. Se la condivisione non è disponibile (es. da computer), il testo finisce negli appunti e il file si scarica con ⬇.</p>
       <p>Le stime sono indicative e non vincolanti (c'è il disclaimer): la proposta vera segue lo studio di fattibilità. Senza consumi compilati esce la versione qualitativa. Raggiungibile anche dal riepilogo finale del wizard.</p>
     </div></details>
 
@@ -572,7 +573,8 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
 <div class="modal" id="m-teaser" style="padding:0">
   <div style="position:fixed;inset:0;display:flex;flex-direction:column;background:var(--paper)">
     <div style="flex:none;background:var(--ink);display:flex;gap:8px;justify-content:flex-end;padding:10px 14px;padding-top:max(10px,env(safe-area-inset-top))">
-      <button class="mini" style="background:var(--brass);color:var(--cream);border-color:var(--brass)" onclick="dlTeaser()">⬇ Scarica</button>
+      <button class="mini" style="background:var(--brass);color:var(--cream);border-color:var(--brass)" onclick="shareTeaser(this)">📤 Invia al cliente</button>
+      <button class="mini" style="color:var(--cream);border-color:var(--brass)" onclick="dlTeaser()">⬇ Scarica</button>
       <button class="mini" style="color:var(--cream);border-color:var(--brass)" onclick="closeModal('teaser')">✕ Chiudi</button>
     </div>
     <iframe id="teaser-frame" style="flex:1;border:0;width:100%"></iframe>
@@ -1066,9 +1068,47 @@ function showTeaser(id){
   const b=S.buildings.find(x=>x.id===id);
   const t=teaserCalc(b);
   if(!t.tot&&!confirm('Consumi non ancora inseriti: il report uscir\u00e0 senza stime economiche. Procedere comunque?'))return;
-  _teaser={html:teaserHTML(b),name:b.name};
+  _teaser={html:teaserHTML(b),name:b.name,id:b.id};
   $('teaser-frame').srcdoc=_teaser.html;
   $('m-teaser').classList.add('open');
+}
+function teaserText(b){
+  const t=teaserCalc(b);const tp=tipoProfilo(b);
+  let x='\U0001F3E0 '+b.name+' \u2014 Anteprima di riqualificazione energetica (BABOO ESCo)\n\n';
+  if(t.tot){
+    x+='Oggi: circa '+fmtEur(Math.round(t.tot))+'/anno di energia'+((b.ape&&b.ape.classe)?' \u00b7 classe APE '+b.ape.classe:'')+'\n';
+    x+='Nei prossimi 10 anni, senza fare nulla: circa '+fmtEur(t.dieci)+'\n';
+    if(t.hi)x+='Con gli interventi proposti ('+(lineeStr(b)||'da definire')+'): risparmio stimato '+fmtEur(t.lo)+'\u2013'+fmtEur(t.hi)+' all\u2019anno';
+    if(b.fin&&b.fin.rata&&t.tot)x+=' (\u2248'+fmtEur(Math.round((t.lo+t.hi)/24))+' al mese)';
+    x+='\n';
+  }else{
+    x+='Interventi proposti: '+(lineeStr(b)||'in corso di definizione')+'\n';
+  }
+  if(tp.teaser)x+='\n'+tp.teaser[0]+': '+tp.teaser[1]+'\n';
+  x+='\n\U0001F4DE Studio di fattibilit\u00e0 GRATUITO \u2014 proposta valida 15 giorni\nBABOO ESCo S.r.l. \u00b7 Omegna (VB) \u00b7 0323 63934 \u00b7 certificata UNI CEI 11352\n\nStime indicative e non vincolanti, elaborate sul sopralluogo.';
+  return x}
+async function shareTeaser(btn){
+  if(!_teaser)return;
+  const b=S.buildings.find(x=>x.id===_teaser.id)||{};
+  const text=b.id?teaserText(b):'';
+  const fname='anteprima-'+_teaser.name.replace(/[^\w]+/g,'-').toLowerCase()+'.html';
+  try{
+    if(navigator.share){
+      const file=(typeof File!=='undefined')?new File([_teaser.html],fname,{type:'text/html'}):null;
+      if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],title:'Anteprima riqualificazione \u2014 '+_teaser.name,text});
+      }else{
+        await navigator.share({title:'Anteprima riqualificazione \u2014 '+_teaser.name,text});
+      }
+      return;
+    }
+    throw new Error('no-share');
+  }catch(e){
+    if(e&&e.name==='AbortError')return; /* l\u2019utente ha annullato */
+    try{await navigator.clipboard.writeText(text);
+      alert('Condivisione diretta non disponibile qui: testo del report copiato negli appunti \u2014 incollalo in WhatsApp o in una mail. Il file completo lo trovi con \u2B07 Scarica.');
+    }catch(e2){dlTeaser();alert('Ho scaricato il file dell\u2019anteprima: allegalo al messaggio per il cliente.')}
+  }
 }
 function dlTeaser(){if(_teaser)dl('anteprima-'+_teaser.name.replace(/[^\w]+/g,'-').toLowerCase()+'.html',_teaser.html,'text/html')}
 const fmtEur=n=>'€ '+(n||0).toLocaleString('it-IT');
@@ -1510,7 +1550,7 @@ function bussolaMoves(){
       ()=>bussolaOpen(b.id,'coach'),'Apri il Suggeritore');
     if(consCalc(b).tot&&+b.val>0)add('teaser-'+b.id,3,'\u2728','Mostra il Report a '+(b.ref||b.name),
       'Numeri pronti e cliente caldo: il Report sul telefono \u00e8 l\u2019aggancio.',
-      ()=>showTeaser(b.id),'Mostra il Report');
+      ()=>showTeaser(b.id),'Apri e invia');
   });
   /* P3 \u00b7 ritmo della giornata */
   const h=new Date().getHours();
