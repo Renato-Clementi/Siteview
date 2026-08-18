@@ -2,6 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
+<style>html{background:#2A2723}</style>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#2A2723">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -12,7 +13,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>GIRO ESCo — BABOO · Diario tecnico commerciale</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"></noscript>
 <style>
 :root{
   --paper:#F5F2EB; --ink:#2A2723; --brass:#988060; --cream:#EDE7DB;
@@ -1221,7 +1223,6 @@ function teaserHTML(b){
   const hasNum=t.tot>0;
   return `<!DOCTYPE html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Anteprima riqualificazione — ${esc(b.name)}</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
 <style>body{margin:0;background:#F5F2EB;color:#2A2723;font-family:'EB Garamond',Georgia,serif;font-size:18px;line-height:1.555}
 .w{max-width:620px;margin:0 auto;padding:0 20px 40px}
 .hd{background:#2A2723;color:#EDE7DB;padding:30px 20px 26px;text-align:center}
