@@ -373,15 +373,18 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(2){animation-delay:.05s}
 details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
 
 /* ── Ricontatto ── */
-.fup{display:flex;flex-wrap:wrap;align-items:center;gap:7px;background:#FBF9F4;border:1px solid var(--hair);border-left:3px solid var(--hair);border-radius:2px;padding:9px 11px;margin:2px 0 10px}
+.fup{display:flex;flex-direction:column;align-items:stretch;gap:8px;position:relative;background:#FBF9F4;border:1px solid var(--hair);border-left:3px solid var(--hair);border-radius:2px;padding:9px 11px;margin:16px 0 10px}
+.fup::before{content:"";position:absolute;top:-9px;left:-3px;right:0;border-top:1px solid var(--hair)}
 .fup.plan{border-left-color:var(--brass)}
 .fup.due{border-left-color:var(--brass);background:#F3EDE0}
 .fup.over{border-left-color:var(--caldo);background:#F6EDE7}
 .fup-lb{font-family:var(--sans);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);flex:none}
-.fup input[type=date]{min-height:42px;padding:8px;font-size:14px;border:1px solid var(--hair);border-radius:2px;background:#fff;width:auto}
-.fup-why{flex:1;min-width:110px;min-height:42px;padding:8px;font-size:14px;border:1px solid var(--hair);border-radius:2px}
-.fup-q{display:flex;gap:5px}
-.fup-q .mini{min-height:40px;padding:7px 10px;font-size:13px}
+.fup input[type=date]{flex:none;width:122px;min-height:42px;padding:6px;font-size:13.5px;border:1px solid var(--hair);border-radius:2px;background:#fff}
+.fup-why{flex:1;min-width:0;min-height:42px;padding:6px;font-size:13.5px;border:1px solid var(--hair);border-radius:2px;background:#fff}
+.fup-t{font-family:var(--sans);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--brass);margin-bottom:-2px}
+.fup-r1{display:flex;flex-wrap:nowrap;align-items:center;gap:7px}
+.fup-q{display:flex;gap:6px}
+.fup-q .mini{flex:none;min-height:40px;padding:7px 12px;font-size:13px}
 /* ── Editor annotazioni ── */
 .ann{position:fixed;inset:0;z-index:70;background:#151310;display:none;flex-direction:column}
 .ann.open{display:flex;animation:softFade .2s ease}
@@ -410,6 +413,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
 .hd-edit{background:none;border:none;color:rgba(237,231,219,.55);font-size:14px;padding:2px 6px;margin-left:4px;vertical-align:middle}
 .card-hd h3[contenteditable="true"] .hd-edit{display:none}
 .modal-in .panel{display:block;border:none;background:none;padding:0;margin:6px 0 0}
+.act-t{font-family:var(--sans);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:10px}
 .seg-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 10px}
 .seg-lb{font-family:var(--sans);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
 .seg{display:inline-flex;border:1px solid var(--hair);border-radius:999px;overflow:hidden;background:#FBF9F4}
@@ -475,6 +479,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
   <div class="tour-tip" id="tour-tip">
     <div class="tour-n" id="tour-n"></div>
     <div class="tour-t" id="tour-t"></div>
+    <div id="tour-cta"></div>
     <div class="tour-btns">
       <button class="btn ghost" style="flex:1" onclick="tourEnd()">Salta</button>
       <button class="btn brass" style="flex:1" id="tour-next" onclick="tourNext()">Avanti →</button>
@@ -546,13 +551,15 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
   <div class="modal-in">
     <button class="modal-x" onclick="closeModal('guida')">✕</button>
     <h2>Guida utente</h2>
-    <button class="mini" style="border-color:var(--brass);color:var(--brass);margin-bottom:10px" onclick="closeModal('guida');setTimeout(tourStart,250)">↻ Rivedi il tour di benvenuto</button>
+    <button class="btn brass" style="width:100%;margin:4px 0 14px" onclick="closeModal('guida');setTimeout(()=>tourStart(),250)">↻ Riparti col tour di benvenuto</button>
+    <button class="btn ghost" style="width:100%;margin:0 0 14px;border-color:var(--brass);color:var(--brass)" onclick="closeModal('guida');setTimeout(tourRaccolta,250)">🪄 Tour: raccolta dati in modalità Semplice</button>
     <p style="font-style:italic;color:var(--muted)">Il taccuino GPS per i sopralluoghi tecnico-commerciali BABOO: dal giro alla proposta, tutto in un unico strumento. Tocca un capitolo per aprirlo.</p>
 
     <details class="sec"><summary>1 · Il giro e gli edifici</summary><div class="sec-bd">
       <p><b>▶ Avvia giro</b> attiva il GPS: la barra scura in alto conta i km, gli edifici visitati, gli esiti caldi e la <b>pipeline stimata</b> del giorno.</p>
       <p>Se resti fermo entro il raggio impostato per i minuti impostati (Impostazioni: default 60 m / 4 min), l'app registra da sola l'edificio, senza interromperti. In alternativa: il tondo <b>＋ Aggiungi edificio</b> nella posizione attuale, oppure Strumenti → coordinate manuali — in questi due casi l'app chiede subito <i>come</i> vuoi raccogliere i dati (capitolo 2).</p>
       <p><b>Indirizzo automatico:</b> quando registri un edificio con il GPS attivo, l'indirizzo si compila da solo (via OpenStreetMap) — se lo scrivi tu, il tuo vince. Manca? Nella riga delle coordinate c'è 📍 Trova indirizzo.</p>
+      <p><b>Due tour guidati</b> (pulsanti qui sopra): il <i>benvenuto</i> per i cinque gesti fondamentali, e <i>raccolta Semplice</i> che ti accompagna dentro una scheda: modalità, completezza, Next step, Raccogli dati e Presenta.</p>
       <p><b>Tour di benvenuto:</b> alla prima apertura un breve giro guidato illumina i cinque gesti che contano (Avvia giro, Registra edificio, la scheda, il wizard, la Bussola); lo ritrovi qui sopra con «↻ Rivedi il tour». Poi è la Bussola a farti da tutor: ti propone il primo edificio e il primo wizard al momento giusto.</p>
       <p><b>Due modalità:</b> alla prima apertura scegli tra <b>Semplice</b> — schede essenziali con 4 azioni (🪄 Wizard, 💬 Coach, 📷 Foto, ✨ Report): ogni inserimento passa dai wizard e dalla cascata di completamento — e <b>Completa</b>, con tutte le sezioni a vista. La modalità si governa <b>scheda per scheda</b>: in cima a ogni scheda aperta c'è il selettore <b>Semplice ∣ Completa</b> (la voce attiva è piena in ottone) e la scelta resta salvata su quell'edificio — il condominio complesso in Completa, le villette in Semplice, insieme. In Impostazioni scegli solo la modalità <i>predefinita</i> per le schede senza scelta propria.</p>
       <p><b>Installa l'app:</b> su iPhone apri in Safari → Condividi → <i>Aggiungi alla schermata Home</i>; su Android, Chrome → menù ⋮ → <i>Installa app</i>. Da lì in poi è un'icona BABOO a tutto schermo che <b>si apre anche senza rete</b>: in cantina o in centrale termica l'app c'è sempre, aspettano il segnale solo le funzioni AI e l'indirizzo automatico.</p>
@@ -1345,18 +1352,6 @@ function cardHTML(b,isNewest){
         ${['caldo','tiepido','freddo'].map(e=>`<button class="esito ${b.esito===e?'sel-'+e:''}" onclick="upd(${b.id},'esito','${e}')">${e==='caldo'?'🔥':e==='tiepido'?'🌤':'❄'} ${e}</button>`).join('')}
         <span class="cx"><span class="lab">Complessità</span>${[1,2,3,4,5].map(i=>`<b class="${b.cx>=i?'on':''}" onclick="upd(${b.id},'cx',${i})"></b>`).join('')}</span>
       </div>
-      ${(()=>{const f=b.fup||{};const st=fupState(b);
-        return `<div class="fup ${st}">
-          <span class="fup-lb">\u260E Ricontatto</span>
-          <input type="date" value="${f.date||''}" onchange="updFup(${b.id},'date',this.value)">
-          <input class="fup-why" placeholder="motivo" value="${esc(f.why||'')}" onchange="updFup(${b.id},'why',this.value)">
-          <span class="fup-q">
-            <button class="mini" onclick="fupIn(${b.id},2)">+2g</button>
-            <button class="mini" onclick="fupIn(${b.id},7)">+1s</button>
-            <button class="mini" onclick="fupIn(${b.id},30)">+1m</button>
-            ${f.date?`<button class="mini" onclick="fupClear(${b.id})">\u2715</button>`:''}
-          </span>
-        </div>`})()}
       ${FULL?`<div class="chk-g" style="margin-top:4px">Interventi proposti</div>
       <div class="linee">${LINEE.map(l=>`<button class="linea ${b.linee.includes(l)?'on':''}" onclick="togLinea(${b.id},'${l}')">${l}</button>`).join('')}</div>
       ${b.linee.includes('SOLERO')?`<div class="linee" style="margin-top:6px">
@@ -1462,32 +1457,79 @@ function cardHTML(b,isNewest){
         <div class="photos">${b.photos.map((p,i)=>`<img src="${p.src}" class="${p.tag?'tagged':''}" title="${p.tag?'Agganciata alla guida rilievi':''}" onclick="lightbox('${b.id}',${i})">`).join('')}</div>
         ${b.memos.map((m,i)=>`<div class="memo"><audio controls src="${m}"></audio><button class="mini" onclick="delMemo(${b.id},${i})">✕</button></div>`).join('')}
         ${hasDoc?'':'<span class="ai-note">Ancora niente: aggiungi foto, note o memo con i pulsanti qui sotto.</span>'}`)}
-      <div class="card-actions">
+      <div class="act-t" style="border-top:1px solid var(--hair);padding-top:10px">Raccogli dati</div>
+      <div class="card-actions acts-r" style="border-top:none;padding-top:0;margin-top:6px">
         <button class="mini" onclick="openWizard(${b.id})">\ud83e\ude84 Wizard</button>
         <button class="mini" onclick="raccOpen(${b.id})">\u{1F399} Racconta</button>
-        <button class="mini" onclick="openVideos(${b.id})">\u{1F3AC} Video</button>
-        <button class="mini" onclick="genAI(${b.id},this)">↻ Scheda AI</button>
-        <button class="mini" style="border-color:var(--brass);color:var(--brass)" onclick="showTeaser(${b.id})">✨ Report cliente</button>
         <button class="mini" onclick="addPhoto(${b.id})">📷 Foto</button>
         <button class="mini" onclick="editNote(${b.id})">✏️ Nota</button>
         <button class="mini" id="memo-${b.id}" onclick="toggleMemo(${b.id})">🎙️ Memo</button>
-        <button class="mini del" onclick="delB(${b.id})">Elimina</button>
       </div>
+      <div class="act-t" style="border-top:1px dashed var(--hair);padding-top:10px">Presenta</div>
+      <div class="card-actions acts-p" style="border-top:none;padding-top:0;margin-top:6px">
+        <button class="mini" onclick="genAI(${b.id},this)">↻ Scheda AI</button>
+        <button class="mini" style="border-color:var(--brass);color:var(--brass)" onclick="showTeaser(${b.id})">✨ Report cliente</button>
+        <button class="mini" onclick="openVideos(${b.id})">\u{1F3AC} Video</button>
+        <button class="mini del" style="margin-left:auto" onclick="delB(${b.id})">Elimina</button>
+      </div>
+      ${(()=>{const f=b.fup||{};const st=fupState(b);
+        const whyOpts=['',...FUP_WHY];
+        if(f.why&&!whyOpts.includes(f.why))whyOpts.splice(1,0,f.why);
+        return `<div class="fup ${st}">
+          <div class="fup-t">Next step</div>
+          <div class="fup-r1">
+            <span class="fup-lb" title="Ricontatto">\u260E</span>
+            <input type="date" value="${f.date||''}" onchange="updFup(${b.id},'date',this.value)">
+            <select class="fup-why" onchange="updFup(${b.id},'why',this.value)">
+              ${whyOpts.map(o=>`<option value="${esc(o)}" ${o===(f.why||'')?'selected':''}>${o?esc(o):'causale\u2026'}</option>`).join('')}
+            </select>
+          </div>
+          <div class="fup-q">
+            <button class="mini" onclick="fupIn(${b.id},2)">+2g</button>
+            <button class="mini" onclick="fupIn(${b.id},7)">+1s</button>
+            <button class="mini" onclick="fupIn(${b.id},30)">+1m</button>
+            ${f.date?`<button class="mini" onclick="fupClear(${b.id})">\u2715</button>`:''}
+          </div>
+        </div>`})()}
       <button class="mode-link" onclick="togVista(${b.id})">← Torna alla vista semplice</button>`:`
       ${b.photos.length?`<div class="photos">${b.photos.map((p,i)=>`<img src="${p.src}" onclick="lightbox(${b.id},${i})">`).join('')}</div>`:''}
-      <div class="card-actions">
+      <div class="act-t">Raccogli dati</div>
+      <div class="card-actions acts-r" style="border-top:none;padding-top:0;margin-top:6px">
         <button class="mini" onclick="openWizard(${b.id})">\ud83e\ude84 Wizard</button>
         <button class="mini" onclick="raccOpen(${b.id})">\u{1F399} Racconta</button>
-        <button class="mini" onclick="openVideos(${b.id})">\u{1F3AC} Video</button>
-        <button class="mini" onclick="openCoach(${b.id})">💬 Coach</button>
         <button class="mini" onclick="addPhoto(${b.id})">📷 Foto${b.photos.length?' ('+b.photos.length+')':''}</button>
+      </div>
+      <div class="act-t" style="border-top:1px dashed var(--hair);padding-top:10px">Presenta</div>
+      <div class="card-actions acts-p" style="border-top:none;padding-top:0;margin-top:6px">
+        <button class="mini" onclick="openCoach(${b.id})">💬 Coach</button>
+        <button class="mini" onclick="openVideos(${b.id})">\u{1F3AC} Video</button>
         <button class="mini" style="border-color:var(--brass);color:var(--brass)" onclick="showTeaser(${b.id})">✨ Report</button>
       </div>
+      ${(()=>{const f=b.fup||{};const st=fupState(b);
+        const whyOpts=['',...FUP_WHY];
+        if(f.why&&!whyOpts.includes(f.why))whyOpts.splice(1,0,f.why);
+        return `<div class="fup ${st}">
+          <div class="fup-t">Next step</div>
+          <div class="fup-r1">
+            <span class="fup-lb" title="Ricontatto">\u260E</span>
+            <input type="date" value="${f.date||''}" onchange="updFup(${b.id},'date',this.value)">
+            <select class="fup-why" onchange="updFup(${b.id},'why',this.value)">
+              ${whyOpts.map(o=>`<option value="${esc(o)}" ${o===(f.why||'')?'selected':''}>${o?esc(o):'causale\u2026'}</option>`).join('')}
+            </select>
+          </div>
+          <div class="fup-q">
+            <button class="mini" onclick="fupIn(${b.id},2)">+2g</button>
+            <button class="mini" onclick="fupIn(${b.id},7)">+1s</button>
+            <button class="mini" onclick="fupIn(${b.id},30)">+1m</button>
+            ${f.date?`<button class="mini" onclick="fupClear(${b.id})">\u2715</button>`:''}
+          </div>
+        </div>`})()}
       <button class="mode-link" onclick="togVista(${b.id})">Apri la scheda completa →</button>`}
     </div></details>`;
 }
 function upd(id,k,v){const b=S.buildings.find(x=>x.id===id);b[k]=v;save();if(k==='esito'||k==='cx'||k==='tipologia')render();else renderStats()}
 function togLinea(id,l){const b=S.buildings.find(x=>x.id===id);const i=b.linee.indexOf(l);i>=0?b.linee.splice(i,1):b.linee.push(l);save();render()}
+const FUP_WHY=['Invio preventivo','Decisione in famiglia','Assemblea condominiale','Verifica bolletta/documenti','Sopralluogo tecnico','Attesa finanziamento','Fissare nuova visita','Altro'];
 function fupIn(id,days){const b=S.buildings.find(x=>x.id===id);b.fup=b.fup||{};
   const d=new Date();d.setDate(d.getDate()+days);
   b.fup.date=d.toISOString().slice(0,10);save();render()}
@@ -1911,10 +1953,29 @@ const TOUR_STEPS=[
  {sel:'.card .compl',n:'Il wizard',t:'La completezza dice cosa manca. \u25b8 Completa apre il wizard: una domanda alla volta, coi soli passi mancanti. \u00c8 la via pi\u00f9 rapida per una scheda piena.'},
  {sel:'#bus-fab',n:'La Bussola',t:'\u2726 \u00e8 l\u2019assistente di rotta: suggerisce la prossima mossa giusta, elabora i racconti e risponde alle domande. Se ti perdi, riparti da qui.'}
 ];
-function tourStart(){if(TOUR)return;TOUR={i:0};$('tour').classList.add('on');tourStep()}
+const TOUR2_STEPS=[
+ {sel:'.card .seg',n:'La modalit\u00e0',t:'Semplice \u2223 Completa: la voce piena in ottone \u00e8 quella attiva e la scelta resta salvata su questa scheda. In Semplice non ci sono sezioni da aprire: tutto passa dai wizard.'},
+ {sel:'.card .compl',n:'La completezza',t:'La barra misura 11 voci: dati, consumi, APE, finanza, esito, foto\u2026 Sotto c\u2019\u00e8 scritto cosa manca. \u25b8 Completa apre il wizard sui SOLI passi mancanti; ogni chip accanto salta dritto a quel passo.'},
+ {sel:'.card .acts-r button:nth-child(1)',n:'\u{1FA84} Il wizard',t:'Una domanda alla volta, a schermo pieno: tipologia, interventi, consumi con foto della bolletta, APE, come pagherebbero, esito, foto guidate. Ogni risposta si salva subito: puoi chiudere quando vuoi e riprendere dopo.'},
+ {sel:'.card .acts-r button:nth-child(2)',n:'\u{1F399} Racconta',t:'La via pi\u00f9 veloce: parla (o scrivi) tutto d\u2019un fiato, nell\u2019ordine che ti viene \u2014 l\u2019AI compila i campi e ti mostra il riepilogo da confermare voce per voce. Senza rete? Va in coda e si elabora al ritorno del segnale.'},
+ {sel:'.card .acts-r button:nth-child(3)',n:'\u{1F4F7} Le foto',t:'Scatti dal telefono, miniature sulla scheda. Aprendone una puoi \u2715 eliminarla o \u270F annotarla: frecce e scritte in terracotta (\u00abUE qui\u00bb, \u00abpassaggio tubi\u00bb) che restano dentro la foto ovunque viaggi.'},
+ {sel:'.card .acts-p',n:'Presenta',t:'\u{1F4AC} Coach: argomenti e risposte alle obiezioni per questa tipologia. \u{1F3AC} Video: interventi simili su YouTube da far vedere al cliente. \u2728 Report: l\u2019anteprima con i numeri, da inviare con un tocco.'},
+ {sel:'.card .fup',n:'Next step',t:'L\u2019ultimo gesto prima di chiudere la scheda: la data e la causale del prossimo contatto, dal menu (invio preventivo, assemblea, decisione in famiglia\u2026). Se scade, il dorso diventa terracotta e la Bussola te lo ricorda.'},
+ {sel:'.card .fup-q',n:'Pianifica al volo',t:'+2g, +1s, +1m: un tocco e il richiamo \u00e8 fissato a due giorni, una settimana o un mese. \u2715 lo cancella. Da usare sempre, appena chiudi la visita: un esito senza data \u00e8 un cliente perso.'},
+ {sel:'#bus-fab',n:'E poi?',t:'Quando non sai cosa fare, la \u2726 Bussola te lo dice: quale scheda completare, chi richiamare, quale report inviare. E adesso\u2026 prova davvero:',cta:{label:'\u{1FA84} Prova il wizard ora',fn:'tourTryWizard'}}
+];
+function tourTryWizard(){const b=S.buildings.find(x=>+x.id<=3)||S.buildings[0];tourEnd();if(b)openWizardMissing(b.id)}
+function tourStart(steps){if(TOUR)return;TOUR={i:0,steps:steps||TOUR_STEPS,main:!steps};$('tour').classList.add('on');tourStep()}
+function tourRaccolta(){
+  const b=S.buildings.find(x=>+x.id<=3)||S.buildings[0];
+  if(!b){alert('Serve almeno un edificio in timeline.');return}
+  if(+b.id<=3)b.vista='semplice';
+  UI.card[b.id]=true;render();
+  setTimeout(()=>tourStart(TOUR2_STEPS),200);
+}
 function tourStep(){
   if(!TOUR)return;
-  const st=TOUR_STEPS[TOUR.i];
+  const st=TOUR.steps[TOUR.i];
   if(!st){tourEnd();return}
   const el=document.querySelector(st.sel);
   if(!el){TOUR.i++;tourStep();return}
@@ -1925,16 +1986,17 @@ function tourStep(){
     const pad=8,hole=$('tour-hole');
     hole.style.left=(r.left-pad)+'px';hole.style.top=(r.top-pad)+'px';
     hole.style.width=(r.width+pad*2)+'px';hole.style.height=(r.height+pad*2)+'px';
-    $('tour-n').textContent=(TOUR.i+1)+'/'+TOUR_STEPS.length+' \u00b7 '+st.n;
+    $('tour-n').textContent=(TOUR.i+1)+'/'+TOUR.steps.length+' \u00b7 '+st.n;
     $('tour-t').textContent=st.t;
     const H=(window.innerHeight||700),tip=$('tour-tip');
     if(r.bottom+190<H){tip.style.top=(r.bottom+pad+14)+'px';tip.style.bottom='auto'}
     else{tip.style.top='auto';tip.style.bottom=(H-r.top+pad+14)+'px'}
-    const nx=$('tour-next');if(nx)nx.textContent=TOUR.i===TOUR_STEPS.length-1?'Fine \u2713':'Avanti \u2192';
+    const nx=$('tour-next');if(nx)nx.textContent=TOUR.i===TOUR.steps.length-1?'Fine \u2713':'Avanti \u2192';
+    const cta=$('tour-cta');if(cta)cta.innerHTML=st.cta?`<button class="btn brass" style="width:100%;margin-bottom:8px" onclick="${st.cta.fn}()">${st.cta.label}</button>`:'';
   },80);
 }
 function tourNext(){if(!TOUR)return;TOUR.i++;tourStep()}
-function tourEnd(){TOUR=null;$('tour').classList.remove('on');if(!S.tourDone){S.tourDone=true;save()}}
+function tourEnd(){const wasMain=TOUR&&TOUR.main;TOUR=null;$('tour').classList.remove('on');if(wasMain&&!S.tourDone){S.tourDone=true;save()}}
 window.addEventListener('resize',()=>{if(TOUR)tourStep()});
 
 /* \u2500\u2500 Racconta: parla, l'AI compila (diff con conferma) \u2500\u2500 */
