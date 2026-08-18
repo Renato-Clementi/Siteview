@@ -559,7 +559,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
       <p><b>▶ Avvia giro</b> attiva il GPS: la barra scura in alto conta i km, gli edifici visitati, gli esiti caldi e la <b>pipeline stimata</b> del giorno.</p>
       <p>Se resti fermo entro il raggio impostato per i minuti impostati (Impostazioni: default 60 m / 4 min), l'app registra da sola l'edificio, senza interromperti. In alternativa: il tondo <b>＋ Aggiungi edificio</b> nella posizione attuale, oppure Strumenti → coordinate manuali — in questi due casi l'app chiede subito <i>come</i> vuoi raccogliere i dati (capitolo 2).</p>
       <p><b>Indirizzo automatico:</b> quando registri un edificio con il GPS attivo, l'indirizzo si compila da solo (via OpenStreetMap) — se lo scrivi tu, il tuo vince. Manca? Nella riga delle coordinate c'è 📍 Trova indirizzo.</p>
-      <p><b>Due tour guidati</b> (pulsanti qui sopra): il <i>benvenuto</i> per i cinque gesti fondamentali, e <i>raccolta Semplice</i> che ti accompagna dentro una scheda: modalità, completezza, Next step, Raccogli dati e Presenta.</p>
+      <p><b>Due tour guidati</b> (pulsanti qui sopra): il <i>benvenuto</i> per i cinque gesti fondamentali, e <i>raccolta Semplice</i> che ti accompagna dentro una scheda: modalità, completezza, Raccogli dati, Presenta e Next step.</p>
       <p><b>Tour di benvenuto:</b> alla prima apertura un breve giro guidato illumina i cinque gesti che contano (Avvia giro, Registra edificio, la scheda, il wizard, la Bussola); lo ritrovi qui sopra con «↻ Rivedi il tour». Poi è la Bussola a farti da tutor: ti propone il primo edificio e il primo wizard al momento giusto.</p>
       <p><b>Due modalità:</b> alla prima apertura scegli tra <b>Semplice</b> — schede essenziali con 4 azioni (🪄 Wizard, 💬 Coach, 📷 Foto, ✨ Report): ogni inserimento passa dai wizard e dalla cascata di completamento — e <b>Completa</b>, con tutte le sezioni a vista. La modalità si governa <b>scheda per scheda</b>: in cima a ogni scheda aperta c'è il selettore <b>Semplice ∣ Completa</b> (la voce attiva è piena in ottone) e la scelta resta salvata su quell'edificio — il condominio complesso in Completa, le villette in Semplice, insieme. In Impostazioni scegli solo la modalità <i>predefinita</i> per le schede senza scelta propria.</p>
       <p><b>Installa l'app:</b> su iPhone apri in Safari → Condividi → <i>Aggiungi alla schermata Home</i>; su Android, Chrome → menù ⋮ → <i>Installa app</i>. Da lì in poi è un'icona BABOO a tutto schermo che <b>si apre anche senza rete</b>: in cantina o in centrale termica l'app c'è sempre, aspettano il segnale solo le funzioni AI e l'indirizzo automatico.</p>
@@ -1329,7 +1329,7 @@ function cardHTML(b,isNewest){
   const hasDoc=!!(b.notes||b.photos.length||b.memos.length);
   const sec=(key,def,label,inner)=>`<details class="sec" ${ (UI.sec[b.id+'-'+key]??def)?'open':'' } ontoggle="UI.sec['${b.id}-${key}']=this.open">
     <summary>${label}</summary><div class="sec-bd">${inner}</div></details>`;
-  return `<details class="card ${b.esito||''}" ${cardOpen} data-id="${b.id}" ontoggle="UI.card[${b.id}]=this.open">
+  return `<details class="card ${b.esito||''} ${TOUR_TARGET===b.id?'tour-tg':''}" ${cardOpen} data-id="${b.id}" ontoggle="UI.card[${b.id}]=this.open">
     <summary class="card-hd">
       <div class="hd-l">
         <h3 id="nm-${b.id}" onclick="if(this.isContentEditable){event.preventDefault();event.stopPropagation()}" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}" onblur="if(this.isContentEditable){this.contentEditable=false;upd(${b.id},'name',this.textContent.trim()||'Edificio')}">${esc(b.name)}<button class="hd-edit" title="Rinomina" onclick="event.preventDefault();event.stopPropagation();editName(${b.id})">✎</button></h3>
@@ -1954,22 +1954,23 @@ const TOUR_STEPS=[
  {sel:'#bus-fab',n:'La Bussola',t:'\u2726 \u00e8 l\u2019assistente di rotta: suggerisce la prossima mossa giusta, elabora i racconti e risponde alle domande. Se ti perdi, riparti da qui.'}
 ];
 const TOUR2_STEPS=[
- {sel:'.card .seg',n:'La modalit\u00e0',t:'Semplice \u2223 Completa: la voce piena in ottone \u00e8 quella attiva e la scelta resta salvata su questa scheda. In Semplice non ci sono sezioni da aprire: tutto passa dai wizard.'},
- {sel:'.card .compl',n:'La completezza',t:'La barra misura 11 voci: dati, consumi, APE, finanza, esito, foto\u2026 Sotto c\u2019\u00e8 scritto cosa manca. \u25b8 Completa apre il wizard sui SOLI passi mancanti; ogni chip accanto salta dritto a quel passo.'},
- {sel:'.card .acts-r button:nth-child(1)',n:'\u{1FA84} Il wizard',t:'Una domanda alla volta, a schermo pieno: tipologia, interventi, consumi con foto della bolletta, APE, come pagherebbero, esito, foto guidate. Ogni risposta si salva subito: puoi chiudere quando vuoi e riprendere dopo.'},
- {sel:'.card .acts-r button:nth-child(2)',n:'\u{1F399} Racconta',t:'La via pi\u00f9 veloce: parla (o scrivi) tutto d\u2019un fiato, nell\u2019ordine che ti viene \u2014 l\u2019AI compila i campi e ti mostra il riepilogo da confermare voce per voce. Senza rete? Va in coda e si elabora al ritorno del segnale.'},
- {sel:'.card .acts-r button:nth-child(3)',n:'\u{1F4F7} Le foto',t:'Scatti dal telefono, miniature sulla scheda. Aprendone una puoi \u2715 eliminarla o \u270F annotarla: frecce e scritte in terracotta (\u00abUE qui\u00bb, \u00abpassaggio tubi\u00bb) che restano dentro la foto ovunque viaggi.'},
- {sel:'.card .acts-p',n:'Presenta',t:'\u{1F4AC} Coach: argomenti e risposte alle obiezioni per questa tipologia. \u{1F3AC} Video: interventi simili su YouTube da far vedere al cliente. \u2728 Report: l\u2019anteprima con i numeri, da inviare con un tocco.'},
- {sel:'.card .fup',n:'Next step',t:'L\u2019ultimo gesto prima di chiudere la scheda: la data e la causale del prossimo contatto, dal menu (invio preventivo, assemblea, decisione in famiglia\u2026). Se scade, il dorso diventa terracotta e la Bussola te lo ricorda.'},
- {sel:'.card .fup-q',n:'Pianifica al volo',t:'+2g, +1s, +1m: un tocco e il richiamo \u00e8 fissato a due giorni, una settimana o un mese. \u2715 lo cancella. Da usare sempre, appena chiudi la visita: un esito senza data \u00e8 un cliente perso.'},
+ {sel:'.tour-tg .seg',n:'La modalit\u00e0',t:'Semplice \u2223 Completa: la voce piena in ottone \u00e8 quella attiva e la scelta resta salvata su questa scheda. In Semplice non ci sono sezioni da aprire: tutto passa dai wizard.'},
+ {sel:'.tour-tg .compl',n:'La completezza',t:'La barra misura 11 voci: dati, consumi, APE, finanza, esito, foto\u2026 Sotto c\u2019\u00e8 scritto cosa manca. \u25b8 Completa apre il wizard sui SOLI passi mancanti; ogni chip accanto salta dritto a quel passo.'},
+ {sel:'.tour-tg .acts-r button:nth-child(1)',n:'\u{1FA84} Il wizard',t:'Una domanda alla volta, a schermo pieno: tipologia, interventi, consumi con foto della bolletta, APE, come pagherebbero, esito, foto guidate. Ogni risposta si salva subito: puoi chiudere quando vuoi e riprendere dopo.'},
+ {sel:'.tour-tg .acts-r button:nth-child(2)',n:'\u{1F399} Racconta',t:'La via pi\u00f9 veloce: parla (o scrivi) tutto d\u2019un fiato, nell\u2019ordine che ti viene \u2014 l\u2019AI compila i campi e ti mostra il riepilogo da confermare voce per voce. Senza rete? Va in coda e si elabora al ritorno del segnale.'},
+ {sel:'.tour-tg .acts-r button:nth-child(3)',n:'\u{1F4F7} Le foto',t:'Scatti dal telefono, miniature sulla scheda. Aprendone una puoi \u2715 eliminarla o \u270F annotarla: frecce e scritte in terracotta (\u00abUE qui\u00bb, \u00abpassaggio tubi\u00bb) che restano dentro la foto ovunque viaggi.'},
+ {sel:'.tour-tg .acts-p',n:'Presenta',t:'\u{1F4AC} Coach: argomenti e risposte alle obiezioni per questa tipologia. \u{1F3AC} Video: interventi simili su YouTube da far vedere al cliente. \u2728 Report: l\u2019anteprima con i numeri, da inviare con un tocco.'},
+ {sel:'.tour-tg .fup',n:'Next step',t:'L\u2019ultimo gesto prima di chiudere la scheda: la data e la causale del prossimo contatto, dal menu (invio preventivo, assemblea, decisione in famiglia\u2026). Se scade, il dorso diventa terracotta e la Bussola te lo ricorda.'},
+ {sel:'.tour-tg .fup-q',n:'Pianifica al volo',t:'+2g, +1s, +1m: un tocco e il richiamo \u00e8 fissato a due giorni, una settimana o un mese. \u2715 lo cancella. Da usare sempre, appena chiudi la visita: un esito senza data \u00e8 un cliente perso.'},
  {sel:'#bus-fab',n:'E poi?',t:'Quando non sai cosa fare, la \u2726 Bussola te lo dice: quale scheda completare, chi richiamare, quale report inviare. E adesso\u2026 prova davvero:',cta:{label:'\u{1FA84} Prova il wizard ora',fn:'tourTryWizard'}}
 ];
 function tourTryWizard(){const b=S.buildings.find(x=>+x.id<=3)||S.buildings[0];tourEnd();if(b)openWizardMissing(b.id)}
+let TOUR_TARGET=null;
 function tourStart(steps){if(TOUR)return;TOUR={i:0,steps:steps||TOUR_STEPS,main:!steps};$('tour').classList.add('on');tourStep()}
 function tourRaccolta(){
   const b=S.buildings.find(x=>+x.id<=3)||S.buildings[0];
   if(!b){alert('Serve almeno un edificio in timeline.');return}
-  if(+b.id<=3)b.vista='semplice';
+  TOUR_TARGET=b.id;if(+b.id<=3)b.vista='semplice';
   UI.card[b.id]=true;render();
   setTimeout(()=>tourStart(TOUR2_STEPS),200);
 }
@@ -1996,7 +1997,7 @@ function tourStep(){
   },80);
 }
 function tourNext(){if(!TOUR)return;TOUR.i++;tourStep()}
-function tourEnd(){const wasMain=TOUR&&TOUR.main;TOUR=null;$('tour').classList.remove('on');if(wasMain&&!S.tourDone){S.tourDone=true;save()}}
+function tourEnd(){const wasMain=TOUR&&TOUR.main;TOUR=null;TOUR_TARGET=null;$('tour').classList.remove('on');if(wasMain&&!S.tourDone){S.tourDone=true;save()}}
 window.addEventListener('resize',()=>{if(TOUR)tourStep()});
 
 /* \u2500\u2500 Racconta: parla, l'AI compila (diff con conferma) \u2500\u2500 */
