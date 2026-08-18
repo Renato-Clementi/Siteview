@@ -9,12 +9,12 @@
 <style>
 :root{
   --paper:#F5F2EB; --ink:#2A2723; --brass:#988060; --cream:#EDE7DB;
-  --hair:#D8CDB8; --muted:#8C8475; --blue:#9CB4CC; --lilac:#C0A8CC;
+  --hair:#D8CDB8; --muted:#6E675C; --blue:#9CB4CC; --lilac:#C0A8CC;
   --caldo:#986040; --tiepido:#988060; --freddo:#8CA4BC;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--paper);color:var(--ink);font-family:'EB Garamond',Georgia,serif;font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
-.wrap{max-width:760px;margin:0 auto;padding:0 14px 80px}
+body{background:var(--paper);color:var(--ink);font-family:'EB Garamond',Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:0 12px 130px}
 
 /* ── Testata ─────────────────────────── */
 header{background:var(--ink);color:var(--cream);padding:22px 14px 18px}
@@ -23,106 +23,106 @@ header{background:var(--ink);color:var(--cream);padding:22px 14px 18px}
 .logo .dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--lilac);margin-left:3px;position:relative;top:-14px}
 .logo .dot2{background:var(--blue);margin-left:-4px;top:-2px;width:9px;height:9px}
 .eyebrow{font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--brass);margin-top:6px}
-.help-btn{background:none;border:1px solid var(--brass);color:var(--cream);width:34px;height:34px;border-radius:50%;font-family:'Playfair Display',serif;font-size:17px;cursor:pointer;flex:none}
+.help-btn{background:none;border:1px solid var(--brass);color:var(--cream);width:42px;height:42px;border-radius:50%;font-family:'Playfair Display',serif;font-size:17px;cursor:pointer;flex:none}
 
 /* ── Barra di stato ──────────────────── */
 .status{background:var(--ink);color:var(--cream);border-top:1px solid #3d382f}
 .status-in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);padding:12px 14px 16px;gap:6px}
-.stat .n{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;line-height:1.1}
-.stat .l{font-family:Helvetica,Arial,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--brass)}
+.stat .n{font-family:'Playfair Display',serif;font-size:25px;font-weight:600;line-height:1.1}
+.stat .l{font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--brass)}
 
 /* ── Comandi ─────────────────────────── */
 .controls{display:flex;flex-wrap:wrap;gap:8px;padding:16px 0 6px}
-button{font-family:'EB Garamond',Georgia,serif;font-size:16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.btn{background:var(--ink);color:var(--cream);border:none;padding:11px 18px;min-height:44px;border-radius:2px;letter-spacing:.3px}
+button{font-family:'EB Garamond',Georgia,serif;font-size:17px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.btn{background:var(--ink);color:var(--cream);border:none;padding:13px 18px;min-height:50px;font-size:17.5px;border-radius:2px;letter-spacing:.3px}
 .btn.brass{background:var(--brass)}
 .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--hair)}
 .btn:active{opacity:.8}
 .btn[disabled]{opacity:.4;cursor:default}
 .panel{display:none;border:1px solid var(--hair);background:#FBF9F4;padding:14px;margin:8px 0;border-radius:2px}
 .panel.open{display:block}
-.panel label{font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin:8px 0 3px}
-.panel input,.panel select{width:100%;padding:9px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:16px;border-radius:2px}
+.panel label{font-family:Helvetica,Arial,sans-serif;font-size:11.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin:8px 0 3px}
+.panel input,.panel select{width:100%;padding:12px;min-height:46px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:16px;border-radius:2px}
 .gps-note{font-style:italic;color:var(--muted);font-size:14px;padding:4px 0 10px}
 
 /* ── Timeline ────────────────────────── */
-.tl{position:relative;margin-top:18px;padding-left:34px}
-.tl::before{content:"";position:absolute;left:11px;top:0;bottom:0;width:2px;background:repeating-linear-gradient(to bottom,var(--brass) 0 26px,var(--hair) 26px 30px)}
-.daysep{position:relative;margin:26px 0 14px -34px;text-align:center}
-.daysep span{background:var(--paper);padding:0 14px;font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--brass)}
+.tl{position:relative;margin-top:18px}
+.daysep{position:relative;margin:26px 0 14px;text-align:center}
+.daysep span{background:var(--paper);padding:0 14px;font-family:Helvetica,Arial,sans-serif;font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:var(--brass)}
 .daysep::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--hair);z-index:-1}
 
 /* ── Scheda edificio ─────────────────── */
 .card{background:#FBF9F4;border:1px solid var(--hair);border-radius:2px;margin-bottom:22px;position:relative;overflow:hidden}
-.card::before{content:"⌂";position:absolute;left:-34px;top:14px;width:24px;height:24px;background:var(--paper);border:2px solid var(--brass);border-radius:50%;color:var(--brass);font-size:13px;line-height:20px;text-align:center}
 .card-hd{background:var(--ink);color:var(--cream);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-.card-hd h3{font-family:'Playfair Display',serif;font-size:19px;font-weight:600}
+.card-hd h3{font-family:'Playfair Display',serif;font-size:20.5px;font-weight:600}
 .card-hd .time{font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:2px;color:var(--brass);flex:none}
 .hd-l{min-width:0;flex:1}
-.hd-meta{font-size:13px;font-style:italic;color:#bfb6a4;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hd-meta{font-size:14.5px;font-style:italic;color:#bfb6a4;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 details.card>summary{list-style:none;cursor:pointer}
 details.card>summary::-webkit-details-marker{display:none}
 .chev{flex:none;color:var(--brass);font-size:13px;transition:transform .2s}
 details.card[open]>summary .chev{transform:rotate(180deg)}
 details.sec{border:1px solid var(--hair);border-radius:2px;background:#fff;margin:8px 0}
-details.sec>summary{list-style:none;cursor:pointer;padding:9px 12px;font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center;gap:8px}
+details.sec>summary{list-style:none;cursor:pointer;padding:13px 14px;font-family:Helvetica,Arial,sans-serif;font-size:11px;min-height:46px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center;gap:8px}
 details.sec>summary::-webkit-details-marker{display:none}
 details.sec>summary::after{content:"+";color:var(--brass);font-size:15px;flex:none}
 details.sec[open]>summary::after{content:"−"}
-.sec-bd{padding:10px 12px;border-top:1px solid var(--hair)}
-.chk-g{font-family:Helvetica,Arial,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--brass);margin:10px 0 4px}
+.sec-bd{padding:12px 12px;border-top:1px solid var(--hair)}
+.chk-g{font-family:Helvetica,Arial,sans-serif;font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--brass);margin:10px 0 4px}
 .chk-g:first-child{margin-top:0}
-.chk{display:flex;gap:9px;align-items:flex-start;padding:5px 0;font-size:15px;cursor:pointer;border-bottom:1px dotted var(--hair)}
-.chk input{accent-color:var(--brass);width:17px;height:17px;flex:none;margin-top:2px}
+.chk{display:flex;gap:10px;align-items:center;padding:9px 0;font-size:16.5px;cursor:pointer;border-bottom:1px dotted var(--hair)}
+.chk input{accent-color:var(--brass);width:22px;height:22px;flex:none}
 .chk.ok .chk-tx{color:var(--muted);text-decoration:line-through}
 .chk-tx{flex:1;min-width:0}
-.chk-cam{flex:none;background:transparent;border:1px solid var(--hair);border-radius:2px;padding:3px 8px;font-size:14px;margin-left:4px}
-.chk-th{width:30px;height:30px;object-fit:cover;border:1px solid var(--brass);border-radius:2px;flex:none;cursor:pointer}
+.chk-cam{flex:none;background:transparent;border:1px solid var(--hair);border-radius:2px;padding:9px 13px;font-size:15.5px;min-height:42px;margin-left:4px}
+.chk-th{width:42px;height:42px;object-fit:cover;border:1px solid var(--brass);border-radius:2px;flex:none;cursor:pointer}
 .photos img.tagged{border-color:var(--brass);border-width:2px}
-.cons-sum{background:var(--cream);border-left:3px solid var(--brass);padding:8px 12px;margin:10px 0;font-size:15px}
+.cons-sum{background:var(--cream);border-left:3px solid var(--brass);padding:10px 13px;margin:10px 0;font-size:16px}
+.tip{background:#fff;border:1px solid var(--hair);border-left:3px solid var(--brass);border-radius:0 8px 8px 8px;padding:11px 13px;margin:6px 0;font-size:16px;font-style:italic;color:#4a463f}
+.tip.close{background:var(--cream);border-left-color:var(--ink);font-style:normal}
 .card-bd{padding:14px 16px 16px}
-.coords{font-size:13px;color:var(--muted);font-style:italic;margin-bottom:10px}
+.coords{font-size:14.5px;color:var(--muted);font-style:italic;margin-bottom:10px}
 
 /* Esito + complessità */
 .esito-row{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 12px;align-items:center}
-.esito{border:1px solid var(--hair);background:#fff;padding:6px 13px;border-radius:20px;font-size:14px;color:var(--muted)}
+.esito{border:1px solid var(--hair);background:#fff;padding:10px 17px;border-radius:24px;font-size:15.5px;min-height:44px;color:var(--muted)}
 .esito.sel-caldo{background:var(--caldo);border-color:var(--caldo);color:var(--cream)}
 .esito.sel-tiepido{background:var(--tiepido);border-color:var(--tiepido);color:var(--cream)}
 .esito.sel-freddo{background:var(--freddo);border-color:var(--freddo);color:#fff}
 .cx{margin-left:auto;display:flex;gap:4px;align-items:center}
-.cx .lab{font-family:Helvetica,Arial,sans-serif;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-right:2px}
-.cx b{width:13px;height:13px;border-radius:50%;border:1px solid var(--brass);background:transparent;cursor:pointer;padding:0}
+.cx .lab{font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-right:2px}
+.cx b{width:19px;height:19px;border-radius:50%;border:1px solid var(--brass);background:transparent;cursor:pointer;padding:0}
 .cx b.on{background:var(--brass)}
 
 /* Campi struttura */
 .fields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
-.f label{font-family:Helvetica,Arial,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:2px}
-.f input,.f select{width:100%;padding:7px 8px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:15px;border-radius:2px}
+.f label{font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:2px}
+.f input,.f select{width:100%;padding:12px 10px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:16px;min-height:46px;border-radius:2px}
 .f.wide{grid-column:1/-1}
 
 /* Linee prodotto */
 .linee{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
-.linea{font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:1.5px;padding:5px 10px;border:1px solid var(--hair);background:#fff;color:var(--muted);border-radius:2px}
+.linea{font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:1.5px;padding:11px 13px;min-height:42px;border:1px solid var(--hair);background:#fff;color:var(--muted);border-radius:2px}
 .linea.on{background:var(--brass);border-color:var(--brass);color:var(--cream)}
 
 /* Sezione AI */
 .ai-box{border-left:3px solid var(--brass);padding:10px 12px;background:var(--cream);margin:10px 0}
-.ai-box h4{font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--brass);margin-bottom:4px}
-.ai-box p{font-size:15.5px;margin-bottom:8px}
+.ai-box h4{font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--brass);margin-bottom:4px}
+.ai-box p{font-size:16.5px;margin-bottom:8px}
 .ai-box p:last-child{margin-bottom:0}
-.ai-note{font-size:12.5px;font-style:italic;color:var(--muted)}
+.ai-note{font-size:13.5px;font-style:italic;color:var(--muted)}
 
 /* Media */
 .photos{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
-.photos img{width:72px;height:72px;object-fit:cover;border:1px solid var(--hair);border-radius:2px;cursor:pointer}
-.nota{font-style:italic;border-left:3px solid #8a9a7a;padding:6px 10px;margin:8px 0;color:#4a463f;background:#fff;font-size:15px}
+.photos img{width:84px;height:84px;object-fit:cover;border:1px solid var(--hair);border-radius:2px;cursor:pointer}
+.nota{font-style:italic;border-left:3px solid #8a9a7a;padding:9px 12px;margin:8px 0;color:#4a463f;background:#fff;font-size:16px}
 .memo{display:flex;align-items:center;gap:8px;margin:6px 0}
 .memo audio{height:34px;flex:1}
-textarea.nota-edit{width:100%;border:1px solid var(--hair);padding:8px;font-family:inherit;font-size:15px;min-height:64px;border-radius:2px;margin:6px 0}
+textarea.nota-edit{width:100%;border:1px solid var(--hair);padding:11px;font-family:inherit;font-size:16.5px;min-height:90px;border-radius:2px;margin:6px 0}
 
 /* Azioni scheda */
 .card-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--hair)}
-.mini{background:transparent;border:1px solid var(--hair);color:var(--ink);padding:7px 11px;font-size:14px;border-radius:2px;min-height:38px}
+.mini{background:transparent;border:1px solid var(--hair);color:var(--ink);padding:11px 14px;font-size:15.5px;border-radius:2px;min-height:46px}
 .mini.rec{background:#a33;color:#fff;border-color:#a33}
 .del{margin-left:auto;color:var(--muted);border-color:transparent}
 
@@ -139,6 +139,32 @@ textarea.nota-edit{width:100%;border:1px solid var(--hair);padding:8px;font-fami
 
 .empty{font-style:italic;color:var(--muted);text-align:center;padding:40px 20px}
 footer{max-width:760px;margin:30px auto 0;padding:14px;border-top:1px solid var(--hair);font-family:Helvetica,Arial,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-align:center}
+.searchbar{display:flex;align-items:center;gap:10px;margin:14px 0 4px}
+.search{flex:1;min-height:50px;padding:12px 14px;border:1px solid var(--hair);border-radius:26px;background:#fff;font-family:inherit;font-size:16.5px}
+.search:focus{outline:none;border-color:var(--brass)}
+#search-n{font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:1px;color:var(--muted);white-space:nowrap}
+.wiz{position:fixed;inset:0;z-index:60;background:var(--paper);display:none;flex-direction:column}
+.wiz.open{display:flex}
+.wiz-top{flex:none;background:var(--ink);padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));display:flex;justify-content:space-between;align-items:center}
+.wiz-top .n{font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:2px;color:var(--brass);text-transform:uppercase}
+.wiz-x{background:none;border:1px solid var(--brass);color:var(--cream);width:38px;height:38px;border-radius:50%;font-size:16px}
+.wiz-bar{flex:none;height:5px;background:var(--cream)}
+.wiz-bar b{display:block;height:100%;background:var(--brass);transition:width .25s}
+.wiz-body{flex:1;overflow:auto;padding:26px 18px 20px;max-width:640px;width:100%;margin:0 auto}
+.wiz-q{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;line-height:1.2;margin-bottom:6px}
+.wiz-sub{font-style:italic;color:var(--muted);margin-bottom:18px;font-size:16px}
+.wiz-big{display:block;width:100%;text-align:left;background:#FBF9F4;border:1px solid var(--hair);border-radius:2px;padding:16px;font-size:18px;margin-bottom:10px;min-height:58px}
+.wiz-big.on{background:var(--brass);border-color:var(--brass);color:var(--cream)}
+.wiz-body input,.wiz-body select{width:100%;min-height:52px;padding:13px;border:1px solid var(--hair);background:#fff;font-family:inherit;font-size:17px;border-radius:2px;margin-bottom:12px}
+.wiz-body .lb{font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin:6px 0 4px}
+.wiz-foot{flex:none;display:flex;gap:10px;padding:12px 16px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--hair);background:var(--paper)}
+.wiz-foot .btn{flex:1;min-height:54px}
+.compl{font-size:14px;color:var(--muted);font-style:italic;margin:-2px 0 10px}
+.compl b{color:var(--brass);font-style:normal}
+.compl-bar{height:4px;background:var(--cream);border-radius:2px;margin-top:4px}
+.compl-bar i{display:block;height:100%;background:var(--brass);border-radius:2px}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;gap:10px;padding:10px 12px calc(12px + env(safe-area-inset-bottom));background:var(--paper);border-top:1px solid var(--hair);box-shadow:0 -4px 14px rgba(42,39,35,.08)}
+.dock .btn{flex:1;min-height:56px;font-size:18px}
 @media(max-width:520px){.fields{grid-template-columns:1fr}.status-in{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
@@ -162,10 +188,8 @@ footer{max-width:760px;margin:30px auto 0;padding:14px;border-top:1px solid var(
 
 <div class="wrap">
   <div class="controls">
-    <button class="btn" id="btn-track" onclick="toggleTrack()">▶ Avvia giro</button>
-    <button class="btn brass" onclick="markBuilding()">⌂ Registra edificio</button>
-    <button class="btn ghost" onclick="togglePanel('tools')">Strumenti</button>
-    <button class="btn ghost" onclick="togglePanel('sett')">Impostazioni</button>
+    <button class="btn ghost" style="flex:1" onclick="togglePanel('tools')">Strumenti</button>
+    <button class="btn ghost" style="flex:1" onclick="togglePanel('sett')">Impostazioni</button>
   </div>
   <div class="gps-note" id="gps-note">GPS spento — le soste presso gli edifici verranno rilevate automaticamente all'avvio del giro.</div>
 
@@ -180,6 +204,15 @@ footer{max-width:760px;margin:30px auto 0;padding:14px;border-top:1px solid var(
     </div>
     <label style="margin-top:14px">Chiave API Anthropic (facoltativa — resta sul dispositivo)</label>
     <input id="in-key" type="password" placeholder="sk-ant-…" onchange="S.apiKey=this.value;save()">
+    <label style="margin-top:14px">Trascrizione conversazioni (Whisper)</label>
+    <select id="in-sttmode" onchange="S.sttMode=this.value;save()">
+      <option value="openai">OpenAI Whisper API</option>
+      <option value="custom">Server BABOO (faster-whisper)</option>
+    </select>
+    <label>Chiave OpenAI (per Whisper API — resta sul dispositivo)</label>
+    <input id="in-oakey" type="password" placeholder="sk-…" onchange="S.openaiKey=this.value;save()">
+    <label>URL server Whisper proprio</label>
+    <input id="in-stturl" placeholder="https://energybrain.baboo.eu/whisper/transcribe" onchange="S.sttUrl=this.value;save()">
   </div>
 
   <div class="panel" id="p-sett">
@@ -189,30 +222,100 @@ footer{max-width:760px;margin:30px auto 0;padding:14px;border-top:1px solid var(
     <input id="in-min" type="number" value="4" onchange="S.minutes=+this.value;save()">
   </div>
 
+  <div class="searchbar"><input class="search" id="in-search" placeholder="🔍 Cerca: nome, indirizzo, tipologia, linea, POD…" oninput="SEARCH=this.value;render()"><span id="search-n"></span></div>
+
   <div class="tl" id="timeline"></div>
   <div class="empty" id="empty" style="display:none">Nessun edificio nel diario.<br>Avvia il giro o registra il primo edificio.</div>
 </div>
 
 <footer>Baboo ESCo S.r.l. · Via Prati 1, Omegna (VB) · UNI CEI 11352</footer>
 
+<div class="dock">
+  <button class="btn" id="btn-track" onclick="toggleTrack()">▶ Avvia giro</button>
+  <button class="btn brass" onclick="markBuilding()">⌂ Registra edificio</button>
+</div>
+
 <!-- Guida -->
 <div class="modal" id="m-guida" onclick="if(event.target===this)closeModal('guida')">
   <div class="modal-in">
     <button class="modal-x" onclick="closeModal('guida')">✕</button>
-    <h2>Guida rapida</h2>
-    <h3>Il giro</h3>
-    <p><b>▶ Avvia giro</b> attiva il GPS: percorso in km nella barra di stato. Se resti fermo entro il raggio impostato per i minuti impostati, l'app registra da sola l'edificio visitato.</p>
-    <h3>La scheda edificio</h3>
-    <ul>
-      <li><b>Esito</b>: caldo / tiepido / freddo — colora la scheda e alimenta i contatori.</li>
-      <li><b>Complessità</b> (1–5 pallini): stima l'onere d'installazione, come nel KIT sopralluogo.</li>
-      <li><b>Linee BABOO</b>: tocca le linee proponibili (CLIMA, SOLERO…). Entrano nel report.</li>
-      <li><b>Scheda AI</b>: con la chiave API genera profilo energetico e opportunità (con ricerca web); senza chiave usa un promemoria compilabile.</li>
-      <li><b>Foto, nota, memo vocale</b>: documentazione di sopralluogo, tutto salvato in locale.</li>
-    </ul>
-    <h3>Fine giornata</h3>
-    <p><b>Scarica report (.md)</b> produce il riepilogo del giro per il commerciale (lead pronti per Odoo); <b>Scarica con foto (.html)</b> il dossier completo da archiviare.</p>
-    <p class="ai-note">I dati vivono nel browser di questo dispositivo (IndexedDB). Gli export sono il backup.</p>
+    <h2>Guida utente</h2>
+    <p style="font-style:italic;color:var(--muted)">Il taccuino GPS per i sopralluoghi tecnico-commerciali BABOO: dal giro alla proposta, tutto in un unico strumento. Tocca un capitolo per aprirlo.</p>
+
+    <details class="sec"><summary>1 · Il giro e gli edifici</summary><div class="sec-bd">
+      <p><b>▶ Avvia giro</b> attiva il GPS: la barra scura in alto conta i km, gli edifici visitati, gli esiti caldi e la <b>pipeline stimata</b> del giorno.</p>
+      <p>Se resti fermo entro il raggio impostato per i minuti impostati (Impostazioni: default 60 m / 4 min), l'app registra da sola l'edificio. In alternativa: <b>⌂ Registra edificio</b> nella posizione attuale, oppure Strumenti → coordinate manuali.</p>
+      <p><b>Wizard o scheda?</b> Quando registri un edificio a mano, l'app chiede come preferisci raccogliere i dati: <b>🪄 Wizard rapido</b> — 7 domande (≈2 minuti) con foto bolletta e APE lette dall'AI, tutte saltabili — oppure <b>📋 Raccolta dettagliata</b>, direttamente sulla scheda completa. La scheda mostra sempre la <b>completezza %</b> con cosa manca; il wizard si può rilanciare in ogni momento (🪄 Wizard).</p>
+      <p>Limiti di piattaforma: serve una pagina <b>https://</b> e lo <b>schermo acceso</b> — a schermo spento i browser sospendono il GPS.</p>
+    </div></details>
+
+    <details class="sec"><summary>2 · La scheda edificio</summary><div class="sec-bd">
+      <p>Ogni edificio è una scheda a soffietto: la fascia scura mostra nome (toccalo per rinominare), esito, valore e linee; tocca la fascia per aprire/chiudere. Il campo <b>🔍 Cerca</b> sopra la timeline filtra per nome, indirizzo, referente, tipologia, linea o POD.</p>
+      <p><b>Esito</b> (🔥 caldo · 🌤 tiepido · ❄ freddo) colora i contatori e cambia la frase di chiusura del Suggeritore. <b>Complessità</b> (1–5 pallini) stima l'onere d'installazione. <b>Valore stimato €</b> alimenta la pipeline del giorno.</p>
+      <p>Gli <b>Interventi proposti</b> sono a vista sotto l'esito: le linee BABOO (con gli optional SOLERO: ⚡ Accumulo e 🔌 Ricarica EV) compongono guida rilievi, stime, Scheda AI e Report cliente. In <b>Dati edificio</b>: la <b>Tipologia</b> (Condominio, Villa singola, PMI produttiva, Attività commerciale) pilota checklist, stime e suggerimenti — sceglila per prima.</p>
+    </div></details>
+
+    <details class="sec"><summary>3 · Suggeritore commerciale e Coach live</summary><div class="sec-bd">
+      <p>Il primo soffietto della scheda è il copione in tasca: <b>domande che aprono</b>, <b>frasi che orientano</b> (con i numeri reali del cliente, se hai compilato i consumi), la <b>leva finanziaria</b> coerente col profilo, <b>l'obiezione tipica con la risposta</b> e <b>la chiusura</b>, che cambia con l'esito selezionato.</p>
+      <p><b>Coach live:</b> tre modi per catturare la conversazione, tutti confluiscono nello stesso campo di testo:</p>
+      <ul>
+        <li><b>● Registra conversazione</b> — audio fino a 30 minuti (timer sul pulsante), poi <b>📝 Trascrivi con Whisper</b>. L'audio resta in memoria finché la pagina è aperta: trascrivi o scarica (⬇) prima di chiudere.</li>
+        <li><b>🎤 Dettatura live</b> — trascrizione immediata del browser, per scambi brevi.</li>
+        <li><b>Scrittura manuale</b> — o il microfono della tastiera.</li>
+      </ul>
+      <p><b>🧠 Analizza con AI</b> legge la trascrizione col contesto dell'edificio e restituisce: obiezioni rilevate, risposte pronte, segnali colti e <b>la prossima mossa</b>. Obiezioni e segnali entrano anche nel report per chi prepara la proposta.</p>
+      <p>⚖️ <b>Informa sempre il cliente</b> che registri o trascrivi: l'app te lo ricorda prima di partire. L'audio e il testo restano sul tuo dispositivo; il testo va all'AI solo quando premi Analizza.</p>
+    </div></details>
+
+    <details class="sec"><summary>4 · Consumi attuali, bolletta e APE</summary><div class="sec-bd">
+      <p>La baseline dei consumi è il denominatore dell'analisi finanziaria: senza, niente numeri in proposta né nel Report cliente.</p>
+      <p>Compila <b>Elettrico</b> (kWh, spesa, potenza, <b>% consumo diurno</b> — decide l'autoconsumo FV), <b>Gas</b> (Smc, spesa, uso) e <b>Altro combustibile</b> (gasolio, GPL, pellet). La riga <b>Baseline</b> calcola da sola spesa annua totale e costi unitari €/kWh e €/Smc.</p>
+      <p><b>📄 Leggi bolletta con AI:</b> fotografa la bolletta e i campi si compilano da soli (POD/PDR compresi); la foto si aggancia alla voce "Bolletta" della guida rilievi. Verifica sempre i valori estratti.</p>
+      <p><b>APE:</b> raccogli classe, indice EPgl,nren e anno di emissione — è il "prima" ufficiale contro cui la proposta certificherà il miglioramento. <b>📄 Leggi APE con AI</b> estrae tutto dalla foto della prima pagina; la classe compare nella baseline e nel Report cliente.</p>
+    </div></details>
+
+    <details class="sec"><summary>4b · Profilo finanziario</summary><div class="sec-bd">
+      <p>La qualificazione economica del cliente, a tocchi rapidi: <b>formula preferita</b> (investimento diretto, rate, zero esborso) con la <b>rata mensile sostenibile</b>; <b>accesso ai contributi</b> con le opzioni giuste per la tipologia (capienza fiscale per la villa, fondo lavori per il condominio, dimensione impresa per la PMI — con i documenti da raccogliere già in guida rilievi); <b>servizi finanziari</b> d'interesse (banca, leasing, EPC/PPA, canale contributi); <b>driver decisionale</b>, chi firma e tempi.</p>
+      <p>Il profilo alimenta la <b>Leva finanziaria</b> del Suggeritore, orienta la Scheda AI, aggiunge il risparmio <i>al mese</i> nel Report cliente quando il cliente ragiona a rata, ed esce in chiaro nel report .md.</p>
+    </div></details>
+
+    <details class="sec"><summary>5 · Guida rilievi e foto</summary><div class="sec-bd">
+      <p>La checklist di cosa fotografare e raccogliere, su <b>tre strati</b>: <i>Sempre</i> + <i>Tipo edificio</i> + <i>Linee proposte</i> (con blocchi extra per gli optional SOLERO). Il contatore nel titolo mostra l'avanzamento; il soffietto si chiude da solo a checklist completa.</p>
+      <p>Ogni voce ha il suo <b>📷</b>: fino a <b>3 foto per voce</b> (scatto o selezione multipla); lo scatto spunta la voce da solo e la miniatura resta accanto. Tocca una miniatura per ingrandirla o eliminarla (✕).</p>
+      <p>In <b>Documentazione</b> trovi tutte le foto (bordo ottone = agganciate a una voce), le note (✏️) e i memo vocali (🎙️, max 3 minuti). Il 📷 in fondo alla scheda è per gli scatti liberi, senza limite.</p>
+    </div></details>
+
+    <details class="sec"><summary>6 · Scheda AI</summary><div class="sec-bd">
+      <p><b>↻ Scheda AI</b> genera con ricerca web: <b>Profilo energetico</b>, <b>Opportunità BABOO</b> (con il modello contrattuale preferenziale per la tipologia: CER per il condominio, PPA on-site per la PMI, chiavi in mano per la villa, EPC light per il commerciale) e <b>Incentivi applicabili</b>.</p>
+      <p>Le <b>foto etichettate</b> della guida rilievi vengono inviate all'AI con la loro didascalia (max 8, priorità alle etichettate): il profilo si basa su ciò che si vede davvero. La nota in calce dichiara quante foto sono state analizzate.</p>
+      <p>⚠️ Contenuto AI: verificare sempre prima dell'offerta.</p>
+    </div></details>
+
+    <details class="sec"><summary>7 · Report cliente (l'aggancio)</summary><div class="sec-bd">
+      <p><b>✨ Report cliente</b> genera l'anteprima persuasiva da mostrare sul telefono o scaricare e inviare: quanto spende oggi (con la classe APE se rilevata), quanto costerà non fare nulla in 10 anni, la <b>forchetta di risparmio</b> stimata (tarata su tipologia e % diurna, con il risparmio al mese se il cliente ragiona a rata), la CO₂ tradotta in alberi, gli interventi, <b>la formula contrattuale per la sua tipologia</b> e la chiamata all'azione con scadenza a 15 giorni e telefono BABOO.</p>
+      <p>Le stime sono indicative e non vincolanti (c'è il disclaimer): la proposta vera segue lo studio di fattibilità. Senza consumi compilati esce la versione qualitativa.</p>
+    </div></details>
+
+    <details class="sec"><summary>8 · Fine giornata: export</summary><div class="sec-bd">
+      <p>Da Strumenti: <b>Scarica report (.md)</b> — il riepilogo del giro per chi prepara le proposte: dati, APE, baseline consumi, profilo finanziario in chiaro, checklist con [x] e conteggio foto, scheda AI, obiezioni e segnali dalla conversazione. <b>Scarica con foto (.html)</b> — il dossier completo con immagini e memo, tutti i soffietti aperti.</p>
+      <p><b>Svuota diario</b> cancella tutto (irreversibile): esporta prima.</p>
+    </div></details>
+
+    <details class="sec"><summary>9 · Impostazioni, chiavi e privacy</summary><div class="sec-bd">
+      <p>In <b>Strumenti</b>: chiave API <b>Anthropic</b> (Scheda AI, lettura bolletta/APE, analisi conversazione) e motore <b>Whisper</b> — OpenAI API (serve la chiave OpenAI, ~0,006 $/min) oppure il server BABOO (l'audio resta nel perimetro aziendale). Le chiavi restano <b>solo sul dispositivo</b>.</p>
+      <p><b>Dove stanno i dati:</b> tutto nel browser di questo dispositivo (IndexedDB), niente server dell'app, niente account. Cambiando telefono o cancellando i dati di navigazione il diario si perde: <b>gli export sono il backup</b>. In navigazione privata o in anteprima il salvataggio non è disponibile e l'app lo segnala.</p>
+      <p>Chiamate esterne solo quando le attivi tu: API Anthropic/OpenAI o server Whisper.</p>
+    </div></details>
+
+    <details class="sec"><summary>10 · Problemi frequenti</summary><div class="sec-bd">
+      <p><b>I pulsanti non rispondono</b> → probabile versione vecchia in cache: ricarica aggiungendo <code>?v=nuovo</code> all'indirizzo o apri in finestra privata.</p>
+      <p><b>GPS/microfono/fotocamera non partono</b> → la pagina dev'essere aperta in https:// e non dall'anteprima di un'app di messaggistica.</p>
+      <p><b>Il diario è sparito</b> → navigazione privata, o dati di navigazione cancellati: ripartire dagli export.</p>
+      <p><b>La trascrizione Whisper fallisce</b> → l'audio resta in memoria: controlla chiave/URL in Strumenti e riprova, o scarica l'audio.</p>
+      <p><b>Lettura bolletta/APE imprecisa</b> → rifotografa in piano, con luce, inquadrando la pagina giusta.</p>
+    </div></details>
+
+    <p style="margin-top:14px;font-size:13px;color:var(--muted);font-style:italic">Sopralluoghi BABOO · agosto 2026 — un unico file, nessuna installazione. Per assistenza: 0323 63934.</p>
   </div>
 </div>
 <div class="modal lightbox" id="m-light" onclick="if(event.target===this)this.classList.remove('open')"><div class="modal-in" style="background:transparent;padding:0;text-align:center"><img id="light-img"><button class="mini" style="margin-top:10px;background:#a33;color:#fff;border-color:#a33" onclick="delPhotoLB()">✕ Elimina foto</button></div></div>
@@ -225,6 +328,17 @@ footer{max-width:760px;margin:30px auto 0;padding:14px;border-top:1px solid var(
       <button class="mini" style="color:var(--cream);border-color:var(--brass)" onclick="closeModal('teaser')">✕ Chiudi</button>
     </div>
     <iframe id="teaser-frame" style="flex:1;border:0;width:100%"></iframe>
+  </div>
+</div>
+
+<!-- Wizard raccolta rapida -->
+<div class="wiz" id="m-wiz">
+  <div class="wiz-top"><span class="n" id="wiz-n">Passo 1 di 7</span><button class="wiz-x" onclick="closeWizard(false)">✕</button></div>
+  <div class="wiz-bar"><b id="wiz-bar" style="width:0%"></b></div>
+  <div class="wiz-body" id="wiz-body"></div>
+  <div class="wiz-foot">
+    <button class="btn ghost" id="wiz-back" onclick="wzPrev()">‹ Indietro</button>
+    <button class="btn brass" id="wiz-next" onclick="wzNext()">Avanti ›</button>
   </div>
 </div>
 
@@ -266,6 +380,7 @@ function applyLoaded(j){
   /* migrazione: foto da stringa a {src, tag} */
   (S.buildings||[]).forEach(b=>{b.photos=(b.photos||[]).map(p=>typeof p==='string'?{src:p,tag:null}:p);b.checks=b.checks||{};b.memos=b.memos||[];b.cons=b.cons||{}});
   $('in-radius').value=S.radius;$('in-min').value=S.minutes;$('in-key').value=S.apiKey||'';
+  $('in-oakey').value=S.openaiKey||'';$('in-stturl').value=S.sttUrl||'';$('in-sttmode').value=S.sttMode||'openai';
   render();
 }
 
@@ -275,21 +390,24 @@ function seedDemo(){
   S.buildings=[
    {id:1,ts:t(9,10),name:'Condominio Via Petitti 5',addr:'Milano (MI)',lat:45.4886,lng:9.1524,auto:true,
     tipologia:'Condominio',anno:'1965',sup:'2.400',impianto:'Caldaia gasolio centralizzata',pod:'IT001E—',ref:'Amm. Pansini (SE.GE.CO.)',val:48000,
-    esito:'caldo',cx:4,linee:['SOLERO','CLIMA','MONITOR'],
+    esito:'caldo',cx:4,linee:['SOLERO','CLIMA','MOUNTAINVIEW','MONITOR'],
     cons:{elKwh:'14500',elSpesa:'4350',elPot:'25',elF1:'35',gasSmc:'',gasSpesa:'',gasUso:'',altroTipo:'gasolio (litri)',altroQta:'16800',altroSpesa:'26900'},
+    ape:{classe:'G',ep:'298',anno:'2021'},
+    fin:{formula:'Zero esborso (EPC/PPA/noleggio)',contributi:'Da deliberare',servizi:['EPC / PPA (paga il risparmio)','Canale contributi (Eco Cred)'],driver:'Risparmio in bolletta',decisore:'Assemblea · Amm. Pansini',tempi:'Entro 3 mesi'},
     ai:{profilo:"Edificio residenziale anni '60, 24 unità su 8 piani, involucro non isolato e centrale termica a gasolio a fine vita. Copertura piana ~380 m² ben esposta, zona climatica E. Classe energetica stimata F/G.",
         opp:"Candidato ideale per CER condominiale con impianto FV SOLERO in copertura (comodato d'uso, gestione 45%) e sostituzione della centrale con pompa di calore CLIMA. MONITOR per la telemetria dei flussi energetici condivisi.",
         inc:"Conto Termico 3.0 sulla pompa di calore; incentivo CER GSE sull'energia condivisa (verifica cumulabilità con eventuali fondi PNRR)."},
     photos:[],notes:"L'amministratore chiede il kit assembleare entro fine mese. Verificare licenza officina elettrica >20 kWp.",memos:[]},
    {id:2,ts:t(11,40),name:'Villetta Fam. Rigamonti',addr:'Gravellona Toce (VB)',lat:45.9296,lng:8.4326,auto:true,
-    tipologia:'Villetta',anno:'1998',sup:'160',impianto:'Caldaia metano + split obsoleti',pod:'',ref:'Sig.ra Rigamonti',val:32000,
+    tipologia:'Villa singola',anno:'1998',sup:'160',impianto:'Caldaia metano + split obsoleti',solOpt:{storage:true},
+    fin:{formula:'Finanziamento a rate',rata:'280',contributi:'Capienza fiscale: sì',servizi:['Finanziamento bancario'],driver:'Comfort abitativo',decisore:'Coniugi Rigamonti',tempi:'Oltre / da capire'},pod:'',ref:'Sig.ra Rigamonti',val:32000,
     esito:'tiepido',cx:2,linee:['SOLERO','CLIMA','THERMO'],
     ai:{profilo:"Villetta bifamiliare su due livelli, serramenti in PVC recenti, tetto a falda sud-est ~45 m² liberi. Riscaldamento a metano con caldaia del 2011, raffrescamento con split di vecchia generazione.",
         opp:"Pacchetto chiavi in mano residenziale: FV 6 kWp + accumulo SOLERO, pompa di calore CLIMA full-electric in sostituzione caldaia. In alternativa soluzione ibrida THERMO se il cliente vuole gradualità.",
         inc:"Conto Termico 3.0 (SCOP da verificare a catalogo) oppure detrazione fiscale; simulare entrambi gli scenari con il simulatore parametrico."},
     photos:[],notes:"",memos:[]},
    {id:3,ts:t(15,5),name:'Capannone F.lli Osella S.n.c.',addr:'Omegna (VB)',lat:45.8763,lng:8.4092,auto:false,
-    tipologia:'PMI / capannone',anno:'1984',sup:'1.100',impianto:'Aerotermi a gas, no clima estivo',pod:'IT001E—',ref:'Sig. Osella (titolare)',val:95000,
+    tipologia:'PMI produttiva',anno:'1984',sup:'1.100',impianto:'Aerotermi a gas, no clima estivo',solOpt:{ev:true},pod:'IT001E—',ref:'Sig. Osella (titolare)',val:95000,
     esito:'freddo',cx:3,linee:['MAXICLIMA','SOLERO'],
     ai:{profilo:"Capannone produttivo con uffici annessi, copertura in lamiera grecata ~900 m² idonea al FV, consumi elettrici diurni elevati (macchine utensili). Nessun raffrescamento negli uffici.",
         opp:"On-site PPA / SEU con riservato dominio per FV SOLERO senza esborso iniziale; MAXICLIMA VRV per gli uffici. Da riproporre a settembre: il titolare rimanda ogni decisione dopo le ferie.",
@@ -325,52 +443,308 @@ function onPos(p){
 }
 function markBuilding(){
   try{
-    if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>createBuilding(p.coords.latitude,p.coords.longitude,false),
-      ()=>createBuilding(null,null,false),{enableHighAccuracy:true,timeout:5000})}
-    else createBuilding(null,null,false);
-  }catch(e){createBuilding(null,null,false)}
+    if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>createBuilding(p.coords.latitude,p.coords.longitude,false,true),
+      ()=>createBuilding(null,null,false,true),{enableHighAccuracy:true,timeout:5000})}
+    else createBuilding(null,null,false,true);
+  }catch(e){createBuilding(null,null,false,true)}
 }
 function addFromCoords(){const v=$('in-coords').value.split(',').map(x=>parseFloat(x.trim()));
-  if(v.length===2&&!isNaN(v[0]))createBuilding(v[0],v[1],false);else alert('Formato: lat, lng')}
-function createBuilding(lat,lng,auto){
-  S.buildings.push({id:Date.now(),ts:Date.now(),name:'Nuovo edificio',addr:'',lat,lng,auto,
-    tipologia:'',anno:'',sup:'',impianto:'',pod:'',ref:'',val:0,esito:'',cx:0,linee:[],ai:null,photos:[],notes:'',memos:[]});
-  save();render();window.scrollTo({top:document.querySelector('.tl').offsetTop,behavior:'smooth'});
+  if(v.length===2&&!isNaN(v[0]))createBuilding(v[0],v[1],false,true);else alert('Formato: lat, lng')}
+function createBuilding(lat,lng,auto,wiz){
+  const nid=Date.now();
+  S.buildings.push({id:nid,ts:nid,name:'Nuovo edificio',addr:'',lat,lng,auto,
+    tipologia:'',anno:'',sup:'',impianto:'',pod:'',ref:'',val:0,esito:'',cx:0,linee:[],solOpt:{},ai:null,photos:[],notes:'',memos:[],checks:{},cons:{},ape:{},fin:{servizi:[]},talk:''});
+  save();render();
+  if(wiz)openWizard(nid,true);
+  else window.scrollTo({top:document.querySelector('.tl').offsetTop,behavior:'smooth'});
 }
 
 /* ══════════ Render ══════════ */
-const LINEE=['MINICLIMA','MAXICLIMA','CLIMA','SOLERO','THERMO','MONITOR'];
+const LINEE=['MINICLIMA','MAXICLIMA','CLIMA','SOLERO','THERMO','MOUNTAINVIEW','MONITOR'];
+const TIPI=['Condominio','Villa singola','PMI produttiva','Attività commerciale'];
 /* Guida rilievi: cosa fotografare/raccogliere per ogni intervento proposto */
 const CHECKLISTS={
- GENERALE:['Facciata e contesto dell\u2019edificio','Accessi e viabilit\u00e0 per mezzi/scale','Bolletta energia recente (foto)','Planimetria o schizzo quotato dei locali'],
+ GENERALE:['Facciata e contesto dell\u2019edificio','Accessi e viabilit\u00e0 per mezzi/scale','Bolletta energia recente (foto)','Planimetria o schizzo quotato dei locali','APE attuale (prima pagina, foto leggibile)'],
+ CONDOMINIO:['Centrale termica condominiale: locale e generatore con targa','Contatore servizi comuni (POD condominiale)','Numero unit\u00e0, millesimi e recapiti amministratore','Vano scala e colonne montanti (percorsi impianti)','Copertura e spazi comuni utilizzabili (FV/CER)','Vincoli paesaggistici e delibere assembleari necessarie','Fondo lavori / stato morosit\u00e0 (per delibera)'],
+ VILLA:['Giardino/pertinenze: posizione UE e distanze dai confini','Sottotetto o locale tecnico disponibile','Serramenti e coibentazione visibile (spessori)','Quadro elettrico domestico e messa a terra','Abitudini d\u2019uso: occupanti, orari, smart working','Capienza fiscale: ultimo 730/CU (per detrazioni)'],
+ PMI:['Profilo di lavoro: turni, giorni e stagionalit\u00e0','Macchinari energivori: targhe e potenze','Fornitura: cabina MT o BT, quadro generale','Copertura: struttura, portata e stato (per FV)','Aria compressa / calore di processo recuperabile','Prevenzione incendi (CPI) e vincoli autorizzativi','Visura e dimensione impresa (per contributi de minimis)'],
+ COMMERCIALE:['Orari di apertura e stagionalit\u00e0','Banchi frigo, celle e cucine: targhe dati','Illuminazione: tipo corpi e ore di accensione','Vetrine ed esposizione (dispersioni termiche)','Insegne e assorbimenti dedicati','Retro o locale tecnico disponibile','Visura camerale (per contributi de minimis)'],
  SOLERO:['Copertura da pi\u00f9 angoli (falde, lucernari, camini)','Orientamento e ombreggiamenti (alberi, edifici)','Contatore elettrico e POD leggibile','Locale tecnico per inverter e accumulo','Quadro elettrico generale aperto','Percorso cavi UE\u2192quadro (cavedi, facciata)'],
  CLIMA:['Generatore attuale con targa dati','Locale tecnico e spazi di manovra','Terminali: radiatori / pavimento / fancoil','Posizione prevista unit\u00e0 esterna (con misure)','Scarico condensa possibile','Quadro elettrico e potenza disponibile'],
  MINICLIMA:['Pareti interne previste per le UI','Posizione UE (balcone, facciata, staffe)','Percorso tubazioni frigorifere','Scarico condensa per ogni UI'],
  MAXICLIMA:['Controsoffitti e altezze utili','Copertura/area tecnica per UE (portata)','Distribuzione aeraulica o idronica esistente','Quadro di potenza e sezionamenti','Destinazione d\u2019uso dei locali (foto ambienti)'],
  THERMO:['Caldaia esistente con targa e matricola','Canna fumaria e sbocco a tetto','Contatore gas e PDR leggibile','Locale caldaia con aerazioni','Terminali e valvole termostatiche'],
+ SOLERO_ACC:['Locale o parete per le batterie (asciutto, ventilato, T non estreme)','Distanza batterie \u2194 inverter \u2194 quadro','Vincoli antincendio del locale batterie'],
+ SOLERO_EV:['Posizione wallbox e distanza dal quadro generale','Percorso cavo e attraversamenti','Potenza contrattuale disponibile per la ricarica'],
+ MOUNTAINVIEW:['Misure dei vani finestra (L\u00d7H, tutte le stanze)','Serramenti esistenti: materiale, vetro, stato guarnizioni','Cassonetti avvolgibili e coibentazione','Nodo di posa: spallette, davanzali, controtelai','Spifferi e condense riferiti dal cliente','Accessibilit\u00e0 per la posa (piani alti, ponteggio)'],
  MONITOR:['Quadro generale: spazio su guida DIN per meter','Copertura segnale (router, presa dati o SIM)','Targhe di inverter/generatori da telemetrare']
 };
+function tipoKey(t){t=(t||'').toLowerCase();
+  if(t.includes('condom'))return 'CONDOMINIO';
+  if(t.includes('villa')||t.includes('villetta')||t.includes('unifamil'))return 'VILLA';
+  if(t.includes('pmi')||t.includes('capannone')||t.includes('produtt')||t.includes('industri'))return 'PMI';
+  if(t.includes('commerc')||t.includes('negozio')||t.includes('ristor')||t.includes('bar'))return 'COMMERCIALE';
+  return null}
+function guideGroups(b){
+  const g=[['GENERALE','Sempre']];
+  const tk=tipoKey(b.tipologia);
+  if(tk)g.push([tk,b.tipologia]);
+  let out=g.concat(b.linee.map(l=>[l,l]));
+  if(b.linee.includes('SOLERO')&&b.solOpt){
+    if(b.solOpt.storage)out.push(['SOLERO_ACC','SOLERO \u00b7 Accumulo']);
+    if(b.solOpt.ev)out.push(['SOLERO_EV','SOLERO \u00b7 Ricarica EV']);}
+  return out}
 function togCheck(id,key){const b=S.buildings.find(x=>x.id===id);b.checks=b.checks||{};b.checks[key]=!b.checks[key];save();render()}
 /* ── Consumi attuali (baseline per l'analisi finanziaria) ── */
 function updCons(id,k,v){const b=S.buildings.find(x=>x.id===id);b.cons=b.cons||{};b.cons[k]=v;save();render()}
 function consCalc(b){const c=b.cons||{},n=k=>parseFloat(c[k])||0;
   return {tot:n('elSpesa')+n('gasSpesa')+n('altroSpesa'),
     cEl:n('elKwh')?n('elSpesa')/n('elKwh'):0, cGas:n('gasSmc')?n('gasSpesa')/n('gasSmc'):0}}
+function updApe(id,k,v){const b=S.buildings.find(x=>x.id===id);b.ape=b.ape||{};b.ape[k]=v;save();render()}
+function apeStr(b){const a=b.ape||{};if(!a.classe&&!a.ep)return'';
+  return 'classe '+(a.classe||'?')+(a.ep?' \u00b7 EPgl,nren '+a.ep+' kWh/m\u00b2anno':'')+(a.anno?' (emesso '+a.anno+')':'')}
 function consStr(b){const c=b.cons||{},p=[];
   if(c.elKwh||c.elSpesa)p.push(`elettrico ${c.elKwh||'?'} kWh/anno, spesa ${c.elSpesa||'?'} €/anno${c.elPot?', potenza '+c.elPot+' kW':''}${c.elF1?', '+c.elF1+'% consumo diurno':''}`);
   if(c.gasSmc||c.gasSpesa)p.push(`gas ${c.gasSmc||'?'} Smc/anno, spesa ${c.gasSpesa||'?'} €/anno${c.gasUso?' ('+c.gasUso+')':''}`);
   if(c.altroTipo&&c.altroTipo!=='nessuno')p.push(`${c.altroTipo} ${c.altroQta||'?'}/anno, spesa ${c.altroSpesa||'?'} €/anno`);
+  const ap=apeStr(b);if(ap)p.push('APE '+ap);
   return p.join('; ')||'non ancora rilevati'}
 
 /* ── Report cliente (teaser): stime indicative dai dati raccolti ── */
+const TIPO_PROFILO={
+ PMI:        {f1def:70, kSolero:1.10, clima:[0.25,0.45], splitEl:[0.05,0.12],
+   modello:'PPA on-site / SEU con riservato dominio (art. 1523-1524 c.c.) o EPC',
+   teaser:['La formula per la tua azienda','Energia dal tuo tetto senza investimento iniziale: con il PPA on-site paghi solo l\u2019energia che consumi, a un prezzo pi\u00f9 basso della rete.']},
+ COMMERCIALE:{f1def:65, kSolero:1.05, clima:[0.30,0.50], splitEl:[0.08,0.18],
+   modello:'chiavi in mano con EPC light o noleggio operativo',
+   teaser:['La formula per la tua attivit\u00e0','EPC light: \u00e8 il risparmio in bolletta a ripagare l\u2019intervento, mese dopo mese. Tu tieni il comfort e i clienti.']},
+ CONDOMINIO: {f1def:35, kSolero:0.85, clima:[0.30,0.50], splitEl:[0.05,0.12],
+   modello:'CER condominiale (comodato d\u2019uso, gestione BABOO) o contratto EPC UNI 11352',
+   teaser:['La formula per il tuo condominio','Comunit\u00e0 Energetica condominiale: l\u2019impianto lo realizza BABOO, il condominio incassa incentivi e risparmi. Delibera e pratiche le seguiamo noi.']},
+ VILLA:      {f1def:30, kSolero:1.00, clima:[0.30,0.50], splitEl:[0.05,0.12],
+   modello:'chiavi in mano residenziale (FV + pompa di calore) con Conto Termico 3.0 o detrazioni',
+   teaser:['La formula per la tua casa','Chiavi in mano BABOO: pratiche, incentivi e installazione con un unico referente \u2014 e garanzia di prestazione UNI CEI 11352.']}
+};
+const TIPO_DEFAULT={f1def:40,kSolero:1,clima:[0.30,0.50],splitEl:[0.05,0.12],modello:'da definire in base alla tipologia',teaser:null};
+function tipoProfilo(b){return TIPO_PROFILO[tipoKey(b.tipologia)]||TIPO_DEFAULT}
+
+/* \u2500\u2500 Profilo finanziario del cliente \u2500\u2500 */
+const FIN_FORMULE=['Investimento diretto','Finanziamento a rate','Zero esborso (EPC/PPA/noleggio)','Da capire'];
+const FIN_SERVIZI=['Finanziamento bancario','Leasing / noleggio operativo','EPC / PPA (paga il risparmio)','Canale contributi (Eco Cred)'];
+const FIN_DRIVER=['Risparmio in bolletta','Comfort abitativo','Valore dell\u2019immobile','Sostenibilit\u00e0 / immagine','Obbligo normativo'];
+const FIN_TEMPI=['Subito','Entro 3 mesi','Entro l\u2019anno','Oltre / da capire'];
+function finContribOpt(b){
+  const tk=tipoKey(b.tipologia);
+  if(tk==='VILLA')return ['Capienza fiscale: s\u00ec','Capienza fiscale: parziale','Senza capienza \u2192 Conto Termico','Da verificare'];
+  if(tk==='CONDOMINIO')return ['Fondo lavori disponibile','Da deliberare','Morosit\u00e0 significative','Da verificare'];
+  if(tk==='PMI'||tk==='COMMERCIALE')return ['Micro impresa (de minimis ok)','Piccola impresa','Media impresa','Da verificare'];
+  return ['Da verificare'];}
+function updFin(id,k,v){const b=S.buildings.find(x=>x.id===id);b.fin=b.fin||{servizi:[]};b.fin[k]=v;save();render()}
+function togFinServ(id,sv){const b=S.buildings.find(x=>x.id===id);b.fin=b.fin||{servizi:[]};b.fin.servizi=b.fin.servizi||[];
+  const i=b.fin.servizi.indexOf(sv);i>=0?b.fin.servizi.splice(i,1):b.fin.servizi.push(sv);save();render()}
+function finStr(b){const f=b.fin||{};const p=[];
+  if(f.formula)p.push('formula: '+f.formula+(f.rata?' (rata sostenibile ~'+f.rata+' \u20ac/mese)':''));
+  if(f.contributi)p.push('contributi: '+f.contributi);
+  if(f.servizi&&f.servizi.length)p.push('servizi d\u2019interesse: '+f.servizi.join(', '));
+  if(f.driver)p.push('driver: '+f.driver);
+  if(f.decisore)p.push('decide: '+f.decisore);
+  if(f.tempi)p.push('tempi: '+f.tempi);
+  return p.join('; ')}
+const FIN_TIP={
+ 'Investimento diretto':'\u00abVisto che preferisce investire in proprio: le metto in evidenza il tempo di rientro e il rendimento annuo \u2014 di solito batte qualunque conto deposito.\u00bb',
+ 'Finanziamento a rate':'\u00abImpostiamo la rata sotto il risparmio mensile: l\u2019intervento si paga da solo, da subito.\u00bb',
+ 'Zero esborso (EPC/PPA/noleggio)':'\u00abCon la formula zero esborso l\u2019investimento lo mettiamo noi: lei paga solo il servizio, garantito da contratto UNI 11352.\u00bb',
+ 'Da capire':'\u00abNon serve deciderlo oggi: nello studio le mettiamo a confronto acquisto, rate e zero esborso, con i numeri veri.\u00bb'};
+const FIN_DRIVER_TIP={
+ 'Risparmio in bolletta':'Parla di euro, non di kW: ogni beneficio va tradotto in \u20ac/anno.',
+ 'Comfort abitativo':'Racconta le stanze: caldo uniforme, niente spifferi, fresco d\u2019estate. I numeri dopo.',
+ 'Valore dell\u2019immobile':'Leva sulla classe energetica: due classi in su valgono in perizia e in vendita.',
+ 'Sostenibilit\u00e0 / immagine':'CO\u2082 evitata e pannello \u201cverde\u201d da mostrare: per aziende e attivit\u00e0 \u00e8 marketing.',
+ 'Obbligo normativo':'Inquadra scadenze e direttiva case green: agire ora costa meno che rincorrere.'};
+
+/* \u2500\u2500 Suggeritore commerciale: domande, frasi, obiezioni e chiusure \u2500\u2500 */
+const COACH={
+ CONDOMINIO:{
+  domande:['«Quanto pesa il riscaldamento nelle spese condominiali di quest’anno?»','«La centrale termica quanti anni ha? E quante volte è intervenuto il manutentore?»','«Quando è la prossima assemblea utile?»'],
+  orienta:['«Con la Comunità Energetica condominiale l’impianto non lo paga il condominio: lo realizziamo noi, e incentivi e risparmi li incassate voi.»','«Oggi dal condominio escono {TOT} all’anno: in dieci anni sono {DIECI} che se ne vanno e non tornano.»'],
+  obiezione:['«In assemblea non passerà mai»','«È il motivo per cui il kit per l’assemblea lo prepariamo noi: numeri, bozza di delibera e risposte alle domande tipiche. All’amministratore arriva tutto pronto.»'],
+  chiusura:'«Le preparo una simulazione da portare in assemblea, gratuita e senza impegno: mi basta l’ultima bolletta dei servizi comuni.»'},
+ VILLA:{
+  domande:['«Tra luce e gas, tutto compreso, quanto se ne va in un anno?»','«Avete mai pensato di togliere il gas del tutto?»','«Quante ore al giorno la casa è abitata? Lavorate da casa?»'],
+  orienta:['«Con fotovoltaico e pompa di calore la casa passa a un solo vettore: quello che si autoproduce sul tetto.»','«{TOT} all’anno: con l’intervento gliene restano in tasca tra {LO} e {HI}, ogni anno.»'],
+  obiezione:['«Costa troppo»','«Parliamo di quanto resta davvero a suo carico, non del listino: il Conto Termico rimborsa una parte importante in conto capitale e la pratica la seguiamo noi.»'],
+  chiusura:'«Lo studio è gratuito e le dà tempo di rientro e risparmio esatti: glielo preparo per la prossima settimana?»'},
+ PMI:{
+  domande:['«I macchinari girano soprattutto di giorno? Su quanti turni?»','«Quanto incide l’energia sul costo del suo prodotto?»','«Il tetto del capannone che età ha? Mai valutato di metterlo a reddito?»'],
+  orienta:['«Il suo tetto oggi è un asset fermo: con il PPA on-site produce energia a un costo più basso della rete, senza investire un euro.»','«Oggi l’energia le costa {TOT} l’anno: proiettati a dieci anni sono {DIECI}. È un fornitore che si può rinegoziare.»'],
+  obiezione:['«Non voglio vincoli contrattuali lunghi»','«Il contratto ha il riservato dominio: l’impianto diventa suo, e la durata la tariamo sul suo piano industriale — non il contrario.»'],
+  chiusura:'«Mi dia dodici mesi di bollette e il profilo dei turni: le porto un’analisi a tre scenari, gratuita, e decide sui numeri.»'},
+ COMMERCIALE:{
+  domande:['«Quante ore al giorno restate aperti? E i frigoriferi girano anche di notte?»','«D’estate, con il condizionamento, di quanto sale la bolletta?»','«L’illuminazione è già tutta LED?»'],
+  orienta:['«Ogni ora di apertura con il sole è energia che potrebbe non comprare più.»','«Oggi l’attività spende {TOT} l’anno di energia: tra {LO} e {HI} possono tornare in margine.»'],
+  obiezione:['«Non posso fermare l’attività»','«I lavori li programmiamo su chiusure e orari: la maggior parte degli interventi si fa senza abbassare la serranda un solo giorno.»'],
+  chiusura:'«Le lascio l’anteprima con i suoi numeri: se le torna, lo studio completo è gratuito e senza impegno.»'},
+ DEFAULT:{
+  domande:['«Qual è la voce energetica che le dà più fastidio quando arriva la bolletta?»','«Se potesse sistemare una sola cosa dell’edificio, quale sarebbe?»'],
+  orienta:['«Non vendiamo impianti: garantiamo un risultato, per contratto — è la certificazione UNI CEI 11352.»','«Oggi escono {TOT} l’anno: il primo passo per ridurli non costa nulla.»'],
+  obiezione:['«Devo pensarci»','«Giusto pensarci — ma sui numeri veri: lo studio gratuito serve esattamente a questo, e non la impegna a nulla.»'],
+  chiusura:'«Facciamo così: le preparo lo studio di fattibilità gratuito, e ne riparliamo sui suoi numeri.»'}
+};
+const COACH_ESITO={
+ caldo:'«Battiamo il ferro: le blocco in agenda lo studio di fattibilità e le porto la proposta completa entro dieci giorni. Va bene?»',
+ tiepido:'«Non le chiedo di decidere oggi: le mando l’anteprima con i suoi numeri e ci risentiamo la settimana prossima. Quale giorno preferisce?»',
+ freddo:'«Le lascio solo un numero: quanto le costa non fare nulla, ogni anno. Quando vorrà approfondire, lo studio resta gratuito.»'};
+
+/* ── Registrazione conversazione intera + trascrizione Whisper ── */
+const CONV={}; /* id → {blob,mime,secs} — solo in memoria */
+let convRec=null,convId=null,convTimer=null,convT0=0;
+async function toggleConvRec(id){
+  if(convRec){try{convRec.stop()}catch(e){}return}
+  if(!confirm('Informa il cliente che la conversazione viene registrata per la trascrizione (l’audio resta sul tuo dispositivo finché non lo trascrivi). Avviare?'))return;
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    const mime=MediaRecorder.isTypeSupported('audio/mp4')?'audio/mp4':'audio/webm';
+    convRec=new MediaRecorder(stream,{mimeType:mime,audioBitsPerSecond:64000});convId=id;
+    const chunks=[];convT0=Date.now();
+    convRec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+    convRec.onstop=()=>{stream.getTracks().forEach(t=>t.stop());
+      CONV[id]={blob:new Blob(chunks,{type:mime}),mime,secs:Math.round((Date.now()-convT0)/1000)};
+      clearInterval(convTimer);convRec=null;convId=null;render()};
+    convRec.start(10000);
+    convTimer=setInterval(()=>{const sx=Math.round((Date.now()-convT0)/1000);
+      const btn=$('convrec-'+id);if(btn)btn.textContent='■ Ferma · '+Math.floor(sx/60)+':'+String(sx%60).padStart(2,'0');
+      if(sx>=1800&&convRec)convRec.stop()},1000);
+    render();
+  }catch(e){convRec=null;alert('Microfono non disponibile (serve HTTPS).')}
+}
+function dlConv(id){const c=CONV[id];if(!c)return;const a=document.createElement('a');
+  a.href=URL.createObjectURL(c.blob);a.download='conversazione'+(c.mime.includes('mp4')?'.m4a':'.webm');a.click()}
+async function transcribeConv(id,btn){
+  const c=CONV[id];if(!c)return;
+  const b=S.buildings.find(x=>x.id===id);
+  btn.textContent='… trascrivo';btn.disabled=true;
+  try{
+    let text='';
+    if((S.sttMode||'openai')==='openai'){
+      if(!S.openaiKey)throw new Error('manca la chiave OpenAI (pannello Strumenti)');
+      const fd=new FormData();
+      fd.append('file',c.blob,c.mime.includes('mp4')?'conv.m4a':'conv.webm');
+      fd.append('model','whisper-1');fd.append('language','it');
+      const r=await fetch('https://api.openai.com/v1/audio/transcriptions',
+        {method:'POST',headers:{'Authorization':'Bearer '+S.openaiKey},body:fd});
+      const j=await r.json();if(j.error)throw new Error(j.error.message);text=j.text||'';
+    }else{
+      if(!S.sttUrl)throw new Error('configura l’URL del server Whisper (pannello Strumenti)');
+      const fd=new FormData();fd.append('file',c.blob,c.mime.includes('mp4')?'conv.m4a':'conv.webm');
+      const r=await fetch(S.sttUrl,{method:'POST',body:fd});
+      const j=await r.json();text=j.text||'';
+      if(!text)throw new Error('risposta vuota dal server');
+    }
+    b.talk=((b.talk||'')+'\n'+text).trim();
+    delete CONV[id];
+    save();
+  }catch(e){alert('Trascrizione non riuscita: '+e.message+'. L’audio resta in memoria: puoi riprovare o scaricarlo.')}
+  render();
+}
+
+function coachInner(b){
+  const key=tipoKey(b.tipologia)||'DEFAULT';
+  const C=COACH[key]||COACH.DEFAULT;
+  const t=teaserCalc(b);
+  const fill=sx=>{
+    if(/\{TOT\}|\{LO\}|\{HI\}|\{DIECI\}/.test(sx)&&!t.tot)return null;
+    return sx.replace('{TOT}',fmtEur(Math.round(t.tot))).replace('{DIECI}',fmtEur(t.dieci)).replace('{LO}',fmtEur(t.lo)).replace('{HI}',fmtEur(t.hi))};
+  const block=(lab,arr)=>{const its=arr.map(fill).filter(Boolean);return its.length?`<div class="chk-g">${lab}</div>`+its.map(sx=>`<div class="tip">${sx}</div>`).join(''):''};
+  const listening=srBuilding===b.id;
+  const recing=convId===b.id;
+  const conv=CONV[b.id];
+  let h=`<div class="chk-g">Coach live · la conversazione</div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+    <button class="mini ${recing?'rec':''}" id="convrec-${b.id}" onclick="toggleConvRec(${b.id})">${recing?'■ Ferma · 0:00':'● Registra conversazione'}</button>
+    ${conv?`<button class="mini" style="border-color:var(--brass);color:var(--brass)" onclick="transcribeConv(${b.id},this)">📝 Trascrivi con Whisper (${Math.floor(conv.secs/60)}:${String(conv.secs%60).padStart(2,'0')})</button>
+    <button class="mini" onclick="dlConv(${b.id})">⬇ audio</button>`:''}
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+    <button class="mini ${listening?'rec':''}" onclick="toggleListen(${b.id})">${listening?'■ Ferma ascolto':'🎤 Dettatura live'}</button>
+    <button class="mini" onclick="analyzeTalk(${b.id},this)" ${b.talk?'':'disabled'}>🧠 Analizza con AI</button>
+  </div>
+  ${conv?'<span class="ai-note">Audio in memoria finché la pagina resta aperta: trascrivi o scarica prima di chiudere.</span>':''}
+  <textarea class="nota-edit" id="talk-${b.id}" placeholder="La trascrizione appare qui — oppure dettala col microfono della tastiera o scrivi le obiezioni a mano." onchange="updTalk(${b.id},this.value)">${esc(b.talk||'')}</textarea>`;
+  if(b.talkAI){const A=b.talkAI;
+    h+=`<div class="ai-box">${A.obiezioni?`<h4>Obiezioni rilevate</h4><p>${esc(A.obiezioni)}</p>`:''}
+    ${A.risposte?`<h4>Risposte pronte</h4><p>${esc(A.risposte)}</p>`:''}
+    ${A.segnali?`<h4>Segnali colti</h4><p>${esc(A.segnali)}</p>`:''}
+    ${A.mossa?`<h4>La prossima mossa</h4><p><b>${esc(A.mossa)}</b></p>`:''}
+    <p class="ai-note">Analisi AI della conversazione — usa il giudizio, non il copione.</p></div>`}
+  h+=block('Domande che aprono',C.domande)+block('Frasi che orientano',C.orienta);
+  {const f=b.fin||{};const tips=[];
+   if(f.formula&&FIN_TIP[f.formula])tips.push(FIN_TIP[f.formula]);
+   if(f.formula==='Finanziamento a rate'&&f.rata&&t.tot)tips.push('«Con circa '+f.rata+' € al mese — e un risparmio stimato di '+fmtEur(Math.round((t.lo+t.hi)/24))+'/mese — il conto si fa da solo.»');
+   if(f.driver&&FIN_DRIVER_TIP[f.driver])tips.push(FIN_DRIVER_TIP[f.driver]);
+   if(tips.length)h+='<div class="chk-g">Leva finanziaria</div>'+tips.map(x=>'<div class="tip">'+x+'</div>').join('');}
+  h+=`<div class="chk-g">Se obietta: ${C.obiezione[0]}</div><div class="tip">${C.obiezione[1]}</div>`;
+  const chiusa=(b.esito&&COACH_ESITO[b.esito])||C.chiusura;
+  h+=`<div class="chk-g">Per chiudere${b.esito?' (cliente '+b.esito+')':''}</div><div class="tip close">${chiusa}</div>`;
+  if(!t.tot)h+=`<span class="ai-note">Compila i consumi: le frasi si arricchiranno con i numeri reali del cliente.</span>`;
+  return h;
+}
+/* ── Ascolto conversazione (SpeechRecognition it-IT) ── */
+let SR=null,srBuilding=null;
+function updTalk(id,v){const b=S.buildings.find(x=>x.id===id);b.talk=v;save();render()}
+function toggleListen(id){
+  const b=S.buildings.find(x=>x.id===id);
+  if(SR){SR.onend=null;try{SR.stop()}catch(e){}SR=null;srBuilding=null;render();return}
+  const Rec=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!Rec){alert('Trascrizione automatica non supportata da questo browser: usa il microfono della tastiera nel campo di testo.');return}
+  if(!confirm('Buona pratica (e rispetto del GDPR): informa il cliente che la conversazione viene trascritta sul tuo dispositivo. Avviare l’ascolto?'))return;
+  try{
+    SR=new Rec();SR.lang='it-IT';SR.continuous=true;SR.interimResults=false;srBuilding=id;
+    SR.onresult=e=>{let add='';
+      for(let i=e.resultIndex;i<e.results.length;i++)if(e.results[i].isFinal)add+=e.results[i][0].transcript+' ';
+      if(add){b.talk=(b.talk||'')+add;save();const ta=$('talk-'+id);if(ta)ta.value=b.talk}};
+    SR.onend=()=>{if(SR)try{SR.start()}catch(e){}};
+    SR.onerror=ev=>{if(ev.error==='not-allowed'||ev.error==='service-not-allowed'){alert('Microfono non consentito.');SR=null;srBuilding=null;render()}};
+    SR.start();render();
+  }catch(e){SR=null;srBuilding=null;alert('Impossibile avviare l’ascolto in questo contesto.')}
+}
+async function analyzeTalk(id,btn){
+  const b=S.buildings.find(x=>x.id===id);
+  if(!b.talk)return;
+  btn.textContent='… analizzo';btn.disabled=true;
+  try{
+    const prompt=`Sei il sales coach di BABOO ESCo. Contesto: edificio "${b.name}" (${b.tipologia||'tipologia n.d.'}), interventi proposti: ${lineeStr(b)||'da definire'}; consumi: ${consStr(b)}; modello contrattuale preferenziale: ${tipoProfilo(b).modello}; profilo finanziario: ${finStr(b)||'non rilevato'}; esito percepito: ${b.esito||'n.d.'}.
+Questa è la trascrizione (imperfetta, da dettatura) della conversazione col cliente:
+«${b.talk.slice(0,6000)}»
+Analizzala e rispondi SOLO in italiano nel formato esatto:
+OBIEZIONI: (le obiezioni o resistenze emerse, in breve; se nessuna scrivi "nessuna esplicita")
+RISPOSTE: (per ciascuna obiezione una risposta pronta da dire a voce, tra virgolette, tono consulenziale non insistente)
+SEGNALI: (segnali d'acquisto o di rischio colti nelle parole del cliente)
+MOSSA: (LA prossima frase da dire, una sola, tra virgolette, coerente con l'obiettivo: portarlo allo studio di fattibilità gratuito)`;
+    const hdrs={'Content-Type':'application/json'};
+    if(S.apiKey){hdrs['x-api-key']=S.apiKey;hdrs['anthropic-version']='2023-06-01';hdrs['anthropic-dangerous-direct-browser-access']='true'}
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:hdrs,
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    const txt=(data.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('\n');
+    const get=k=>{const m=txt.match(new RegExp(k+':\\s*([\\s\\S]*?)(?=\\n[A-Z]+:|$)'));return m?m[1].trim():''};
+    const A={obiezioni:get('OBIEZIONI'),risposte:get('RISPOSTE'),segnali:get('SEGNALI'),mossa:get('MOSSA')};
+    if(A.obiezioni||A.mossa)b.talkAI=A;else throw new Error('vuoto');
+  }catch(e){alert('Analisi non riuscita'+(S.apiKey?'':' (inserisci la chiave API in Strumenti)')+'. La trascrizione resta salvata: riprova.')}
+  save();render();
+}
+
 function teaserCalc(b){
   const c=b.cons||{},n=k=>parseFloat(c[k])||0;
+  const tp=tipoProfilo(b);
   const el=n('elSpesa'),th=n('gasSpesa')+n('altroSpesa'),tot=el+th;
   let lo=0,hi=0;const L=b.linee;
-  if(L.includes('SOLERO')){const f=Math.min(Math.max(n('elF1'),20),80)/100;lo+=el*(0.25+0.2*f);hi+=el*(0.40+0.3*f)}
-  if(L.includes('CLIMA')){lo+=th*0.30;hi+=th*0.50}
+  if(L.includes('SOLERO')){const f=Math.min(Math.max(n('elF1')||tp.f1def,20),80)/100;
+    lo+=el*(0.25+0.2*f)*tp.kSolero;hi+=el*(0.40+0.3*f)*tp.kSolero}
+  if(L.includes('CLIMA')){lo+=th*tp.clima[0];hi+=th*tp.clima[1]}
   else if(L.includes('THERMO')){lo+=th*0.10;hi+=th*0.22}
-  if(L.includes('MAXICLIMA')||L.includes('MINICLIMA')){lo+=el*0.05;hi+=el*0.12}
+  if(L.includes('MAXICLIMA')||L.includes('MINICLIMA')){lo+=el*tp.splitEl[0];hi+=el*tp.splitEl[1]}
+  if(L.includes('SOLERO')&&b.solOpt&&b.solOpt.storage){lo+=el*0.05;hi+=el*0.12}
+  if(L.includes('MOUNTAINVIEW')){lo+=th*0.08;hi+=th*0.18}
   if(L.includes('MONITOR')){lo+=tot*0.03;hi+=tot*0.06}
   hi=Math.min(hi,tot*0.75);lo=Math.min(lo,hi*0.85);
   /* CO2: fattori indicativi kg/unità */
@@ -386,6 +760,7 @@ const TEASER_BENEFIT={SOLERO:'Fotovoltaico e accumulo: l\u2019energia che oggi c
  THERMO:'Generazione ad alto rendimento o ibrida: comfort subito, consumi in discesa',
  MAXICLIMA:'Climatizzazione VRV: comfort regolato zona per zona, anche d\u2019estate',
  MINICLIMA:'Climatizzatori di nuova generazione: fresco senza sorprese in bolletta',
+ MOUNTAINVIEW:'Serramenti MOUNTAINVIEW: il calore resta dentro, il rumore resta fuori',
  MONITOR:'Telemetria MONITOR: ogni kWh sotto controllo, sempre, dal telefono'};
 let _teaser=null;
 function teaserHTML(b){
@@ -396,7 +771,7 @@ function teaserHTML(b){
   return `<!DOCTYPE html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Anteprima riqualificazione — ${esc(b.name)}</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
-<style>body{margin:0;background:#F5F2EB;color:#2A2723;font-family:'EB Garamond',Georgia,serif;font-size:17px;line-height:1.55}
+<style>body{margin:0;background:#F5F2EB;color:#2A2723;font-family:'EB Garamond',Georgia,serif;font-size:18px;line-height:1.555}
 .w{max-width:620px;margin:0 auto;padding:0 20px 40px}
 .hd{background:#2A2723;color:#EDE7DB;padding:30px 20px 26px;text-align:center}
 .eb{font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:3px;color:#988060;text-transform:uppercase}
@@ -419,13 +794,16 @@ footer{text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:9px;le
 <div class="w">
 ${hasNum?`
 <div class="blk"><div class="lb">Oggi questo edificio spende</div><div class="big red">${fmtEur(Math.round(t.tot))}<span style="font-size:20px">/anno</span></div>
-<div class="note">Continuando cos\u00ec, nei prossimi 10 anni usciranno circa <b>${fmtEur(t.dieci)}</b>.</div></div>
+<div class="note">Continuando cos\u00ec, nei prossimi 10 anni usciranno circa <b>${fmtEur(t.dieci)}</b>.${(b.fin&&b.fin.rata&&t.tot)?' Risparmio stimato: <b>'+fmtEur(Math.round((t.lo+t.hi)/24))+' al mese</b> \u2014 da confrontare con la rata.':''}${(b.ape&&b.ape.classe)?' Classe energetica attuale: <b>'+b.ape.classe+'</b>'+('EFG'.includes(b.ape.classe)?' — ampio margine di miglioramento.':'.'):''}</div></div>
 <div class="blk"><div class="lb">Con la riqualificazione proposta, risparmio stimato</div>
 <div class="big brass">${fmtEur(t.lo)} – ${fmtEur(t.hi)}<span style="font-size:20px">/anno</span></div>
 ${t.alberi?`<div class="note">E ${t.co2save.toFixed(1).replace('.',',')} tonnellate di CO\u2082 in meno ogni anno: come piantare ${t.alberi} alberi.</div>`:''}</div>`
 :`<div class="blk"><div class="lb">Il potenziale del tuo edificio</div><div class="note">Le stime economiche verranno calcolate sui tuoi consumi reali: tieni a portata di mano una bolletta per lo studio gratuito.</div></div>`}
 <div style="margin-top:22px"><div class="lb" style="text-align:center">Cosa abbiamo individuato per te</div>
 ${b.linee.map(l=>`<div class="iv"><b>${l}</b>${TEASER_BENEFIT[l]||''}</div>`).join('')||'<div class="note" style="text-align:center">Interventi in corso di definizione.</div>'}</div>
+${(b.linee.includes('SOLERO')&&b.solOpt&&b.solOpt.storage)?`<div class="iv"><b>+ Accumulo</b>L\u2019energia del sole anche di sera: la batteria alza l\u2019autoconsumo e taglia i prelievi serali.</div>`:''}
+${(b.linee.includes('SOLERO')&&b.solOpt&&b.solOpt.ev)?`<div class="iv"><b>+ Ricarica EV</b>La wallbox di casa: l\u2019auto si ricarica dove costa meno, meglio ancora se col sole del tetto.</div>`:''}
+${(()=>{const tp=tipoProfilo(b);return tp.teaser?`<div class="iv" style="background:#EDE7DB"><b>${tp.teaser[0]}</b>${tp.teaser[1]}</div>`:''})()}
 <div class="iv"><b>Incentivi: ce ne occupiamo noi</b>${esc((b.ai&&b.ai.inc)||'Conto Termico 3.0, incentivi per le Comunit\u00e0 Energetiche e detrazioni fiscali: BABOO gestisce le pratiche come Soggetto Responsabile, tu incassi il beneficio.')}</div>
 <div class="cta"><div class="eb">Il prossimo passo non costa nulla</div>
 <div class="big">Studio di fattibilit\u00e0 gratuito</div>
@@ -451,11 +829,18 @@ function renderStats(){
   $('st-caldi').textContent=S.buildings.filter(b=>b.esito==='caldo').length;
   $('st-pipe').textContent=fmtEur(S.buildings.reduce((s,b)=>s+(+b.val||0),0));
 }
+let SEARCH='';
+function norm(x){return (x||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
 function render(){
   renderStats();
   const tl=$('timeline');tl.innerHTML='';
+  const q=norm(SEARCH);
+  const match=b=>!q||norm([b.name,b.addr,b.ref,b.tipologia,b.impianto,b.pod,b.notes,(b.linee||[]).join(' ')].join(' ')).includes(q);
+  const vis=S.buildings.filter(match);
+  const sn=$('search-n');if(sn)sn.textContent=q?vis.length+'/'+S.buildings.length:'';
   $('empty').style.display=S.buildings.length?'none':'block';
-  const sorted=[...S.buildings].sort((a,b)=>b.ts-a.ts);
+  if(q&&!vis.length){tl.innerHTML='<div class="empty" style="display:block">Nessun edificio corrisponde a «'+esc(SEARCH)+'».</div>'}
+  const sorted=[...vis].sort((a,b)=>b.ts-a.ts);
   let lastDay='';
   sorted.forEach((b,i)=>{
     const d=new Date(b.ts),day=d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
@@ -486,18 +871,28 @@ function cardHTML(b,isNewest){
     </summary>
     <div class="card-bd">
       <div class="coords">${coords}</div>
+      ${(()=>{const c=completeness(b);return `<div class="compl">Completezza <b>${c.pct}%</b>${c.missing.length?' \u00b7 mancano: '+c.missing.slice(0,3).join(', ')+(c.missing.length>3?'\u2026':''):' \u2713'}<div class="compl-bar"><i style="width:${c.pct}%"></i></div></div>`})()}
       <div class="esito-row">
         ${['caldo','tiepido','freddo'].map(e=>`<button class="esito ${b.esito===e?'sel-'+e:''}" onclick="upd(${b.id},'esito','${e}')">${e==='caldo'?'🔥':e==='tiepido'?'🌤':'❄'} ${e}</button>`).join('')}
         <span class="cx"><span class="lab">Complessità</span>${[1,2,3,4,5].map(i=>`<b class="${b.cx>=i?'on':''}" onclick="upd(${b.id},'cx',${i})"></b>`).join('')}</span>
       </div>
+      <div class="chk-g" style="margin-top:4px">Interventi proposti</div>
+      <div class="linee">${LINEE.map(l=>`<button class="linea ${b.linee.includes(l)?'on':''}" onclick="togLinea(${b.id},'${l}')">${l}</button>`).join('')}</div>
+      ${b.linee.includes('SOLERO')?`<div class="linee" style="margin-top:6px">
+        <button class="linea ${b.solOpt&&b.solOpt.storage?'on':''}" onclick="togSolOpt(${b.id},'storage')">⚡ ACCUMULO</button>
+        <button class="linea ${b.solOpt&&b.solOpt.ev?'on':''}" onclick="togSolOpt(${b.id},'ev')">🔌 RICARICA EV</button>
+      </div>`:''}
+      ${sec('coach',false,'💬 Suggeritore commerciale',coachInner(b))}
       ${sec('dati',false,'Dati edificio',
         `<div class="fields">
-        ${[['tipologia','Tipologia'],['anno','Anno costr.'],['sup','Superficie m²'],['impianto','Impianto attuale'],['pod','POD / PDR'],['ref','Referente']].map(([k,l])=>
+        <div class="f"><label>Tipologia</label><select onchange="upd(${b.id},'tipologia',this.value)">
+          ${['',...TIPI,...(b.tipologia&&!TIPI.includes(b.tipologia)?[b.tipologia]:[])].map(o=>`<option ${b.tipologia===o?'selected':''}>${esc(o)}</option>`).join('')}</select></div>
+        ${[['anno','Anno costr.'],['sup','Superficie m²'],['impianto','Impianto attuale'],['pod','POD / PDR'],['ref','Referente']].map(([k,l])=>
           `<div class="f"><label>${l}</label><input value="${esc(b[k])}" onchange="upd(${b.id},'${k}',this.value)"></div>`).join('')}
         <div class="f"><label>Indirizzo</label><input value="${esc(b.addr)}" onchange="upd(${b.id},'addr',this.value)"></div>
         <div class="f"><label>Valore stimato €</label><input type="number" value="${b.val||''}" onchange="upd(${b.id},'val',+this.value)"></div>
         </div>
-        <div class="linee">${LINEE.map(l=>`<button class="linea ${b.linee.includes(l)?'on':''}" onclick="togLinea(${b.id},'${l}')">${l}</button>`).join('')}</div>`)}
+`)}
       ${(()=>{ /* Consumi attuali */
         b.cons=b.cons||{};const c=b.cons,cc=consCalc(b);
         const F=(k,l,ph)=>`<div class="f"><label>${l}</label><input inputmode="decimal" value="${esc(c[k]??'')}" placeholder="${ph||''}" onchange="updCons(${b.id},'${k}',this.value)"></div>`;
@@ -515,13 +910,38 @@ function cardHTML(b,isNewest){
               ${['nessuno','gasolio (litri)','GPL (litri)','pellet (kg)','legna (q.li)'].map(o=>`<option ${c.altroTipo===o?'selected':''}>${o}</option>`).join('')}</select></div>
             ${F('altroQta','Quantità / anno')}${F('altroSpesa','Spesa € / anno')}
           </div>
-          ${cc.tot?`<div class="cons-sum">Baseline: <b>${fmtEur(Math.round(cc.tot))}/anno</b>${cc.cEl?' · '+cc.cEl.toFixed(3).replace('.',',')+' €/kWh':''}${cc.cGas?' · '+cc.cGas.toFixed(3).replace('.',',')+' €/Smc':''}</div>`:''}
+          ${cc.tot?`<div class="cons-sum">Baseline: <b>${fmtEur(Math.round(cc.tot))}/anno</b>${cc.cEl?' · '+cc.cEl.toFixed(3).replace('.',',')+' €/kWh':''}${cc.cGas?' · '+cc.cGas.toFixed(3).replace('.',',')+' €/Smc':''}${(b.ape&&b.ape.classe)?' · APE classe <b>'+b.ape.classe+'</b>':''}</div>`:''}
           <button class="mini" onclick="readBill(${b.id},this)">📄 Leggi bolletta con AI</button>
+          <div class="chk-g" style="margin-top:12px">APE \u00b7 attestato di prestazione energetica</div>
+          <div class="fields">
+            <div class="f"><label>Classe</label><select onchange="updApe(${b.id},'classe',this.value)">${['','A4','A3','A2','A1','B','C','D','E','F','G'].map(o=>`<option ${((b.ape&&b.ape.classe)||'')===o?'selected':''}>${o}</option>`).join('')}</select></div>
+            <div class="f"><label>EPgl,nren kWh/m²anno</label><input inputmode="decimal" value="${(b.ape&&b.ape.ep)||''}" onchange="updApe(${b.id},'ep',this.value)"></div>
+            <div class="f"><label>Anno emissione</label><input inputmode="numeric" value="${(b.ape&&b.ape.anno)||''}" onchange="updApe(${b.id},'anno',this.value)"></div>
+          </div>
+          <button class="mini" onclick="readApe(${b.id},this)">📄 Leggi APE con AI</button>
           <span class="ai-note"> Fotografa la bolletta: i campi si compilano da soli e la foto va nella guida rilievi.</span>`;
         return sec('cons',false,title,inner)})()}
-      ${(()=>{ /* Guida rilievi in base alle linee proposte */
+      ${(()=>{ /* Profilo finanziario */
+        const f=b.fin||{};
+        const inner=`
+        <div class="chk-g">Formula preferita</div>
+        <div class="linee">${FIN_FORMULE.map(o=>`<button class="linea ${f.formula===o?'on':''}" onclick="updFin(${b.id},'formula','${o.replace(/'/g,"\\'")}')">${o}</button>`).join('')}</div>
+        ${f.formula==='Finanziamento a rate'||f.rata?`<div class="fields" style="margin-top:8px"><div class="f"><label>Rata mensile sostenibile \u20ac</label><input inputmode="decimal" value="${esc(f.rata||'')}" onchange="updFin(${b.id},'rata',this.value)"></div></div>`:''}
+        <div class="chk-g">Accesso ai contributi</div>
+        <div class="linee">${finContribOpt(b).map(o=>`<button class="linea ${f.contributi===o?'on':''}" onclick="updFin(${b.id},'contributi','${o.replace(/'/g,"\\'")}')">${o}</button>`).join('')}</div>
+        <div class="chk-g">Servizi finanziari d\u2019interesse</div>
+        <div class="linee">${FIN_SERVIZI.map(o=>`<button class="linea ${(f.servizi||[]).includes(o)?'on':''}" onclick="togFinServ(${b.id},'${o.replace(/'/g,"\\'")}')">${o}</button>`).join('')}</div>
+        <div class="chk-g">Cosa lo muove</div>
+        <div class="linee">${FIN_DRIVER.map(o=>`<button class="linea ${f.driver===o?'on':''}" onclick="updFin(${b.id},'driver','${o.replace(/'/g,"\\'")}')">${o}</button>`).join('')}</div>
+        <div class="fields" style="margin-top:8px">
+          <div class="f"><label>Chi decide / firma</label><input value="${esc(f.decisore||'')}" onchange="updFin(${b.id},'decisore',this.value)"></div>
+          <div class="f"><label>Tempi</label><select onchange="updFin(${b.id},'tempi',this.value)">${['',...FIN_TEMPI].map(o=>`<option ${f.tempi===o?'selected':''}>${o}</option>`).join('')}</select></div>
+        </div>`;
+        return sec('fin',false,'Profilo finanziario'+(f.formula?' \u00b7 '+f.formula.toLowerCase():''),inner);
+      })()}
+      ${(()=>{ /* Guida rilievi: Sempre + Tipo edificio + Linee proposte */
         b.checks=b.checks||{};
-        const groups=[['GENERALE','Sempre'],...b.linee.map(l=>[l,l])];
+        const groups=guideGroups(b);
         let tot=0,done=0,inner='';
         groups.forEach(([g,label])=>{const items=CHECKLISTS[g]||[];if(!items.length)return;
           inner+=`<div class="chk-g">${label}</div>`+items.map((it,i)=>{const k=g+'-'+i;tot++;if(b.checks[k])done++;
@@ -541,6 +961,7 @@ function cardHTML(b,isNewest){
         ${b.memos.map((m,i)=>`<div class="memo"><audio controls src="${m}"></audio><button class="mini" onclick="delMemo(${b.id},${i})">✕</button></div>`).join('')}
         ${hasDoc?'':'<span class="ai-note">Ancora niente: aggiungi foto, note o memo con i pulsanti qui sotto.</span>'}`)}
       <div class="card-actions">
+        <button class="mini" onclick="openWizard(${b.id})">\ud83e\ude84 Wizard</button>
         <button class="mini" onclick="genAI(${b.id},this)">↻ Scheda AI</button>
         <button class="mini" style="border-color:var(--brass);color:var(--brass)" onclick="showTeaser(${b.id})">✨ Report cliente</button>
         <button class="mini" onclick="addPhoto(${b.id})">📷 Foto</button>
@@ -550,8 +971,14 @@ function cardHTML(b,isNewest){
       </div>
     </div></details>`;
 }
-function upd(id,k,v){const b=S.buildings.find(x=>x.id===id);b[k]=v;save();if(k==='esito'||k==='cx')render();else renderStats()}
+function upd(id,k,v){const b=S.buildings.find(x=>x.id===id);b[k]=v;save();if(k==='esito'||k==='cx'||k==='tipologia')render();else renderStats()}
 function togLinea(id,l){const b=S.buildings.find(x=>x.id===id);const i=b.linee.indexOf(l);i>=0?b.linee.splice(i,1):b.linee.push(l);save();render()}
+function togSolOpt(id,k){const b=S.buildings.find(x=>x.id===id);b.solOpt=b.solOpt||{};b.solOpt[k]=!b.solOpt[k];save();render()}
+function lineeStr(b){return b.linee.map(l=>{
+  if(l==='SOLERO'&&b.solOpt&&(b.solOpt.storage||b.solOpt.ev)){
+    const x=[];if(b.solOpt.storage)x.push('+accumulo');if(b.solOpt.ev)x.push('+ricarica EV');
+    return 'SOLERO ('+x.join(', ')+')'}
+  return l}).join(', ')}
 function delB(id){if(confirm('Eliminare questo edificio dal diario?')){S.buildings=S.buildings.filter(x=>x.id!==id);save();render()}}
 function editNote(id){const b=S.buildings.find(x=>x.id===id);const n=prompt('Nota di sopralluogo:',b.notes||'');if(n!==null){b.notes=n;save();render()}}
 
@@ -590,6 +1017,45 @@ function lightbox(id,i){LB={id:+id,i};$('light-img').src=S.buildings.find(x=>x.i
 function delPhotoLB(){if(!LB)return;if(confirm('Eliminare questa foto?')){S.buildings.find(x=>x.id===LB.id).photos.splice(LB.i,1);LB=null;$('m-light').classList.remove('open');save();render()}}
 
 /* ══════════ Lettura bolletta con AI ══════════ */
+async function readApe(id,btn){
+  const b=S.buildings.find(x=>x.id===id);
+  if(_inp)_inp.remove();
+  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+  inp.style.display='none';document.body.appendChild(inp);_inp=inp;
+  inp.onchange=()=>{
+    const f=inp.files[0];inp.remove();_inp=null;if(!f)return;
+    const img=new Image();
+    img.onload=async()=>{
+      const c=document.createElement('canvas'),k=Math.min(1,1568/Math.max(img.width,img.height));
+      c.width=img.width*k;c.height=img.height*k;c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      const dataUrl=c.toDataURL('image/jpeg',.85);URL.revokeObjectURL(img.src);
+      btn.textContent='\u2026 leggo l\u2019APE';btn.disabled=true;
+      try{
+        const m=dataUrl.match(/^data:(image\/[\w.+-]+);base64,(.*)$/);
+        const hdrs={'Content-Type':'application/json'};
+        if(S.apiKey){hdrs['x-api-key']=S.apiKey;hdrs['anthropic-version']='2023-06-01';hdrs['anthropic-dangerous-direct-browser-access']='true'}
+        const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:hdrs,
+          body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:300,messages:[{role:'user',content:[
+            {type:'image',source:{type:'base64',media_type:m[1],data:m[2]}},
+            {type:'text',text:'Questo \u00e8 un Attestato di Prestazione Energetica (APE) italiano. Estrai i dati e rispondi SOLO con un oggetto JSON, senza testo attorno n\u00e9 backtick: {"classe":string|null,"epgl_nren":number|null,"superficie_m2":number|null,"anno_emissione":number|null}. classe \u00e8 la classe energetica (A4..G). Numeri puri senza unit\u00e0.'}]}]})});
+        const data=await res.json();
+        const txt=(data.content||[]).filter(x=>x.type==='text').map(x=>x.text).join('').replace(/```json|```/g,'').trim();
+        const j=JSON.parse(txt);
+        b.ape=b.ape||{};
+        if(j.classe)b.ape.classe=String(j.classe).toUpperCase();
+        if(j.epgl_nren)b.ape.ep=String(j.epgl_nren);
+        if(j.anno_emissione)b.ape.anno=String(j.anno_emissione);
+        if(j.superficie_m2&&!b.sup)b.sup=String(Math.round(j.superficie_m2));
+        b.photos.push({src:dataUrl,tag:'GENERALE-4'});
+        b.checks=b.checks||{};b.checks['GENERALE-4']=true;
+        save();render();
+        alert('APE letto: classe '+(b.ape.classe||'?')+(b.ape.ep?', EPgl,nren '+b.ape.ep+' kWh/m\u00b2anno':'')+'. Verifica i valori.');
+      }catch(e){alert('Lettura APE non riuscita'+(S.apiKey?'':' (chiave API mancante: inseriscila in Strumenti)')+'. Compila i campi a mano.');render()}
+    };
+    img.src=URL.createObjectURL(f);
+  };
+  inp.click();
+}
 async function readBill(id,btn){
   const b=S.buildings.find(x=>x.id===id);
   if(_inp)_inp.remove();
@@ -671,7 +1137,7 @@ async function genAI(id,btn){
 PROFILO: (3-4 frasi: tipologia, involucro, impianto, criticità energetiche)
 OPPORTUNITA: (3-4 frasi: quali linee BABOO proporre e con quale modello — EPC, CER, chiavi in mano, PPA on-site)
 INCENTIVI: (2-3 frasi: incentivi applicabili — Conto Termico 3.0, CER GSE, Transizione 5.0, detrazioni — e cosa verificare)
-Dati: nome=${b.name}; indirizzo=${b.addr}; coordinate=${b.lat},${b.lng}; tipologia=${b.tipologia}; anno=${b.anno}; superficie=${b.sup} m²; impianto attuale=${b.impianto}; consumi attuali=${consStr(b)}; note sopralluogo=${b.notes||'—'}; esito visita=${b.esito||'—'}.`+
+Dati: nome=${b.name}; indirizzo=${b.addr}; coordinate=${b.lat},${b.lng}; tipologia=${b.tipologia}; anno=${b.anno}; superficie=${b.sup} m²; impianto attuale=${b.impianto}; linee proposte (con optional)=${lineeStr(b)||'da definire'}; consumi attuali=${consStr(b)}; profilo finanziario cliente=${finStr(b)||'non rilevato'} (orienta la proposta di conseguenza); note sopralluogo=${b.notes||'—'}; esito visita=${b.esito||'—'}; modello contrattuale preferenziale BABOO per questa tipologia=${tipoProfilo(b).modello} (usalo come prima opzione in OPPORTUNITA, motivandolo; proponi alternative solo se i dati lo giustificano).`+
       (phs.length?`\nSopra trovi ${phs.length} foto del sopralluogo, ognuna preceduta dall'etichetta della voce di rilievo: basa il PROFILO su ciò che si vede davvero (stato della copertura, targhe, quadri, terminali) e cita i dettagli osservati; non inventare elementi non visibili.`:'');
     content.push({type:'text',text:prompt});
     const hdrs={'Content-Type':'application/json'};
@@ -700,14 +1166,16 @@ function exportMD(){
   let md=`# Report giro sopralluoghi BABOO\n\nPipeline stimata: ${fmtEur(S.buildings.reduce((s,b)=>s+(+b.val||0),0))} · Edifici: ${S.buildings.length}\n\n`;
   sorted.forEach(b=>{const d=new Date(b.ts);
     md+=`## ${b.name} — ${b.addr}\n*${d.toLocaleString('it-IT')}* · Esito: **${b.esito||'—'}** · Complessità: ${b.cx||'—'}/5 · Valore stimato: ${fmtEur(b.val)}\n\n`;
-    md+=`- Tipologia: ${b.tipologia||'—'} · Anno: ${b.anno||'—'} · Sup.: ${b.sup||'—'} m²\n- Impianto attuale: ${b.impianto||'—'}\n- POD/PDR: ${b.pod||'—'} · Referente: ${b.ref||'—'}\n- Linee proposte: ${b.linee.join(', ')||'—'}\n\n`;
+    md+=`- Tipologia: ${b.tipologia||'—'} · Anno: ${b.anno||'—'} · Sup.: ${b.sup||'—'} m²\n- Impianto attuale: ${b.impianto||'—'}\n- POD/PDR: ${b.pod||'—'} · Referente: ${b.ref||'—'}\n- Linee proposte: ${lineeStr(b)||'—'}\n\n`;
     {const cc=consCalc(b);
       md+=`**Consumi attuali (baseline):** ${consStr(b)}${cc.tot?` — Spesa totale ${fmtEur(Math.round(cc.tot))}/anno${cc.cEl?', '+cc.cEl.toFixed(3)+' €/kWh':''}${cc.cGas?', '+cc.cGas.toFixed(3)+' €/Smc':''}`:''}\n\n`;}
-    {const ck=b.checks||{};const groups=[['GENERALE','Sempre'],...b.linee.map(l=>[l,l])];let cmd='';
+    {const fs=finStr(b);if(fs)md+=`**Profilo finanziario:** ${fs}\n\n`;}
+    {const ck=b.checks||{};const groups=guideGroups(b);let cmd='';
       groups.forEach(([g,label])=>{(CHECKLISTS[g]||[]).forEach((it,i)=>{const k=g+'-'+i;const nf=b.photos.filter(p=>p.tag===k).length;
         cmd+=`- [${ck[k]?'x':' '}] (${label}) ${it}${nf?` — ${nf} foto`:''}\n`})});
       if(cmd)md+=`**Guida rilievi (foto/documenti per la proposta):**\n${cmd}\n`;}
     if(b.ai)md+=`**Profilo energetico.** ${b.ai.profilo}\n\n**Opportunità.** ${b.ai.opp}\n\n**Incentivi.** ${b.ai.inc}\n\n`;
+    if(b.talkAI)md+=`**Dalla conversazione col cliente:** Obiezioni: ${b.talkAI.obiezioni||'—'} · Segnali: ${b.talkAI.segnali||'—'}\n\n`;
     if(b.notes)md+=`> Nota: ${b.notes}\n\n`;
     md+='---\n\n'});
   dl('report-sopralluoghi.md',md,'text/markdown');
@@ -724,6 +1192,87 @@ function togglePanel(p){$('p-'+p).classList.toggle('open')}
 function openModal(m){$('m-'+m).classList.add('open')}
 function closeModal(m){$('m-'+m).classList.remove('open')}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'))});
+
+/* \u2500\u2500 Wizard raccolta rapida \u2500\u2500 */
+let WZ=null;
+function wzB(){return S.buildings.find(x=>x.id===WZ.id)}
+function openWizard(id,ask){WZ={id,step:ask?-1:0};$('m-wiz').classList.add('open');wzRender()}
+function wzStart(){WZ.step=0;wzRender()}
+function closeWizard(openCard){const id=WZ&&WZ.id;$('m-wiz').classList.remove('open');if(openCard&&id)UI.card[id]=true;WZ=null;render()}
+function wzField(k,v){const b=wzB();b[k]=v;save()}
+function wzFinField(k,v){const b=wzB();b.fin=b.fin||{servizi:[]};b.fin[k]=v;save()}
+function wzPick(k,v){wzField(k,v);wzRender();setTimeout(()=>wzNext(),220)}
+function wzFin(k,v){wzFinField(k,v);wzRender()}
+function wzTogLinea(l){togLinea(WZ.id,l);wzRender()}
+function wzTogOpt(k){togSolOpt(WZ.id,k);wzRender()}
+function wzEsito(e){upd(WZ.id,'esito',e);wzRender()}
+const WZ_STEPS=[
+ {q:'Come si chiama questo edificio?',sub:'Nome del cliente o dell\u2019edificio, indirizzo, referente.',skip:false,
+  html:b=>`<span class="lb">Nome</span><input value="${esc(b.name)}" oninput="wzField('name',this.value)">
+   <span class="lb">Indirizzo</span><input value="${esc(b.addr)}" placeholder="via, comune" oninput="wzField('addr',this.value)">
+   <span class="lb">Referente</span><input value="${esc(b.ref)}" placeholder="chi hai incontrato" oninput="wzField('ref',this.value)">`},
+ {q:'Che tipo di edificio \u00e8?',sub:'La tipologia adatta checklist, stime e suggerimenti.',skip:true,
+  html:b=>TIPI.map(t=>`<button class="wiz-big ${b.tipologia===t?'on':''}" onclick="wzPick('tipologia','${t}')">${t}</button>`).join('')},
+ {q:'Quali interventi proponi?',sub:'Tocca tutte le linee che hanno senso qui.',skip:true,
+  html:b=>LINEE.map(l=>`<button class="wiz-big ${b.linee.includes(l)?'on':''}" onclick="wzTogLinea('${l}')">${l}</button>`).join('')+
+   (b.linee.includes('SOLERO')?`<span class="lb">Optional SOLERO</span>
+    <button class="wiz-big ${b.solOpt&&b.solOpt.storage?'on':''}" onclick="wzTogOpt('storage')">\u26a1 Accumulo</button>
+    <button class="wiz-big ${b.solOpt&&b.solOpt.ev?'on':''}" onclick="wzTogOpt('ev')">\ud83d\udd0c Ricarica EV</button>`:'')},
+ {q:'Hai una bolletta sotto mano?',sub:'Una foto e l\u2019AI compila consumi e POD da sola.',skip:true,
+  html:b=>`<button class="wiz-big" onclick="readBill(${WZ.id},this)">\ud83d\udcc4 Fotografa la bolletta</button>
+   ${consCalc(b).tot?`<div class="wiz-sub">\u2713 Baseline presente: ${fmtEur(Math.round(consCalc(b).tot))}/anno</div>`:''}
+   <div class="wiz-sub">Puoi anche saltare e inserire i consumi dopo, dalla scheda.</div>`},
+ {q:'E l\u2019APE dell\u2019edificio?',sub:'Foto della prima pagina: classe e indici si compilano da soli.',skip:true,
+  html:b=>`<button class="wiz-big" onclick="readApe(${WZ.id},this)">\ud83d\udcc4 Fotografa l\u2019APE</button>
+   ${b.ape&&b.ape.classe?`<div class="wiz-sub">\u2713 Classe rilevata: <b>${b.ape.classe}</b></div>`:''}`},
+ {q:'Come preferisce spendere?',sub:'La formula orienta proposta e incentivi.',skip:true,
+  html:b=>{const f=b.fin||{};return FIN_FORMULE.map(o=>`<button class="wiz-big ${f.formula===o?'on':''}" onclick="wzFin('formula','${o.replace(/'/g,"\\'")}')">${o}</button>`).join('')+
+   `<span class="lb">Rata mensile sostenibile \u20ac (se ragiona a rate)</span><input inputmode="decimal" value="${esc((f.rata||''))}" oninput="wzFinField('rata',this.value)">`}},
+ {q:'Com\u2019\u00e8 andata?',sub:'Esito a caldo e valore stimato dell\u2019opportunit\u00e0.',skip:true,
+  html:b=>['caldo','tiepido','freddo'].map(e=>`<button class="wiz-big ${b.esito===e?'on':''}" onclick="wzEsito('${e}')">${e==='caldo'?'\ud83d\udd25':e==='tiepido'?'\ud83c\udf24':'\u2744'} ${e}</button>`).join('')+
+   `<span class="lb">Valore stimato \u20ac</span><input inputmode="numeric" value="${b.val||''}" oninput="wzField('val',+this.value||0)">`}
+];
+function completeness(b){
+  const checks=[['Tipologia',!!b.tipologia],['Interventi',b.linee.length>0],['Esito',!!b.esito],['Valore',+b.val>0],
+   ['Indirizzo',!!b.addr],['Referente',!!b.ref],['Consumi',consCalc(b).tot>0],['APE',!!(b.ape&&b.ape.classe)],
+   ['Profilo finanziario',!!(b.fin&&b.fin.formula)],['Foto',b.photos.length>0]];
+  const missing=checks.filter(c=>!c[1]).map(c=>c[0]);
+  return {pct:Math.round((checks.length-missing.length)/checks.length*100),missing}}
+function wzRender(){
+  if(!WZ)return;
+  const b=wzB();if(!b){closeWizard(false);return}
+  const tot=WZ_STEPS.length;
+  const foot=document.querySelector('.wiz-foot');
+  if(WZ.step===-1){ /* scelta iniziale: wizard o scheda dettagliata */
+    $('wiz-n').textContent='Nuovo edificio';$('wiz-bar').style.width='0%';
+    if(foot)foot.style.display='none';
+    $('wiz-body').innerHTML=`<div class="wiz-q">Come vuoi raccogliere i dati?</div>
+      <div class="wiz-sub">Puoi sempre completare o correggere tutto dalla scheda, in ogni momento.</div>
+      <button class="wiz-big" onclick="wzStart()">\ud83e\ude84 <b>Wizard rapido</b><br><span style="font-size:15px;font-style:italic;color:inherit;opacity:.75">7 domande, ~2 minuti \u00b7 con lettura AI di bolletta e APE</span></button>
+      <button class="wiz-big" onclick="closeWizard(true)">\ud83d\udccb <b>Raccolta dettagliata</b><br><span style="font-size:15px;font-style:italic;color:inherit;opacity:.75">Apri subito la scheda completa e compila con calma</span></button>`;
+    return}
+  if(foot)foot.style.display='';
+  if(WZ.step>=tot){
+    const c=completeness(b);
+    $('wiz-n').textContent='Fatto';$('wiz-bar').style.width='100%';
+    $('wiz-body').innerHTML=`<div class="wiz-q">Edificio registrato \u2713</div>
+      <div class="wiz-sub">${esc(b.name)} \u00b7 completezza <b>${c.pct}%</b></div>
+      <div class="compl-bar" style="height:6px"><i style="width:${c.pct}%"></i></div>
+      ${c.missing.length?`<div class="wiz-sub" style="margin-top:14px">Da affinare dalla scheda: ${c.missing.join(', ')}.</div>`:`<div class="wiz-sub" style="margin-top:14px">Raccolta completa: pronto per la proposta.</div>`}
+      <button class="wiz-big" onclick="closeWizard(true)">\u2192 Apri la scheda per affinare</button>
+      <button class="wiz-big" onclick="wzTeaser()">\u2728 Mostra il Report cliente</button>`;
+    $('wiz-back').style.display='';$('wiz-next').textContent='Chiudi';
+    return}
+  const st=WZ_STEPS[WZ.step];
+  $('wiz-n').textContent='Passo '+(WZ.step+1)+' di '+tot;
+  $('wiz-bar').style.width=Math.round(WZ.step/tot*100)+'%';
+  $('wiz-body').innerHTML=`<div class="wiz-q">${st.q}</div><div class="wiz-sub">${st.sub}</div>`+st.html(b);
+  $('wiz-back').style.display=WZ.step?'':'none';
+  $('wiz-next').textContent=st.skip?'Salta / Avanti \u203a':'Avanti \u203a';
+}
+function wzTeaser(){const id=WZ&&WZ.id;closeWizard(true);if(id)showTeaser(id)}
+function wzNext(){if(!WZ)return;if(WZ.step>=WZ_STEPS.length){closeWizard(true);return}WZ.step++;wzRender()}
+function wzPrev(){if(!WZ||WZ.step<1)return;WZ.step--;wzRender()}
 
 initStore();
 </script>
