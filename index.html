@@ -168,8 +168,11 @@ footer{max-width:760px;margin:30px auto 0;padding:14px;border-top:1px solid var(
 .compl b{color:var(--brass);font-style:normal}
 .compl-bar{height:4px;background:var(--cream);border-radius:2px;margin-top:4px}
 .compl-bar i{display:block;height:100%;background:var(--brass);border-radius:2px}
-.dock{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;gap:10px;padding:10px 12px calc(12px + env(safe-area-inset-bottom));background:var(--paper);border-top:1px solid var(--hair);box-shadow:0 -4px 14px rgba(42,39,35,.08)}
-.dock .btn{flex:1;min-height:56px;font-size:18px}
+.dock{position:fixed;right:14px;bottom:calc(78px + env(safe-area-inset-bottom));z-index:45;display:flex;flex-direction:column;gap:12px}
+.fab{width:54px;height:54px;border-radius:50%;border:none;font-size:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(42,39,35,.35)}
+.fab-mark{background:var(--brass);color:var(--cream);font-size:28px;font-weight:600}
+.fab-track{background:var(--ink);color:var(--cream);border:1.5px solid rgba(152,128,96,.7)}
+.fab-track.on{background:#7a2f22;border-color:#7a2f22;animation:pulse 1.6s ease infinite}
 @media(max-width:520px){.fields{grid-template-columns:1fr}.status-in{grid-template-columns:repeat(2,1fr)}}
 
 /* ── Rifinitura grafica ─────────────────────────── */
@@ -213,7 +216,6 @@ details.sec>summary:hover::after{color:var(--ink)}
 
 /* ricerca e dock: vetro caldo */
 .search{box-shadow:inset 0 1px 3px rgba(42,39,35,.07)}
-.dock{background:rgba(245,242,235,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 
 /* barre di avanzamento: ottone vivo */
 .compl-bar i,.wiz-bar b{background:linear-gradient(90deg,#8F7756,#B39A76);transition:width .45s ease}
@@ -274,7 +276,7 @@ textarea.nota-edit{font-size:15px;line-height:1.45}
    Garamond resta voce: note, coach, guida, report. */
 
 /* ── Bussola: assistente di rotta ── */
-.bus-fab{position:fixed;right:14px;bottom:calc(92px + env(safe-area-inset-bottom));z-index:45;width:54px;height:54px;border-radius:50%;border:none;background:linear-gradient(180deg,#A38A67,#8F7756);color:var(--cream);font-size:22px;box-shadow:0 6px 16px -6px rgba(42,39,35,.55);display:flex;align-items:center;justify-content:center}
+.bus-fab{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:45;width:54px;height:54px;border-radius:50%;border:none;background:linear-gradient(180deg,#A38A67,#8F7756);color:var(--cream);font-size:22px;box-shadow:0 6px 16px -6px rgba(42,39,35,.55);display:flex;align-items:center;justify-content:center}
 .bus-fab .bdg{position:absolute;top:-4px;right:-4px;min-width:22px;height:22px;border-radius:11px;background:var(--ink);color:var(--cream);font-family:var(--sans);font-size:12px;font-weight:700;display:none;align-items:center;justify-content:center;padding:0 6px;border:2px solid var(--paper)}
 .bus-fab .bdg.show{display:flex}
 .bus{position:fixed;left:10px;right:10px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:46;max-width:560px;margin:0 auto;background:var(--paper);border:1px solid var(--brass);border-radius:6px;box-shadow:0 20px 44px -18px rgba(42,39,35,.55);display:none;max-height:68vh;overflow:auto}
@@ -411,6 +413,14 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
 .card-hd h3[contenteditable="true"] .hd-edit{display:none}
 .modal-in .panel{display:block;border:none;background:none;padding:0;margin:6px 0 0}
 .mode-link{display:block;width:100%;background:none;border:none;color:var(--brass);font-family:var(--sans);font-size:13.5px;text-align:center;padding:10px 0 2px;margin-top:4px}
+/* \u2500\u2500 Tour di benvenuto \u2500\u2500 */
+#tour{position:fixed;inset:0;z-index:80;display:none}
+#tour.on{display:block}
+.tour-hole{position:absolute;border-radius:10px;box-shadow:0 0 0 200vmax rgba(21,19,16,.82);transition:all .35s ease;pointer-events:none;outline:1.5px solid rgba(152,128,96,.9)}
+.tour-tip{position:absolute;left:14px;right:14px;max-width:560px;margin:0 auto;background:var(--ivory);border-radius:4px;padding:16px;box-shadow:0 16px 44px rgba(0,0,0,.4);transition:top .35s ease,bottom .35s ease}
+.tour-n{font-family:var(--sans);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--brass);margin-bottom:6px}
+.tour-t{font-size:16.5px;line-height:1.5}
+.tour-btns{display:flex;gap:8px;margin-top:14px}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{transition:none!important;animation:none!important}
 }
@@ -452,8 +462,21 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
 <footer>Baboo ESCo S.r.l. · Via Prati 1, Omegna (VB) · UNI CEI 11352</footer>
 
 <div class="dock">
-  <button class="btn" id="btn-track" onclick="toggleTrack()">▶ Avvia giro</button>
-  <button class="btn brass" onclick="markBuilding()">⌂ Registra edificio</button>
+  <button class="fab fab-track" id="btn-track" title="Avvia giro" onclick="toggleTrack()">▶</button>
+  <button class="fab fab-mark" id="btn-mark" title="Aggiungi edificio" onclick="markBuilding()">＋</button>
+</div>
+
+<!-- Tour di benvenuto -->
+<div id="tour">
+  <div class="tour-hole" id="tour-hole"></div>
+  <div class="tour-tip" id="tour-tip">
+    <div class="tour-n" id="tour-n"></div>
+    <div class="tour-t" id="tour-t"></div>
+    <div class="tour-btns">
+      <button class="btn ghost" style="flex:1" onclick="tourEnd()">Salta</button>
+      <button class="btn brass" style="flex:1" id="tour-next" onclick="tourNext()">Avanti →</button>
+    </div>
+  </div>
 </div>
 
 <!-- Bussola: assistente di rotta -->
@@ -520,12 +543,14 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
   <div class="modal-in">
     <button class="modal-x" onclick="closeModal('guida')">✕</button>
     <h2>Guida utente</h2>
+    <button class="mini" style="border-color:var(--brass);color:var(--brass);margin-bottom:10px" onclick="closeModal('guida');setTimeout(tourStart,250)">↻ Rivedi il tour di benvenuto</button>
     <p style="font-style:italic;color:var(--muted)">Il taccuino GPS per i sopralluoghi tecnico-commerciali BABOO: dal giro alla proposta, tutto in un unico strumento. Tocca un capitolo per aprirlo.</p>
 
     <details class="sec"><summary>1 · Il giro e gli edifici</summary><div class="sec-bd">
       <p><b>▶ Avvia giro</b> attiva il GPS: la barra scura in alto conta i km, gli edifici visitati, gli esiti caldi e la <b>pipeline stimata</b> del giorno.</p>
-      <p>Se resti fermo entro il raggio impostato per i minuti impostati (Impostazioni: default 60 m / 4 min), l'app registra da sola l'edificio, senza interromperti. In alternativa: <b>⌂ Registra edificio</b> nella posizione attuale, oppure Strumenti → coordinate manuali — in questi due casi l'app chiede subito <i>come</i> vuoi raccogliere i dati (capitolo 2).</p>
+      <p>Se resti fermo entro il raggio impostato per i minuti impostati (Impostazioni: default 60 m / 4 min), l'app registra da sola l'edificio, senza interromperti. In alternativa: il tondo <b>＋ Aggiungi edificio</b> nella posizione attuale, oppure Strumenti → coordinate manuali — in questi due casi l'app chiede subito <i>come</i> vuoi raccogliere i dati (capitolo 2).</p>
       <p><b>Indirizzo automatico:</b> quando registri un edificio con il GPS attivo, l'indirizzo si compila da solo (via OpenStreetMap) — se lo scrivi tu, il tuo vince. Manca? Nella riga delle coordinate c'è 📍 Trova indirizzo.</p>
+      <p><b>Tour di benvenuto:</b> alla prima apertura un breve giro guidato illumina i cinque gesti che contano (Avvia giro, Registra edificio, la scheda, il wizard, la Bussola); lo ritrovi qui sopra con «↻ Rivedi il tour». Poi è la Bussola a farti da tutor: ti propone il primo edificio e il primo wizard al momento giusto.</p>
       <p><b>Due modalità:</b> alla prima apertura scegli tra <b>Semplice</b> — schede essenziali con 4 azioni (🪄 Wizard, 💬 Coach, 📷 Foto, ✨ Report): ogni inserimento passa dai wizard e dalla cascata di completamento — e <b>Completa</b>, con tutte le sezioni a vista. La modalità si governa <b>scheda per scheda</b>: sulla fascia scura di ogni edificio c'è l'interruttore (📋 apre la completa, 🪄 torna alla semplice) e la scelta resta salvata su quell'edificio — il condominio complesso in Completa, le villette in Semplice, insieme. In Impostazioni scegli solo la modalità <i>predefinita</i> per le schede senza scelta propria.</p>
       <p><b>Installa l'app:</b> su iPhone apri in Safari → Condividi → <i>Aggiungi alla schermata Home</i>; su Android, Chrome → menù ⋮ → <i>Installa app</i>. Da lì in poi è un'icona BABOO a tutto schermo che <b>si apre anche senza rete</b>: in cantina o in centrale termica l'app c'è sempre, aspettano il segnale solo le funzioni AI e l'indirizzo automatico.</p>
       <p>Limiti di piattaforma: serve una pagina <b>https://</b> e lo <b>schermo acceso</b> — a schermo spento i browser sospendono il GPS.</p>
@@ -535,6 +560,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
       <p>Alla registrazione manuale di un edificio scegli tra due strade:</p>
       <ul>
         <li><b>🪄 Wizard rapido</b> — 8 domande (≈2 minuti), una per schermata: nome e contatti → tipologia → interventi (con optional SOLERO) → <b>profilo d'uso</b> → foto bolletta → foto APE → formula di spesa → esito. Ogni passo è saltabile ("Salta / Avanti"); bolletta e APE si leggono con l'AI direttamente dal wizard.</li>
+        <li><b>🎙️ Racconta</b> — la via conversazionale: parli (o scrivi) tutto d'un fiato e l'AI compila i campi, mostrandoti <b>prima</b> il riepilogo delle modifiche da confermare voce per voce; poi al massimo due domande su ciò che manca. <b>Offline funziona lo stesso</b>: il racconto va in coda e la Bussola lo elabora al ritorno della rete. Il 🎙️ è anche su ogni scheda, per arricchire edifici esistenti.</li>
         <li><b>📋 Raccolta dettagliata</b> — apre subito la scheda completa, per compilare con calma.</li>
       </ul>
       <p>Il passo <b>profilo d'uso</b> si adatta alla tipologia scelta: al condominio chiede unità, amministratore e prossima assemblea; alla villa occupanti e abitudini; alla PMI turni e macchinari; all'attività commerciale orari e frigoriferi. Sono i dati che tarano stime e proposta.</p>
@@ -549,6 +575,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
 
     <details class="sec"><summary>2b · La Bussola (assistente di rotta)</summary><div class="sec-bd">
       <p>La bolla in ottone ✦ sopra il dock è l'assistente: il numero dice quante <b>mosse</b> ha pronte. Toccala e le vedi in ordine di priorità: protezione dei dati (audio da trascrivere), opportunità calde (consumi mancanti su un cliente caldo, assemblea vicina, Report pronto da mostrare), ritmo della giornata (avvia il giro, scarica il report a fine giro), igiene dei dati (esiti mancanti). Ogni mossa ha il pulsante che la esegue subito; la ✕ la silenzia per sempre. La Bussola segnala, non interrompe: mai popup spontanei.</p>
+      <p><b>Comandi alla Bussola:</b> oltre a rispondere, la Bussola sa <i>proporre modifiche</i> — «Segna Rossi caldo e richiamo giovedì» → ti mostra l'elenco e con ✓ Applica scrive davvero (mai senza conferma).</p>
       <p><b>Chiedi alla Bussola:</b> in fondo al pannello puoi farle domande libere ("come rispondo se dice che il fotovoltaico non rende?"): risponde l'AI con il contesto degli edifici di oggi. Serve la chiave API in Impostazioni e la rete.</p>
     </div></details>
 
@@ -678,6 +705,13 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
   <div class="modal-in"><button class="modal-x" onclick="$('m-coach').classList.remove('open')">✕</button><div id="coach-body"></div></div>
 </div>
 
+<!-- Racconta: raccolta conversazionale -->
+<div class="wiz" id="m-racc" style="z-index:62">
+  <div class="wiz-top"><span class="n" id="racc-n">🎙️ Racconta</span><button class="wiz-x" onclick="raccClose()">✕</button></div>
+  <div class="wiz-bar"><b style="width:0%"></b></div>
+  <div class="wiz-body" id="racc-body"></div>
+</div>
+
 <!-- Wizard raccolta rapida -->
 <div class="wiz" id="m-wiz">
   <div class="wiz-top"><span class="n" id="wiz-n">Passo 1 di 7</span><button class="wiz-x" onclick="closeWizard(false)">✕</button></div>
@@ -728,7 +762,8 @@ function loadFallback(){
 function applyLoaded(j){
   try{if(j){S=JSON.parse(j);S.tracking=false}else seedDemo()}catch(e){seedDemo()}
   /* migrazione: foto da stringa a {src, tag} */
-  (S.buildings||[]).forEach(b=>{b.photos=(b.photos||[]).map(p=>typeof p==='string'?{src:p,tag:null}:p);b.checks=b.checks||{};b.memos=b.memos||[];b.cons=b.cons||{}});
+  (S.buildings||[]).forEach(b=>{if(!Number.isFinite(+b.ts)||!+b.ts)b.ts=+b.id||Date.now();b.ts=+b.ts;
+    b.photos=(b.photos||[]).map(p=>typeof p==='string'?{src:p,tag:null}:p);b.checks=b.checks||{};b.memos=b.memos||[];b.cons=b.cons||{}});
   $('in-radius').value=S.radius;$('in-min').value=S.minutes;$('in-key').value=S.apiKey||'';
   $('in-oakey').value=S.openaiKey||'';$('in-stturl').value=S.sttUrl||'';$('in-sttmode').value=S.sttMode||'openai';$('in-mode').value=S.mode||'semplice';
   render();
@@ -773,12 +808,12 @@ function seedDemo(){
 function dist(a,b){const R=6371e3,r=x=>x*Math.PI/180,dφ=r(b.lat-a.lat),dλ=r(b.lng-a.lng);
   const h=Math.sin(dφ/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dλ/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
 function toggleTrack(){
-  if(S.tracking){navigator.geolocation&&watchId!=null&&navigator.geolocation.clearWatch(watchId);S.tracking=false;$('btn-track').textContent='▶ Avvia giro';$('gps-note').textContent='Giro in pausa. Il diario resta salvato.';return}
-  if(!navigator.geolocation){$('gps-note').textContent='GPS non disponibile in questo contesto (serve HTTPS su telefono). Usa ⌂ Registra edificio o le coordinate manuali.';return}
-  S.tracking=true;$('btn-track').textContent='■ Ferma giro';$('gps-note').textContent='GPS attivo — schermo acceso per il tracciamento.';
+  if(S.tracking){navigator.geolocation&&watchId!=null&&navigator.geolocation.clearWatch(watchId);S.tracking=false;$('btn-track').textContent='▶';$('btn-track').classList.remove('on');$('btn-track').title='Avvia giro';$('gps-note').textContent='Giro in pausa. Il diario resta salvato.';return}
+  if(!navigator.geolocation){$('gps-note').textContent='GPS non disponibile in questo contesto (serve HTTPS su telefono). Usa il tondo ＋ o le coordinate manuali.';return}
+  S.tracking=true;$('btn-track').textContent='■';$('btn-track').classList.add('on');$('btn-track').title='Ferma giro';$('gps-note').textContent='GPS attivo — schermo acceso per il tracciamento.';
   try{
     watchId=navigator.geolocation.watchPosition(onPos,e=>{$('gps-note').textContent='GPS negato o non disponibile: puoi comunque registrare gli edifici a mano.'},{enableHighAccuracy:true,maximumAge:3000});
-  }catch(e){S.tracking=false;$('btn-track').textContent='▶ Avvia giro';$('gps-note').textContent='GPS bloccato in questo contesto (anteprima). Sul telefono via HTTPS funziona; intanto usa ⌂ Registra edificio.'}
+  }catch(e){S.tracking=false;$('btn-track').textContent='▶';$('btn-track').classList.remove('on');$('btn-track').title='Avvia giro';$('gps-note').textContent='GPS bloccato in questo contesto (anteprima). Sul telefono via HTTPS funziona; intanto usa ＋ Aggiungi edificio.'}
 }
 function onPos(p){
   const pt={lat:p.coords.latitude,lng:p.coords.longitude,t:Date.now()};
@@ -1191,7 +1226,7 @@ function showTeaser(id){
 }
 function teaserText(b){
   const t=teaserCalc(b);const tp=tipoProfilo(b);
-  let x='\U0001F3E0 '+b.name+' \u2014 Anteprima di riqualificazione energetica (BABOO ESCo)\n\n';
+  let x='\u{1F3E0} '+b.name+' \u2014 Anteprima di riqualificazione energetica (BABOO ESCo)\n\n';
   if(t.tot){
     x+='Oggi: circa '+fmtEur(Math.round(t.tot))+'/anno di energia'+((b.ape&&b.ape.classe)?' \u00b7 classe APE '+b.ape.classe:'')+'\n';
     x+='Nei prossimi 10 anni, senza fare nulla: circa '+fmtEur(t.dieci)+'\n';
@@ -1202,7 +1237,7 @@ function teaserText(b){
     x+='Interventi proposti: '+(lineeStr(b)||'in corso di definizione')+'\n';
   }
   if(tp.teaser)x+='\n'+tp.teaser[0]+': '+tp.teaser[1]+'\n';
-  x+='\n\U0001F4DE Studio di fattibilit\u00e0 GRATUITO \u2014 proposta valida 15 giorni\nBABOO ESCo S.r.l. \u00b7 Omegna (VB) \u00b7 0323 63934 \u00b7 certificata UNI CEI 11352\n\nStime indicative e non vincolanti, elaborate sul sopralluogo.';
+  x+='\n\u{1F4DE} Studio di fattibilit\u00e0 GRATUITO \u2014 proposta valida 15 giorni\nBABOO ESCo S.r.l. \u00b7 Omegna (VB) \u00b7 0323 63934 \u00b7 certificata UNI CEI 11352\n\nStime indicative e non vincolanti, elaborate sul sopralluogo.';
   return x}
 async function shareTeaser(btn){
   if(!_teaser)return;
@@ -1247,7 +1282,8 @@ function render(){
   const sn=$('search-n');if(sn)sn.textContent=q?vis.length+'/'+S.buildings.length:'';
   $('empty').style.display=S.buildings.length?'none':'block';
   if(q&&!vis.length){tl.innerHTML='<div class="empty" style="display:block">Nessun edificio corrisponde a «'+esc(SEARCH)+'».</div>'}
-  const sorted=[...vis].sort((a,b)=>b.ts-a.ts);
+  const T=x=>Number.isFinite(+x.ts)&&+x.ts?+x.ts:(+x.id||0);
+  const sorted=[...vis].sort((a,b)=>T(b)-T(a));
   let lastDay='';
   sorted.forEach((b,i)=>{
     const d=new Date(b.ts),day=d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
@@ -1283,7 +1319,7 @@ function cardHTML(b,isNewest){
       <button class="hd-mode" title="${FULL?'Passa alla vista semplice':'Apri la vista completa'}" onclick="event.preventDefault();event.stopPropagation();togVista(${b.id})">${FULL?'\u{1FA84}':'\u{1F4CB}'}</button>
     </summary>
     <div class="card-bd">
-      <div class="coords">ORE ${time} \u00b7 ${coords}${(b.lat&&!b.addr)?` \u00b7 <button class="mini" style="min-height:32px;padding:4px 10px;font-size:12px" onclick="fetchAddr(${b.id},true).then(()=>render())">\U0001F4CD Trova indirizzo</button>`:''}</div>
+      <div class="coords">ORE ${time} \u00b7 ${coords}${(b.lat&&!b.addr)?` \u00b7 <button class="mini" style="min-height:32px;padding:4px 10px;font-size:12px" onclick="fetchAddr(${b.id},true).then(()=>render())">\u{1F4CD} Trova indirizzo</button>`:''}</div>
       ${(()=>{const c=completeness(b);const ks=missingStepKeys(b);
         return `<div class="compl">Completezza <b>${c.pct}%</b>${c.missing.length?' \u00b7 mancano: '+c.missing.slice(0,3).join(', ')+(c.missing.length>3?'\u2026':''):' \u2713'}<div class="compl-bar"><i style="width:${c.pct}%"></i></div></div>`+
         (ks.length?`<div class="linee" style="margin:2px 0 10px">
@@ -1315,6 +1351,7 @@ function cardHTML(b,isNewest){
       ${sec('coach',false,'💬 Suggeritore commerciale',coachInner(b))}
       ${sec('dati',false,'Dati edificio',
         `<div class="fields">
+        <div class="f" style="grid-column:1/-1"><label>Nome edificio</label><input value="${esc(b.name)}" onchange="upd(${b.id},'name',this.value.trim()||'Edificio')"></div>
         <div class="f"><label>Tipologia</label><select onchange="upd(${b.id},'tipologia',this.value)">
           ${['',...TIPI,...(b.tipologia&&!TIPI.includes(b.tipologia)?[b.tipologia]:[])].map(o=>`<option ${b.tipologia===o?'selected':''}>${esc(o)}</option>`).join('')}</select></div>
         ${[['anno','Anno costr.'],['sup','Superficie m²'],['impianto','Impianto attuale'],['pod','POD / PDR'],['ref','Referente']].map(([k,l])=>
@@ -1322,7 +1359,7 @@ function cardHTML(b,isNewest){
         <div class="f"><label>Indirizzo</label><input value="${esc(b.addr)}" onchange="upd(${b.id},'addr',this.value)"></div>
         <div class="f"><label>Valore stimato €</label><input type="number" value="${b.val||''}" onchange="upd(${b.id},'val',+this.value)"></div>
         </div>
-        <button class="mini" onclick="readPlate(${b.id},this)">\U0001F4F8 Leggi targa tecnica con AI</button>
+        <button class="mini" onclick="readPlate(${b.id},this)">\u{1F4F8} Leggi targa tecnica con AI</button>
 `)}
       ${(()=>{ /* Consumi attuali */
         b.cons=b.cons||{};const c=b.cons,cc=consCalc(b);
@@ -1412,6 +1449,7 @@ function cardHTML(b,isNewest){
         ${hasDoc?'':'<span class="ai-note">Ancora niente: aggiungi foto, note o memo con i pulsanti qui sotto.</span>'}`)}
       <div class="card-actions">
         <button class="mini" onclick="openWizard(${b.id})">\ud83e\ude84 Wizard</button>
+        <button class="mini" onclick="raccOpen(${b.id})">\u{1F399} Racconta</button>
         <button class="mini" onclick="genAI(${b.id},this)">↻ Scheda AI</button>
         <button class="mini" style="border-color:var(--brass);color:var(--brass)" onclick="showTeaser(${b.id})">✨ Report cliente</button>
         <button class="mini" onclick="addPhoto(${b.id})">📷 Foto</button>
@@ -1423,6 +1461,7 @@ function cardHTML(b,isNewest){
       ${b.photos.length?`<div class="photos">${b.photos.map((p,i)=>`<img src="${p.src}" onclick="lightbox(${b.id},${i})">`).join('')}</div>`:''}
       <div class="card-actions">
         <button class="mini" onclick="openWizard(${b.id})">\ud83e\ude84 Wizard</button>
+        <button class="mini" onclick="raccOpen(${b.id})">\u{1F399} Racconta</button>
         <button class="mini" onclick="openCoach(${b.id})">💬 Coach</button>
         <button class="mini" onclick="addPhoto(${b.id})">📷 Foto${b.photos.length?' ('+b.photos.length+')':''}</button>
         <button class="mini" style="border-color:var(--brass);color:var(--brass)" onclick="showTeaser(${b.id})">✨ Report</button>
@@ -1507,9 +1546,10 @@ function togVista(id){const b=S.buildings.find(x=>x.id===id);
   const cur=b.vista||(S.mode||'semplice');
   b.vista=cur==='semplice'?'completa':'semplice';save();render()}
 function chooseMode(m){S.mode=m;save();$('m-mode').classList.remove('open');render();
-  const im=$('in-mode');if(im)im.value=m}
+  const im=$('in-mode');if(im)im.value=m;
+  if(!S.tourDone)setTimeout(tourStart,450)}
 function openCoach(id){const b=S.buildings.find(x=>x.id===id);if(!b)return;
-  $('coach-body').innerHTML='<h2 style="font-family:\'Playfair Display\',serif;margin-bottom:10px">\U0001F4AC Suggeritore \u00b7 '+esc(b.name)+'</h2>'+coachInner(b);
+  $('coach-body').innerHTML='<h2 style="font-family:\'Playfair Display\',serif;margin-bottom:10px">\u{1F4AC} Suggeritore \u00b7 '+esc(b.name)+'</h2>'+coachInner(b);
   $('m-coach').classList.add('open')}
 
 /* ══════════ Annotazione foto ══════════ */
@@ -1818,8 +1858,206 @@ function openModal(m){$('m-'+m).classList.add('open')}
 function closeModal(m){$('m-'+m).classList.remove('open')}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'))});
 
+/* \u2500\u2500 Tour di benvenuto \u2500\u2500 */
+let TOUR=null;
+const TOUR_STEPS=[
+ {sel:'#btn-track',n:'Il giro',t:'\u25b6 Avvia giro accende il GPS: quando sosti qualche minuto vicino a un edificio, la scheda nasce da sola. A fine visita, la fermi.'},
+ {sel:'#btn-mark',n:'Al volo',t:'Il tondo \uFF0B aggiunge subito un edificio dove ti trovi \u2014 anche a giro spento. \u00c8 il gesto pi\u00f9 usato.'},
+ {sel:'.card .card-hd',n:'La scheda',t:'Ogni edificio \u00e8 una scheda: tocca la fascia per aprirla e chiuderla, \u270e rinomina, e l\u2019interruttore tondo passa dalla vista semplice alla completa.'},
+ {sel:'.card .compl',n:'Il wizard',t:'La completezza dice cosa manca. \u25b8 Completa apre il wizard: una domanda alla volta, coi soli passi mancanti. \u00c8 la via pi\u00f9 rapida per una scheda piena.'},
+ {sel:'#bus-fab',n:'La Bussola',t:'\u2726 \u00e8 l\u2019assistente di rotta: suggerisce la prossima mossa giusta, elabora i racconti e risponde alle domande. Se ti perdi, riparti da qui.'}
+];
+function tourStart(){if(TOUR)return;TOUR={i:0};$('tour').classList.add('on');tourStep()}
+function tourStep(){
+  if(!TOUR)return;
+  const st=TOUR_STEPS[TOUR.i];
+  if(!st){tourEnd();return}
+  const el=document.querySelector(st.sel);
+  if(!el){TOUR.i++;tourStep();return}
+  if(el.scrollIntoView)el.scrollIntoView({block:'center'});
+  setTimeout(()=>{
+    if(!TOUR)return;
+    const r=el.getBoundingClientRect?el.getBoundingClientRect():{left:0,top:0,width:0,height:0,bottom:0};
+    const pad=8,hole=$('tour-hole');
+    hole.style.left=(r.left-pad)+'px';hole.style.top=(r.top-pad)+'px';
+    hole.style.width=(r.width+pad*2)+'px';hole.style.height=(r.height+pad*2)+'px';
+    $('tour-n').textContent=(TOUR.i+1)+'/'+TOUR_STEPS.length+' \u00b7 '+st.n;
+    $('tour-t').textContent=st.t;
+    const H=(window.innerHeight||700),tip=$('tour-tip');
+    if(r.bottom+190<H){tip.style.top=(r.bottom+pad+14)+'px';tip.style.bottom='auto'}
+    else{tip.style.top='auto';tip.style.bottom=(H-r.top+pad+14)+'px'}
+    const nx=$('tour-next');if(nx)nx.textContent=TOUR.i===TOUR_STEPS.length-1?'Fine \u2713':'Avanti \u2192';
+  },80);
+}
+function tourNext(){if(!TOUR)return;TOUR.i++;tourStep()}
+function tourEnd(){TOUR=null;$('tour').classList.remove('on');if(!S.tourDone){S.tourDone=true;save()}}
+window.addEventListener('resize',()=>{if(TOUR)tourStep()});
+
+/* \u2500\u2500 Racconta: parla, l'AI compila (diff con conferma) \u2500\u2500 */
+let RACC=null,RSR=null;
+function raccOpen(id,queuedIdx){
+  const b=S.buildings.find(x=>x.id===id);if(!b)return;
+  RACC={id,state:'input',text:(queuedIdx!=null?(S.raccQueue[queuedIdx]||{}).text||'':''),rows:[],domande:[],qIdx:queuedIdx};
+  $('m-racc').classList.add('open');raccRender();
+}
+function raccClose(){if(RSR){try{RSR.onend=null;RSR.stop()}catch(e){}RSR=null}
+  $('m-racc').classList.remove('open');RACC=null}
+function raccTxt(v){if(RACC)RACC.text=v}
+function raccListen(btn){
+  if(RSR){RSR.onend=null;try{RSR.stop()}catch(e){}RSR=null;raccRender();return}
+  const Rec=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!Rec){alert('Dettatura del browser non disponibile: usa il microfono della tastiera.');return}
+  try{RSR=new Rec();RSR.lang='it-IT';RSR.continuous=true;RSR.interimResults=false;
+    RSR.onresult=e=>{let add='';for(let i=e.resultIndex;i<e.results.length;i++)if(e.results[i].isFinal)add+=e.results[i][0].transcript+' ';
+      if(add){RACC.text=(RACC.text||'')+add;const ta=$('racc-txt');if(ta)ta.value=RACC.text}};
+    RSR.onend=()=>{if(RSR)try{RSR.start()}catch(e){}};
+    RSR.start();raccRender();
+  }catch(e){RSR=null;alert('Microfono non disponibile (serve HTTPS).')}
+}
+function raccQueue(){
+  if(!RACC||!RACC.text.trim())return;
+  S.raccQueue=S.raccQueue||[];
+  if(RACC.qIdx!=null)S.raccQueue[RACC.qIdx]={id:RACC.id,text:RACC.text,ts:Date.now()};
+  else S.raccQueue.push({id:RACC.id,text:RACC.text,ts:Date.now()});
+  save();raccClose();render();
+  alert('Racconto salvato in coda: lo elaboriamo appena torna la rete (la Bussola te lo ricorda).');
+}
+function raccProcessNext(){
+  const q=S.raccQueue||[];if(!q.length)return;
+  raccOpen(q[0].id,0);raccExtract();
+}
+async function raccExtract(followupText){
+  if(!RACC)return;
+  const b=S.buildings.find(x=>x.id===RACC.id);
+  const txt=(RACC.text||'').trim()+(followupText?'\n\nRisposte alle domande di chiarimento: '+followupText:'');
+  if(!txt)return;
+  RACC.state='busy';raccRender();
+  try{
+    const prompt=`Sei l'assistente di raccolta dati di GIRO ESCo (BABOO). Un commerciale ha appena raccontato un sopralluogo. Estrai SOLO i dati esplicitamente menzionati nel racconto e rispondi SOLO con JSON puro, senza testo attorno n\u00e9 backtick.
+Racconto: \u00ab${txt.slice(0,5000)}\u00bb
+Valori attuali dell'edificio (proponi solo cambi o campi nuovi): ${JSON.stringify({name:b.name,addr:b.addr,ref:b.ref,tipologia:b.tipologia,anno:b.anno,sup:b.sup,impianto:b.impianto,pod:b.pod,esito:b.esito,val:b.val,linee:b.linee,cons:b.cons,ape:b.ape,fin:b.fin,extra:b.extra,fup:b.fup}).slice(0,1200)}
+Schema: {"campi":{"name":str,"addr":str,"ref":str,"tipologia":str,"anno":str,"sup":str,"impianto":str,"pod":str,"esito":str,"cx":int,"val":number,"linee":[str],"solOpt":{"storage":bool,"ev":bool},"cons":{"elKwh":str,"elSpesa":str,"elPot":str,"elF1":str,"gasSmc":str,"gasSpesa":str,"gasUso":str,"altroTipo":str,"altroQta":str,"altroSpesa":str},"ape":{"classe":str,"ep":str,"anno":str},"fin":{"formula":str,"rata":str,"contributi":str,"driver":str,"decisore":str,"tempi":str},"extra":{"unita":str,"ammin":str,"assemblea":str,"turni":str,"macchine":str,"orari":str,"frigo":str,"occupanti":str,"uso":str},"fup":{"giorni":int,"why":str},"vani":[{"nome":str,"l":str,"h":str,"n":str}],"note":str},"domande":[str]}
+Regole: ometti ogni campo non menzionato. tipologia una di ${JSON.stringify(TIPI)}. linee tra ${JSON.stringify(LINEE)}. esito tra ["caldo","tiepido","freddo"]. fin.formula tra ${JSON.stringify(FIN_FORMULE)}. fin.driver tra ${JSON.stringify(FIN_DRIVER)}. fin.tempi tra ${JSON.stringify(FIN_TEMPI)}. Numeri puri senza unit\u00e0. fup.giorni = tra quanti giorni ricontattare. "note" solo per informazioni utili che non entrano altrove. "domande": ${followupText?'[] (nessuna, \u00e8 il secondo giro)':'al massimo 2, solo su dati mancanti e commercialmente preziosi, altrimenti []'}.`;
+    const hdrs={'Content-Type':'application/json'};
+    if(S.apiKey){hdrs['x-api-key']=S.apiKey;hdrs['anthropic-version']='2023-06-01';hdrs['anthropic-dangerous-direct-browser-access']='true'}
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:hdrs,
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:900,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    const out=(data.content||[]).filter(x=>x.type==='text').map(x=>x.text).join('').replace(/```json|```/g,'').trim();
+    const j=JSON.parse(out);
+    RACC.rows=raccDiff(b,j.campi||{});
+    RACC.domande=followupText?[]:(j.domande||[]).slice(0,2);
+    RACC.state=RACC.rows.length?'diff':'vuoto';
+    raccRender();
+  }catch(e){
+    RACC.state='input';raccRender();
+    if(!navigator.onLine){raccQueue();return}
+    alert('Estrazione non riuscita'+(S.apiKey?'':' (chiave API mancante: Impostazioni)')+'. Puoi riprovare o salvare in coda.');
+  }
+}
+function raccDiff(b,c){
+  const rows=[];const R=(label,oldV,newV,apply)=>{if(newV==null||newV==='')return;
+    if(String(oldV??'')===String(newV))return;rows.push({label,oldV:oldV??'\u2014',newV,apply,on:true})};
+  [['name','Nome'],['addr','Indirizzo'],['ref','Referente'],['tipologia','Tipologia'],['anno','Anno costr.'],['sup','Superficie'],['impianto','Impianto'],['pod','POD/PDR'],['esito','Esito'],['cx','Complessit\u00e0'],['val','Valore \u20ac']]
+    .forEach(([k,l])=>R(l,b[k],c[k],x=>x[k]=(k==='val'||k==='cx'?+c[k]:String(c[k]))));
+  if(Array.isArray(c.linee)&&c.linee.length){
+    const nl=[...new Set(c.linee.filter(x=>LINEE.includes(x)))];
+    if(nl.length&&nl.join()!==b.linee.join())R('Linee proposte',b.linee.join(', '),nl.join(', '),x=>x.linee=nl)}
+  if(c.solOpt)['storage','ev'].forEach(k=>{if(typeof c.solOpt[k]==='boolean')R('SOLERO '+(k==='storage'?'accumulo':'ricarica EV'),(b.solOpt||{})[k]?'s\u00ec':'no',c.solOpt[k]?'s\u00ec':'no',x=>{x.solOpt=x.solOpt||{};x.solOpt[k]=c.solOpt[k]})});
+  const NEST=[['cons',{elKwh:'kWh/anno',elSpesa:'Spesa elettrica \u20ac',elPot:'Potenza kW',elF1:'% diurna',gasSmc:'Smc gas',gasSpesa:'Spesa gas \u20ac',gasUso:'Uso gas',altroTipo:'Altro combustibile',altroQta:'Quantit\u00e0 altro',altroSpesa:'Spesa altro \u20ac'}],
+    ['ape',{classe:'Classe APE',ep:'EPgl,nren',anno:'Anno APE'}],
+    ['fin',{formula:'Formula',rata:'Rata \u20ac/mese',contributi:'Contributi',driver:'Driver',decisore:'Decisore',tempi:'Tempi'}],
+    ['extra',{unita:'Unit\u00e0',ammin:'Amministratore',assemblea:'Assemblea',turni:'Turni',macchine:'Macchinari',orari:'Apertura',frigo:'Frigo',occupanti:'Occupanti',uso:'Uso'}]];
+  NEST.forEach(([grp,keys])=>{const src=c[grp]||{};
+    Object.keys(keys).forEach(k=>R(keys[k],(b[grp]||{})[k],src[k],x=>{x[grp]=x[grp]||{};if(grp==='fin')x.fin.servizi=x.fin.servizi||[];x[grp][k]=String(src[k])}))});
+  if(c.fup&&(c.fup.giorni!=null||c.fup.why)){
+    let nd='';if(c.fup.giorni!=null){const d=new Date();d.setDate(d.getDate()+(+c.fup.giorni||0));nd=d.toISOString().slice(0,10)}
+    if(nd)R('Ricontatto',(b.fup||{}).date,nd+(c.fup.why?' \u2014 '+c.fup.why:''),x=>{x.fup=x.fup||{};x.fup.date=nd;if(c.fup.why)x.fup.why=String(c.fup.why)});
+    else if(c.fup.why)R('Motivo ricontatto',(b.fup||{}).why,c.fup.why,x=>{x.fup=x.fup||{};x.fup.why=String(c.fup.why)})}
+  if(Array.isArray(c.vani)&&c.vani.length){
+    const vv=c.vani.filter(v=>v.l&&v.h);
+    if(vv.length)R('Misure vani','+'+((b.vani||[]).length)+' esistenti','+'+vv.length+' righe: '+vv.map(v=>(v.nome||'vano')+' '+v.l+'\u00d7'+v.h+'\u00d7'+(v.n||1)).join('; '),x=>{x.vani=(x.vani||[]).concat(vv.map(v=>({nome:String(v.nome||''),l:String(v.l),h:String(v.h),n:String(v.n||'1')})))})}
+  if(c.note)R('Nota (in aggiunta)',b.notes?'\u2026':'\u2014',c.note,x=>x.notes=(x.notes?x.notes+'\n':'')+String(c.note));
+  return rows;
+}
+function raccTog(i){if(RACC&&RACC.rows[i]){RACC.rows[i].on=!RACC.rows[i].on;raccRender()}}
+function raccApply(){
+  if(!RACC)return;
+  const b=S.buildings.find(x=>x.id===RACC.id);
+  const sel=RACC.rows.filter(r=>r.on);
+  sel.forEach(r=>r.apply(b));
+  if(RACC.qIdx!=null){S.raccQueue.splice(RACC.qIdx,1);RACC.qIdx=null}
+  save();render();
+  RACC.applied=sel.length;
+  RACC.state=RACC.domande.length?'gap':'done';
+  raccRender();
+}
+function raccGapSend(){const t=($('racc-gap')||{}).value||'';if(!t.trim()){RACC.state='done';raccRender();return}
+  raccExtract(t)}
+function raccRender(){
+  if(!RACC)return;const body=$('racc-body');const b=S.buildings.find(x=>x.id===RACC.id);
+  $('racc-n').textContent='\u{1F399} Racconta \u00b7 '+(b?b.name:'');
+  if(RACC.state==='input'){
+    body.innerHTML=`<div class="wiz-q">Racconta il sopralluogo</div>
+    <div class="wiz-sub">Tutto d\u2019un fiato, nell\u2019ordine che ti viene: edificio, impianto, consumi, chi decide, come pagherebbero, esito, quando risentirli. L\u2019AI compila i campi e te li mostra <b>prima</b> di scrivere.</div>
+    <textarea id="racc-txt" style="width:100%;min-height:150px;padding:12px;border:1px solid var(--hair);border-radius:2px;font-size:16px" placeholder="Es.: villetta anni \u201970, 140 metri, caldaia Vaillant 24 kW del 2016, vogliono togliere il gas\u2026" oninput="raccTxt(this.value)">${esc(RACC.text)}</textarea>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+      <button class="mini ${RSR?'rec':''}" onclick="raccListen(this)">${RSR?'\u25a0 Ferma dettatura':'\u{1F3A4} Detta a voce'}</button>
+      <button class="mini" style="border-color:var(--brass);color:var(--brass)" onclick="raccExtract()">\u2726 Estrai e compila</button>
+      <button class="mini" onclick="raccQueue()">\u{1F4E5} Salva in coda</button>
+    </div>
+    ${navigator.onLine===false?'<div class="wiz-sub" style="margin-top:10px">\u26A0 Sei offline: il racconto va in coda e lo elaboriamo al ritorno della rete.</div>':''}`;
+  }else if(RACC.state==='busy'){
+    body.innerHTML=`<div class="wiz-q">\u2026 l\u2019AI legge il racconto</div><div class="wiz-sub">Qualche secondo.</div>`;
+  }else if(RACC.state==='diff'){
+    body.innerHTML=`<div class="wiz-q">Confermi questi campi?</div>
+    <div class="wiz-sub">${RACC.rows.length} proposte dal racconto \u2014 togli la spunta a ci\u00f2 che non torna.</div>
+    ${RACC.rows.map((r,i)=>`<label class="chk" style="align-items:flex-start"><input type="checkbox" ${r.on?'checked':''} onchange="raccTog(${i})">
+      <span><b>${esc(r.label)}</b>: <span style="color:var(--muted)">${esc(String(r.oldV))}</span> \u2192 <b>${esc(String(r.newV))}</b></span></label>`).join('')}
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="btn ghost" style="flex:1" onclick="RACC.state='input';raccRender()">\u2039 Correggi</button>
+      <button class="btn brass" style="flex:1" onclick="raccApply()">\u2713 Applica selezionati</button>
+    </div>`;
+  }else if(RACC.state==='gap'){
+    body.innerHTML=`<div class="wiz-q">\u2713 ${RACC.applied} campi aggiornati</div>
+    <div class="wiz-sub">Due cose che aiuterebbero, se le sai:</div>
+    ${RACC.domande.map(q=>`<div class="tip">${esc(q)}</div>`).join('')}
+    <textarea id="racc-gap" style="width:100%;min-height:90px;padding:12px;border:1px solid var(--hair);border-radius:2px;font-size:16px;margin-top:8px" placeholder="Rispondi a voce libera\u2026"></textarea>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn ghost" style="flex:1" onclick="RACC.state='done';raccRender()">Salta</button>
+      <button class="btn brass" style="flex:1" onclick="raccGapSend()">\u2726 Integra</button>
+    </div>`;
+  }else if(RACC.state==='vuoto'){
+    body.innerHTML=`<div class="wiz-q">Nulla di nuovo da compilare</div><div class="wiz-sub">Il racconto non contiene dati diversi da quelli gi\u00e0 in scheda.</div>
+    <button class="wiz-big" onclick="RACC.state='input';raccRender()">\u2039 Torna al racconto</button>
+    <button class="wiz-big" onclick="raccClose()">Chiudi</button>`;
+  }else{
+    body.innerHTML=`<div class="wiz-q">Fatto \u2713</div><div class="wiz-sub">${RACC.applied||0} campi aggiornati dal racconto.</div>
+    <button class="wiz-big" onclick="const i=RACC.id;raccClose();UI.card[i]=true;render()">\u2192 Apri la scheda</button>
+    <button class="wiz-big" onclick="raccClose()">Chiudi</button>`;
+  }
+}
+window.addEventListener('online',()=>{if((S.raccQueue||[]).length)render()});
+
 /* \u2500\u2500 Bussola: assistente di rotta \u2500\u2500 */
-let BUSSOLA_MOVES=[];
+let BUSSOLA_MOVES=[];let BUSSOLA_PROPS=[];
+function bussolaApplyProps(btn){
+  let n=0;
+  BUSSOLA_PROPS.forEach(m=>{
+    const b=S.buildings.find(x=>norm(x.name).includes(norm(m.edificio))||norm(m.edificio).includes(norm(x.name)));
+    if(!b)return;
+    const v=String(m.valore);
+    if(m.campo==='esito'&&['caldo','tiepido','freddo'].includes(v.toLowerCase())){b.esito=v.toLowerCase();n++}
+    else if(m.campo==='valore'){b.val=parseFloat(v.replace(/[^0-9.]/g,''))||b.val;n++}
+    else if(m.campo==='ricontatto_giorni'){const d=new Date();d.setDate(d.getDate()+(parseInt(v)||0));b.fup=b.fup||{};b.fup.date=d.toISOString().slice(0,10);n++}
+    else if(m.campo==='ricontatto_motivo'){b.fup=b.fup||{};b.fup.why=v;n++}
+    else if(m.campo==='referente'){b.ref=v;n++}
+    else if(m.campo==='complessita'){b.cx=Math.min(5,Math.max(1,parseInt(v)||b.cx));n++}
+    else if(m.campo==='nota'){b.notes=(b.notes?b.notes+'\n':'')+v;n++}
+  });
+  BUSSOLA_PROPS=[];save();render();
+  if(btn){btn.textContent='\u2713 Applicate ('+n+')';btn.disabled=true}
+}
 function bussolaMoves(){
   const mv=[];const ign=S.busIgn||{};
   const today=new Date().toDateString();
@@ -1830,6 +2068,17 @@ function bussolaMoves(){
     add('conv-'+id,1,'\u25cf','Trascrivi la conversazione \u00b7 '+b.name,
       'L\u2019audio vive solo finch\u00e9 la pagina resta aperta: trascrivilo o scaricalo ora.',
       el=>{bussolaOpen(b.id,'coach');transcribeConv(b.id,el)},'Trascrivi ora')});
+  if((S.raccQueue||[]).length)add('raccq',1,'\u{1F399}','Racconti da elaborare ('+S.raccQueue.length+')',
+    'Salvati offline: ora c\u2019\u00e8 rete, l\u2019AI li trasforma in campi (con la tua conferma).',
+    ()=>raccProcessNext(),'Elabora ora');
+  const mine=S.buildings.filter(b=>+b.id>1000);
+  if(!mine.length)add('ob-first',2,'\u2302','Registra il tuo primo edificio',
+    'Le schede che vedi sono dimostrative. Al prossimo sopralluogo tocca il tondo \uFF0B in basso a destra (o \u25b6 Avvia giro): nasce la tua prima scheda vera.',
+    ()=>markBuilding(),'Registra ora');
+  else{const b0=mine.map(b=>({b,c:completeness(b)})).find(x=>x.c.pct<60);
+    if(b0)add('ob-wiz-'+b0.b.id,2,'\u{1FA84}','Completa \u00ab'+b0.b.name+'\u00bb col wizard',
+      'La scheda \u00e8 al '+b0.c.pct+'%: il wizard chiede solo ci\u00f2 che manca, due minuti e hai una proposta pronta.',
+      ()=>openWizardMissing(b0.b.id),'Apri il wizard')}
   /* P2 \u00b7 richiami del giorno (prima di tutto il resto commerciale) */
   const oggi=new Date().toISOString().slice(0,10);
   S.buildings.filter(b=>b.fup&&b.fup.date&&b.fup.date<=oggi).forEach(b=>{
@@ -1845,13 +2094,13 @@ function bussolaMoves(){
   /* P2 \u00b7 opportunit\u00e0 calde */
   S.buildings.filter(b=>b.esito==='caldo').forEach(b=>{
     const c=completeness(b);
-    if(!consCalc(b).tot)add('cons-'+b.id,2,'\U0001F4C4','Consumi mancanti \u00b7 '+b.name,
+    if(!consCalc(b).tot)add('cons-'+b.id,2,'\u{1F4C4}','Consumi mancanti \u00b7 '+b.name,
       'Cliente caldo ma il Report \u00e8 senza numeri: una foto della bolletta e morde.',
       ()=>openWizardStep(b.id,'bolletta'),'Fotografa la bolletta');
     else if(c.missing.length&&c.pct<80)add('compl-'+b.id,2,'\u25b8','Completa '+b.name+' ('+missingStepKeys(b).length+' passi)',
       'Caldo al '+c.pct+'%: mancano '+c.missing.slice(0,3).join(', ').toLowerCase()+'.',
       ()=>openWizardMissing(b.id),'Completa ora');
-    if((b.extra||{}).assemblea==='Entro 1 mese')add('chiudi-'+b.id,2,'\U0001F525','Assemblea vicina \u00b7 '+b.name,
+    if((b.extra||{}).assemblea==='Entro 1 mese')add('chiudi-'+b.id,2,'\u{1F525}','Assemblea vicina \u00b7 '+b.name,
       'C\u2019\u00e8 una scadenza naturale entro un mese: proponi ora lo studio di fattibilit\u00e0.',
       ()=>bussolaOpen(b.id,'coach'),'Apri il Suggeritore');
     if(consCalc(b).tot&&+b.val>0)add('teaser-'+b.id,3,'\u2728','Mostra il Report a '+(b.ref||b.name),
@@ -1908,9 +2157,21 @@ Rispondi in italiano, massimo 120 parole, concreto e orientato alla prossima azi
     const hdrs={'Content-Type':'application/json'};
     if(S.apiKey){hdrs['x-api-key']=S.apiKey;hdrs['anthropic-version']='2023-06-01';hdrs['anthropic-dangerous-direct-browser-access']='true'}
     const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:hdrs,
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:400,messages:[{role:'user',content:prompt}]})});
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:500,messages:[{role:'user',content:prompt+'\n\nSe il commerciale ti CHIEDE di modificare dati (esito, valore, richiamo, referente, nota, complessita), usa lo strumento proponi_modifiche invece di descriverle.'}],
+        tools:[{name:'proponi_modifiche',description:'Proponi modifiche ai dati di uno o pi\u00f9 edifici; verranno mostrate al commerciale per conferma.',
+          input_schema:{type:'object',properties:{modifiche:{type:'array',items:{type:'object',properties:{
+            edificio:{type:'string',description:'nome (anche parziale) dell\u2019edificio'},
+            campo:{type:'string',enum:['esito','valore','ricontatto_giorni','ricontatto_motivo','referente','nota','complessita']},
+            valore:{type:'string'}},required:['edificio','campo','valore']}}},required:['modifiche']}}]})});
     const data=await res.json();
-    ans.textContent=(data.content||[]).filter(x=>x.type==='text').map(x=>x.text).join('\n')||'Nessuna risposta: riprova.';
+    const txt=(data.content||[]).filter(x=>x.type==='text').map(x=>x.text).join('\n');
+    const tus=(data.content||[]).filter(x=>x.type==='tool_use'&&x.name==='proponi_modifiche');
+    ans.textContent=txt||(tus.length?'Ecco cosa propongo:':'Nessuna risposta: riprova.');
+    if(tus.length){
+      BUSSOLA_PROPS=[];tus.forEach(t=>((t.input||{}).modifiche||[]).forEach(m=>BUSSOLA_PROPS.push(m)));
+      ans.textContent+=(txt?'\n\n':'')+BUSSOLA_PROPS.map(m=>'\u2022 '+m.edificio+' \u00b7 '+m.campo.replace(/_/g,' ')+' \u2192 '+m.valore).join('\n');
+      ans.insertAdjacentHTML('beforeend','<div style="margin-top:10px"><button class="mini" style="border-color:var(--brass);color:var(--brass)" onclick="bussolaApplyProps(this)">\u2713 Applica modifiche</button></div>');
+    }
   }catch(e){ans.textContent='La Bussola non raggiunge l\u2019AI'+(S.apiKey?'':' (inserisci la chiave API in Impostazioni)')+'. Riprova quando torni in rete.'}
   btn.disabled=false}
 
@@ -1919,6 +2180,7 @@ let WZ=null;
 function wzB(){return S.buildings.find(x=>x.id===WZ.id)}
 function openWizard(id,ask){WZ={id,step:ask?-1:0,plan:WZ_STEPS.filter(st=>st.key!=='foto'),fotoSkip:[]};$('m-wiz').classList.add('open');wzRender()}
 function wzStart(){WZ.step=0;wzRender()}
+function raccFromChoice(){const id=WZ&&WZ.id;$('m-wiz').classList.remove('open');WZ=null;render();if(id)raccOpen(id)}
 function closeWizard(openCard){const id=WZ&&WZ.id;$('m-wiz').classList.remove('open');if(openCard&&id)UI.card[id]=true;WZ=null;render()}
 function wzField(k,v){const b=wzB();b[k]=v;save()}
 function wzFinField(k,v){const b=wzB();b.fin=b.fin||{servizi:[]};b.fin[k]=v;save()}
@@ -2020,6 +2282,7 @@ function wzRender(){
     $('wiz-body').innerHTML=`<div class="wiz-q">Come vuoi raccogliere i dati?</div>
       <div class="wiz-sub">Puoi sempre completare o correggere tutto dalla scheda, in ogni momento.</div>
       <button class="wiz-big" onclick="wzStart()">\ud83e\ude84 <b>Wizard rapido</b><br><span style="font-size:15px;font-style:italic;color:inherit;opacity:.75">8 domande, ~2 minuti \u00b7 con lettura AI di bolletta e APE</span></button>
+      <button class="wiz-big" onclick="raccFromChoice()">🎙️ <b>Racconta</b><br><span style="font-size:15px;font-style:italic;color:inherit;opacity:.75">Parla o scrivi tutto d\u2019un fiato: l\u2019AI compila e ti mostra il riepilogo</span></button>
       <button class="wiz-big" onclick="closeWizard(true)">\ud83d\udccb <b>Raccolta dettagliata</b><br><span style="font-size:15px;font-style:italic;color:inherit;opacity:.75">Apri subito la scheda completa e compila con calma</span></button>`;
     return}
   if(foot)foot.style.display='';
