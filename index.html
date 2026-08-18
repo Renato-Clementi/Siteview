@@ -287,6 +287,28 @@ textarea.nota-edit{font-size:15px;line-height:1.45}
 .bus-ask{border-top:1px solid var(--hair);padding:12px;background:#FBF9F4}
 .bus-ask textarea{width:100%;border:1px solid var(--hair);border-radius:2px;padding:10px;min-height:56px;font-size:15px}
 .bus-ans{margin-top:10px;background:#fff;border:1px solid var(--hair);border-left:3px solid var(--brass);padding:10px 12px;font-size:16px;white-space:pre-wrap}
+/* ── Transizioni morbide ── */
+@keyframes softFade{from{opacity:0}to{opacity:1}}
+@keyframes softIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+
+/* pressione: dissolvenza oltre alla compressione */
+.btn,.mini,.linea,.esito,.wiz-big,.chk-cam,.bus-fab,.help-btn{transition-property:transform,box-shadow,background-color,border-color,color,opacity;transition-duration:.18s;transition-timing-function:ease}
+.btn:active,.mini:active,.linea:active,.esito:active,.wiz-big:active,.chk-cam:active,.bus-fab:active,.help-btn:active{opacity:.7}
+
+/* comparse morbide di pannelli e overlay */
+.panel.open{animation:softIn .2s ease}
+.bus.open{animation:softIn .22s ease}
+.wiz.open{animation:softFade .22s ease}
+.modal.open .modal-in{animation:softIn .24s ease}
+.mv{animation:softIn .2s ease both}
+
+/* passi del wizard in dissolvenza */
+.wiz-body.fade>*{animation:softFade .25s ease both}
+
+/* soffietti che respirano all'apertura */
+details.sec[open]>.sec-bd{animation:softFade .24s ease}
+details.card[open]>.card-bd{animation:softFade .24s ease}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{transition:none!important;animation:none!important}
 }
@@ -1561,7 +1583,9 @@ function wzRender(){
   const st=WZ.plan[WZ.step];
   $('wiz-n').textContent='Passo '+(WZ.step+1)+' di '+tot;
   $('wiz-bar').style.width=Math.round(WZ.step/tot*100)+'%';
-  $('wiz-body').innerHTML=`<div class="wiz-q">${st.q}</div><div class="wiz-sub">${st.sub}</div>`+st.html(b);
+  const _wb=$('wiz-body');_wb.classList.remove('fade');void _wb.offsetWidth;
+  _wb.innerHTML=`<div class="wiz-q">${st.q}</div><div class="wiz-sub">${st.sub}</div>`+st.html(b);
+  _wb.classList.add('fade');
   $('wiz-back').style.display=WZ.step?'':'none';
   $('wiz-next').textContent=st.skip?'Salta / Avanti \u203a':'Avanti \u203a';
 }
