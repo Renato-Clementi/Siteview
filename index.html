@@ -382,6 +382,19 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
 .fup-why{flex:1;min-width:110px;min-height:42px;padding:8px;font-size:14px;border:1px solid var(--hair);border-radius:2px}
 .fup-q{display:flex;gap:5px}
 .fup-q .mini{min-height:40px;padding:7px 10px;font-size:13px}
+/* ── Editor annotazioni ── */
+.ann{position:fixed;inset:0;z-index:70;background:#151310;display:none;flex-direction:column}
+.ann.open{display:flex;animation:softFade .2s ease}
+.ann-top{flex:none;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;padding-top:max(10px,env(safe-area-inset-top));background:var(--ink);box-shadow:inset 0 -1px 0 rgba(152,128,96,.35)}
+.ann-top .t{font-family:var(--sans);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--brass)}
+.ann-tools{display:flex;gap:6px}
+.ann-t{width:46px;height:46px;border-radius:6px;border:1px solid rgba(152,128,96,.5);background:transparent;color:var(--cream);font-size:18px;font-weight:600}
+.ann-t.on{background:var(--brass);border-color:var(--brass)}
+.ann-wrap{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:8px}
+#ann-cv{max-width:100%;max-height:100%;touch-action:none;border-radius:3px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.ann-foot{flex:none;display:flex;gap:10px;padding:10px 14px calc(12px + env(safe-area-inset-bottom));background:var(--ink)}
+.ann-foot .btn{flex:1;min-height:52px}
+.ann-foot .btn.ghost{color:var(--cream);border:1px solid rgba(152,128,96,.5)}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{transition:none!important;animation:none!important}
 }
@@ -539,6 +552,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
     <details class="sec"><summary>6 · Guida rilievi e foto</summary><div class="sec-bd">
       <p>La checklist di cosa fotografare e raccogliere, su <b>tre strati</b>: <i>Sempre</i> + <i>Tipo edificio</i> + <i>Linee proposte</i> (con blocchi extra per gli optional SOLERO). Il contatore nel titolo mostra l'avanzamento; il soffietto si chiude da solo a checklist completa.</p>
       <p>Ogni voce ha il suo <b>📷</b>: fino a <b>3 foto per voce</b> (scatto o selezione multipla); lo scatto spunta la voce da solo e la miniatura resta accanto. Tocca una miniatura per ingrandirla o eliminarla (✕). Per farsi accompagnare voce per voce c'è il passo <b>Foto guidate</b> della cascata (capitolo 2).</p>
+      <p><b>✏ Annota:</b> apri una foto e tocca Annota — penna a mano libera, <b>freccia</b> (trascina dalla coda alla punta) e <b>testo</b> (tocca il punto e scrivi), in terracotta ben visibile. ↩ annulla l'ultimo tratto; ✓ salva l'annotazione <i>dentro</i> la foto, così viaggia com'è in export, Scheda AI e report — "UE qui", "crepa", "passaggio tubi" arrivano in ufficio senza spiegazioni.</p>
       <p>In <b>Documentazione</b> trovi tutte le foto (bordo ottone = agganciate a una voce), le note (✏️) e i memo vocali (🎙️, max 3 minuti). Il 📷 in fondo alla scheda è per gli scatti liberi, senza limite.</p>
     </div></details>
 
@@ -578,7 +592,25 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
     <p style="margin-top:14px;font-size:13px;color:var(--muted);font-style:italic">Sopralluoghi BABOO · agosto 2026 — un unico file, nessuna installazione. Per assistenza: 0323 63934.</p>
   </div>
 </div>
-<div class="modal lightbox" id="m-light" onclick="if(event.target===this)this.classList.remove('open')"><div class="modal-in" style="background:transparent;padding:0;text-align:center"><img id="light-img"><button class="mini" style="margin-top:10px;background:#a33;color:#fff;border-color:#a33" onclick="delPhotoLB()">✕ Elimina foto</button></div></div>
+<div class="modal lightbox" id="m-light" onclick="if(event.target===this)this.classList.remove('open')"><div class="modal-in" style="background:transparent;padding:0;text-align:center"><img id="light-img"><div style="display:flex;gap:8px;justify-content:center;margin-top:10px"><button class="mini" style="background:var(--brass);color:var(--cream);border-color:var(--brass)" onclick="annOpen()">✏ Annota</button><button class="mini" style="background:#a33;color:#fff;border-color:#a33" onclick="delPhotoLB()">✕ Elimina foto</button></div></div></div>
+
+<!-- Editor annotazioni foto -->
+<div class="ann" id="m-ann">
+  <div class="ann-top">
+    <span class="t">Annota la foto</span>
+    <div class="ann-tools">
+      <button class="ann-t on" id="ant-pen" onclick="annTool('pen')">✏</button>
+      <button class="ann-t" id="ant-arrow" onclick="annTool('arrow')">↗</button>
+      <button class="ann-t" id="ant-text" onclick="annTool('text')">T</button>
+      <button class="ann-t" onclick="annUndo()">↩</button>
+    </div>
+  </div>
+  <div class="ann-wrap"><canvas id="ann-cv"></canvas></div>
+  <div class="ann-foot">
+    <button class="btn ghost" onclick="annClose(false)">Annulla</button>
+    <button class="btn brass" onclick="annClose(true)">✓ Salva sulla foto</button>
+  </div>
+</div>
 
 <!-- Report cliente -->
 <div class="modal" id="m-teaser" style="padding:0">
@@ -1372,6 +1404,97 @@ function addPhoto(id,tag){
 let LB=null;
 function lightbox(id,i){LB={id:+id,i};$('light-img').src=S.buildings.find(x=>x.id==id).photos[i].src;$('m-light').classList.add('open')}
 function delPhotoLB(){if(!LB)return;if(confirm('Eliminare questa foto?')){S.buildings.find(x=>x.id===LB.id).photos.splice(LB.i,1);LB=null;$('m-light').classList.remove('open');save();render()}}
+
+/* ══════════ Annotazione foto ══════════ */
+let ANN=null;
+const ANN_COL='#C14A2E'; /* terracotta segnale */
+function annOpen(){
+  if(!LB)return;
+  const b=S.buildings.find(x=>x.id===LB.id);const ph=b.photos[LB.i];if(!ph)return;
+  const img=new Image();
+  img.onload=()=>{
+    const cv=$('ann-cv');cv.width=img.width;cv.height=img.height;
+    ANN={id:LB.id,i:LB.i,img,tool:'pen',strokes:[],cur:null};
+    annTool('pen');annDraw();
+    $('m-light').classList.remove('open');
+    $('m-ann').classList.add('open');
+  };
+  img.src=ph.src;
+}
+function annTool(t){if(!ANN)return;ANN.tool=t;
+  ['pen','arrow','text'].forEach(k=>{const el=$('ant-'+k);if(el)el.classList.toggle('on',k===t)})}
+function annXY(ev){const cv=$('ann-cv');const r=cv.getBoundingClientRect();
+  const x=(ev.clientX-r.left)*cv.width/r.width, y=(ev.clientY-r.top)*cv.height/r.height;
+  return {x,y}}
+function annDown(ev){if(!ANN)return;ev.preventDefault();
+  const p=annXY(ev);
+  if(ANN.tool==='text'){
+    const t=prompt('Testo dell\u2019annotazione:');
+    if(t)ANN.strokes.push({tool:'text',x:p.x,y:p.y,text:t});
+    annDraw();return}
+  ANN.cur={tool:ANN.tool,pts:[p]};
+}
+function annMove(ev){if(!ANN||!ANN.cur)return;ev.preventDefault();
+  const p=annXY(ev);
+  if(ANN.cur.tool==='pen')ANN.cur.pts.push(p);
+  else ANN.cur.pts[1]=p; /* freccia: coda fissa, punta che segue */
+  annDraw();
+}
+function annUp(){if(!ANN||!ANN.cur)return;
+  if(ANN.cur.tool==='pen'&&ANN.cur.pts.length>1)ANN.strokes.push(ANN.cur);
+  if(ANN.cur.tool==='arrow'&&ANN.cur.pts[1])ANN.strokes.push(ANN.cur);
+  ANN.cur=null;annDraw();
+}
+function annUndo(){if(!ANN)return;ANN.strokes.pop();annDraw()}
+function annStrokeW(cv){return Math.max(4,Math.round(cv.width/220))}
+function annDraw(){
+  if(!ANN)return;
+  const cv=$('ann-cv'),g=cv.getContext('2d');
+  g.clearRect(0,0,cv.width,cv.height);
+  g.drawImage(ANN.img,0,0);
+  const w=annStrokeW(cv);
+  const all=ANN.cur?[...ANN.strokes,ANN.cur]:ANN.strokes;
+  all.forEach(st=>{
+    g.lineWidth=w;g.lineCap='round';g.lineJoin='round';
+    g.strokeStyle=ANN_COL;g.fillStyle=ANN_COL;
+    g.shadowColor='rgba(0,0,0,.45)';g.shadowBlur=w;
+    if(st.tool==='pen'&&st.pts.length>1){
+      g.beginPath();g.moveTo(st.pts[0].x,st.pts[0].y);
+      st.pts.forEach(q=>g.lineTo(q.x,q.y));g.stroke();
+    }else if(st.tool==='arrow'&&st.pts[1]){
+      const a=st.pts[0],b=st.pts[1];
+      g.beginPath();g.moveTo(a.x,a.y);g.lineTo(b.x,b.y);g.stroke();
+      const ang=Math.atan2(b.y-a.y,b.x-a.x),L=w*4;
+      g.beginPath();g.moveTo(b.x,b.y);
+      g.lineTo(b.x-L*Math.cos(ang-0.5),b.y-L*Math.sin(ang-0.5));
+      g.lineTo(b.x-L*Math.cos(ang+0.5),b.y-L*Math.sin(ang+0.5));
+      g.closePath();g.fill();
+    }else if(st.tool==='text'){
+      const fs=Math.max(20,Math.round(cv.width/22));
+      g.font='700 '+fs+'px -apple-system,Helvetica,Arial,sans-serif';
+      g.shadowBlur=0;g.lineWidth=Math.max(3,fs/7);g.strokeStyle='#fff';
+      g.strokeText(st.text,st.x,st.y);g.fillText(st.text,st.x,st.y);
+    }
+    g.shadowBlur=0;
+  });
+}
+function annClose(salva){
+  if(!ANN){$('m-ann').classList.remove('open');return}
+  if(salva&&ANN.strokes.length){
+    const cv=$('ann-cv');
+    const b=S.buildings.find(x=>x.id===ANN.id);
+    b.photos[ANN.i].src=cv.toDataURL('image/jpeg',.85);
+    save();render();
+  }
+  $('m-ann').classList.remove('open');ANN=null;
+}
+(function(){const cv=document.getElementById('ann-cv');
+  if(cv&&cv.addEventListener){
+    cv.addEventListener('pointerdown',annDown);
+    cv.addEventListener('pointermove',annMove);
+    cv.addEventListener('pointerup',annUp);
+    cv.addEventListener('pointercancel',annUp);
+  }})();
 
 /* ══════════ Lettura bolletta con AI ══════════ */
 async function readPlate(id,btn){
