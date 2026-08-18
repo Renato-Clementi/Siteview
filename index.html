@@ -365,6 +365,16 @@ details.sec[open]>.sec-bd>.chk-g,details.sec[open]>.sec-bd>.chk,details.sec[open
 details.sec[open]>.sec-bd>.tip:nth-of-type(2){animation-delay:.05s}
 details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
 
+/* ── Ricontatto ── */
+.fup{display:flex;flex-wrap:wrap;align-items:center;gap:7px;background:#FBF9F4;border:1px solid var(--hair);border-left:3px solid var(--hair);border-radius:2px;padding:9px 11px;margin:2px 0 10px}
+.fup.plan{border-left-color:var(--brass)}
+.fup.due{border-left-color:var(--brass);background:#F3EDE0}
+.fup.over{border-left-color:var(--caldo);background:#F6EDE7}
+.fup-lb{font-family:var(--sans);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);flex:none}
+.fup input[type=date]{min-height:42px;padding:8px;font-size:14px;border:1px solid var(--hair);border-radius:2px;background:#fff;width:auto}
+.fup-why{flex:1;min-width:110px;min-height:42px;padding:8px;font-size:14px;border:1px solid var(--hair);border-radius:2px}
+.fup-q{display:flex;gap:5px}
+.fup-q .mini{min-height:40px;padding:7px 10px;font-size:13px}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{transition:none!important;animation:none!important}
 }
@@ -487,6 +497,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
     <details class="sec"><summary>3 · La scheda edificio</summary><div class="sec-bd">
       <p>Ogni edificio è una scheda a soffietto: la fascia scura mostra nome (toccalo per rinominare), esito, valore e linee; tocca la fascia per aprire/chiudere. Il campo <b>🔍 Cerca</b> sopra la timeline filtra per nome, indirizzo, referente, tipologia, linea o POD.</p>
       <p><b>Esito</b> (🔥 caldo · 🌤 tiepido · ❄ freddo) colora i contatori e cambia la frase di chiusura del Suggeritore. <b>Complessità</b> (1–5 pallini) stima l'onere d'installazione. <b>Valore stimato €</b> alimenta la pipeline del giorno.</p>
+      <p><b>☎ Ricontatto:</b> ogni scheda ha data e motivo del prossimo contatto, con i tasti rapidi +2g / +1s / +1m (anche nell'ultimo passo del wizard). La data appare sulla fascia scura; quando arriva (o è passata) la <b>Bussola</b> apre la giornata con i richiami da fare, e ai tiepidi rimasti senza data lo fa notare: i tiepidi si raffreddano da soli.</p>
       <p>Gli <b>Interventi proposti</b> sono a vista sotto l'esito: le linee BABOO (con gli optional SOLERO: ⚡ Accumulo e 🔌 Ricarica EV) compongono guida rilievi, stime, Scheda AI e Report cliente. In <b>Dati edificio</b>: la <b>Tipologia</b> (Condominio, Villa singola, PMI produttiva, Attività commerciale) pilota checklist, stime e suggerimenti — sceglila per prima.</p>
     </div></details>
 
@@ -638,7 +649,7 @@ function seedDemo(){
         inc:"Conto Termico 3.0 sulla pompa di calore; incentivo CER GSE sull'energia condivisa (verifica cumulabilità con eventuali fondi PNRR)."},
     photos:[],notes:"L'amministratore chiede il kit assembleare entro fine mese. Verificare licenza officina elettrica >20 kWp.",memos:[]},
    {id:2,ts:t(11,40),name:'Villetta Fam. Rigamonti',addr:'Gravellona Toce (VB)',lat:45.9296,lng:8.4326,auto:true,
-    tipologia:'Villa singola',anno:'1998',sup:'160',impianto:'Caldaia metano + split obsoleti',solOpt:{storage:true},
+    tipologia:'Villa singola',anno:'1998',sup:'160',impianto:'Caldaia metano + split obsoleti',solOpt:{storage:true},fup:{date:'2026-08-14',why:'Risentire dopo confronto tra i coniugi'},
     fin:{formula:'Finanziamento a rate',rata:'280',contributi:'Capienza fiscale: sì',servizi:['Finanziamento bancario'],driver:'Comfort abitativo',decisore:'Coniugi Rigamonti',tempi:'Oltre / da capire'},pod:'',ref:'Sig.ra Rigamonti',val:32000,
     esito:'tiepido',cx:2,linee:['SOLERO','CLIMA','THERMO'],
     ai:{profilo:"Villetta bifamiliare su due livelli, serramenti in PVC recenti, tetto a falda sud-est ~45 m² liberi. Riscaldamento a metano con caldaia del 2011, raffrescamento con split di vecchia generazione.",
@@ -1098,7 +1109,7 @@ function cardHTML(b,isNewest){
   const coords=b.lat?`${b.lat.toFixed(5)}, ${b.lng.toFixed(5)} · ${b.auto?'sosta rilevata':'registrato a mano'}`:'posizione non disponibile';
   const cardOpen=(UI.card[b.id]??isNewest)?'open':'';
   const eIcon=b.esito==='caldo'?'🔥':b.esito==='tiepido'?'🌤':b.esito==='freddo'?'❄':'◦';
-  const meta=`${eIcon} ${b.esito||'da valutare'} · ${fmtEur(b.val)}${b.linee.length?' · '+b.linee.join(', '):''}`;
+  const meta=`${eIcon} ${b.esito||'da valutare'} · ${fmtEur(b.val)}${(b.fup&&b.fup.date)?' · \u260E '+fupFmt(b.fup.date):''}${b.linee.length?' · '+b.linee.join(', '):''}`;
   const nDoc=(b.photos.length?b.photos.length+' foto':'')+(b.notes?' · nota':'')+(b.memos.length?' · '+b.memos.length+' memo':'');
   const hasDoc=!!(b.notes||b.photos.length||b.memos.length);
   const sec=(key,def,label,inner)=>`<details class="sec" ${ (UI.sec[b.id+'-'+key]??def)?'open':'' } ontoggle="UI.sec['${b.id}-${key}']=this.open">
@@ -1123,6 +1134,18 @@ function cardHTML(b,isNewest){
         ${['caldo','tiepido','freddo'].map(e=>`<button class="esito ${b.esito===e?'sel-'+e:''}" onclick="upd(${b.id},'esito','${e}')">${e==='caldo'?'🔥':e==='tiepido'?'🌤':'❄'} ${e}</button>`).join('')}
         <span class="cx"><span class="lab">Complessità</span>${[1,2,3,4,5].map(i=>`<b class="${b.cx>=i?'on':''}" onclick="upd(${b.id},'cx',${i})"></b>`).join('')}</span>
       </div>
+      ${(()=>{const f=b.fup||{};const st=fupState(b);
+        return `<div class="fup ${st}">
+          <span class="fup-lb">\u260E Ricontatto</span>
+          <input type="date" value="${f.date||''}" onchange="updFup(${b.id},'date',this.value)">
+          <input class="fup-why" placeholder="motivo" value="${esc(f.why||'')}" onchange="updFup(${b.id},'why',this.value)">
+          <span class="fup-q">
+            <button class="mini" onclick="fupIn(${b.id},2)">+2g</button>
+            <button class="mini" onclick="fupIn(${b.id},7)">+1s</button>
+            <button class="mini" onclick="fupIn(${b.id},30)">+1m</button>
+            ${f.date?`<button class="mini" onclick="fupClear(${b.id})">\u2715</button>`:''}
+          </span>
+        </div>`})()}
       <div class="chk-g" style="margin-top:4px">Interventi proposti</div>
       <div class="linee">${LINEE.map(l=>`<button class="linea ${b.linee.includes(l)?'on':''}" onclick="togLinea(${b.id},'${l}')">${l}</button>`).join('')}</div>
       ${b.linee.includes('SOLERO')?`<div class="linee" style="margin-top:6px">
@@ -1220,6 +1243,15 @@ function cardHTML(b,isNewest){
 }
 function upd(id,k,v){const b=S.buildings.find(x=>x.id===id);b[k]=v;save();if(k==='esito'||k==='cx'||k==='tipologia')render();else renderStats()}
 function togLinea(id,l){const b=S.buildings.find(x=>x.id===id);const i=b.linee.indexOf(l);i>=0?b.linee.splice(i,1):b.linee.push(l);save();render()}
+function fupIn(id,days){const b=S.buildings.find(x=>x.id===id);b.fup=b.fup||{};
+  const d=new Date();d.setDate(d.getDate()+days);
+  b.fup.date=d.toISOString().slice(0,10);save();render()}
+function updFup(id,k,v){const b=S.buildings.find(x=>x.id===id);b.fup=b.fup||{};b.fup[k]=v;save();if(k==='date')render();else renderStats()}
+function fupClear(id){const b=S.buildings.find(x=>x.id===id);b.fup={};save();render()}
+function fupState(b){const f=b.fup||{};if(!f.date)return '';
+  const today=new Date().toISOString().slice(0,10);
+  return f.date<today?'over':(f.date===today?'due':'plan')}
+function fupFmt(d){if(!d)return'';const[y,m,g]=d.split('-');return g+'/'+m}
 function togSolOpt(id,k){const b=S.buildings.find(x=>x.id===id);b.solOpt=b.solOpt||{};b.solOpt[k]=!b.solOpt[k];save();render()}
 function lineeStr(b){return b.linee.map(l=>{
   if(l==='SOLERO'&&b.solOpt&&(b.solOpt.storage||b.solOpt.ev)){
@@ -1413,7 +1445,7 @@ function exportMD(){
   let md=`# Report giro sopralluoghi BABOO\n\nPipeline stimata: ${fmtEur(S.buildings.reduce((s,b)=>s+(+b.val||0),0))} · Edifici: ${S.buildings.length}\n\n`;
   sorted.forEach(b=>{const d=new Date(b.ts);
     md+=`## ${b.name} — ${b.addr}\n*${d.toLocaleString('it-IT')}* · Esito: **${b.esito||'—'}** · Complessità: ${b.cx||'—'}/5 · Valore stimato: ${fmtEur(b.val)}\n\n`;
-    md+=`- Tipologia: ${b.tipologia||'—'} · Anno: ${b.anno||'—'} · Sup.: ${b.sup||'—'} m²\n- Impianto attuale: ${b.impianto||'—'}\n- POD/PDR: ${b.pod||'—'} · Referente: ${b.ref||'—'}\n- Linee proposte: ${lineeStr(b)||'—'}${extraStr(b)?'\n- Profilo d\u2019uso: '+extraStr(b):''}\n\n`;
+    md+=`- Tipologia: ${b.tipologia||'—'} · Anno: ${b.anno||'—'} · Sup.: ${b.sup||'—'} m²\n- Impianto attuale: ${b.impianto||'—'}\n- POD/PDR: ${b.pod||'—'} · Referente: ${b.ref||'—'}\n- Linee proposte: ${lineeStr(b)||'—'}${(b.fup&&b.fup.date)?'\n- Ricontatto: '+b.fup.date+(b.fup.why?' — '+b.fup.why:''):''}${extraStr(b)?'\n- Profilo d\u2019uso: '+extraStr(b):''}\n\n`;
     {const cc=consCalc(b);
       md+=`**Consumi attuali (baseline):** ${consStr(b)}${cc.tot?` — Spesa totale ${fmtEur(Math.round(cc.tot))}/anno${cc.cEl?', '+cc.cEl.toFixed(3)+' €/kWh':''}${cc.cGas?', '+cc.cGas.toFixed(3)+' €/Smc':''}`:''}\n\n`;}
     {const fs=finStr(b);if(fs)md+=`**Profilo finanziario:** ${fs}\n\n`;}
@@ -1452,6 +1484,18 @@ function bussolaMoves(){
     add('conv-'+id,1,'\u25cf','Trascrivi la conversazione \u00b7 '+b.name,
       'L\u2019audio vive solo finch\u00e9 la pagina resta aperta: trascrivilo o scaricalo ora.',
       el=>{bussolaOpen(b.id,'coach');transcribeConv(b.id,el)},'Trascrivi ora')});
+  /* P2 \u00b7 richiami del giorno (prima di tutto il resto commerciale) */
+  const oggi=new Date().toISOString().slice(0,10);
+  S.buildings.filter(b=>b.fup&&b.fup.date&&b.fup.date<=oggi).forEach(b=>{
+    const late=b.fup.date<oggi;
+    add('fup-'+b.id+'-'+b.fup.date,2,'\u260E',(late?'Richiamo in ritardo \u00b7 ':'Richiama oggi \u00b7 ')+b.name,
+      (b.fup.why?'\u00ab'+b.fup.why+'\u00bb \u00b7 ':'')+'pianificato per il '+fupFmt(b.fup.date)+'.',
+      ()=>bussolaOpen(b.id),'Apri la scheda')});
+  /* tiepidi vecchi di 3+ giorni senza ricontatto pianificato */
+  S.buildings.filter(b=>b.esito==='tiepido'&&!(b.fup&&b.fup.date)&&(Date.now()-b.ts)>3*864e5).forEach(b=>
+    add('fupplan-'+b.id,4,'\u260E','Pianifica il ricontatto \u00b7 '+b.name,
+      'Tiepido da giorni senza una data: i tiepidi si raffreddano da soli.',
+      ()=>bussolaOpen(b.id),'Metti una data'));
   /* P2 \u00b7 opportunit\u00e0 calde */
   S.buildings.filter(b=>b.esito==='caldo').forEach(b=>{
     const c=completeness(b);
@@ -1537,6 +1581,7 @@ function wzFin(k,v){wzFinField(k,v);wzRender()}
 function wzTogLinea(l){togLinea(WZ.id,l);wzRender()}
 function wzTogOpt(k){togSolOpt(WZ.id,k);wzRender()}
 function wzEsito(e){upd(WZ.id,'esito',e);wzRender()}
+function wzFup(d){fupIn(WZ.id,d);wzRender()}
 const WZ_STEPS=[
  {key:'nome',q:'Come si chiama questo edificio?',sub:'Nome del cliente o dell\u2019edificio, indirizzo, referente.',skip:false,
   html:b=>`<span class="lb">Nome</span><input value="${esc(b.name)}" oninput="wzField('name',this.value)">
@@ -1575,7 +1620,13 @@ const WZ_STEPS=[
    `<span class="lb">Rata mensile sostenibile \u20ac (se ragiona a rate)</span><input inputmode="decimal" value="${esc((f.rata||''))}" oninput="wzFinField('rata',this.value)">`}},
  {key:'esito',q:'Com\u2019\u00e8 andata?',sub:'Esito a caldo e valore stimato dell\u2019opportunit\u00e0.',skip:true,
   html:b=>['caldo','tiepido','freddo'].map(e=>`<button class="wiz-big ${b.esito===e?'on':''}" onclick="wzEsito('${e}')">${e==='caldo'?'\ud83d\udd25':e==='tiepido'?'\ud83c\udf24':'\u2744'} ${e}</button>`).join('')+
-   `<span class="lb">Valore stimato \u20ac</span><input inputmode="numeric" value="${b.val||''}" oninput="wzField('val',+this.value||0)">`}
+   `<span class="lb">Valore stimato \u20ac</span><input inputmode="numeric" value="${b.val||''}" oninput="wzField('val',+this.value||0)">
+   <span class="lb">Ricontatto${b.fup&&b.fup.date?' \u00b7 \u2713 '+fupFmt(b.fup.date):''}</span>
+   <div style="display:flex;gap:8px">
+     <button class="wiz-big" style="flex:1" onclick="wzFup(2)">+2 giorni</button>
+     <button class="wiz-big" style="flex:1" onclick="wzFup(7)">+1 settimana</button>
+     <button class="wiz-big" style="flex:1" onclick="wzFup(30)">+1 mese</button>
+   </div>`}
 ,
  {key:'foto',q:'Foto guidate',sub:'Una voce della guida rilievi alla volta: scatta o salta.',skip:true,
   html:b=>{
