@@ -404,14 +404,17 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
 .v-x{color:var(--muted);font-family:var(--sans)}
 .v-del{min-height:40px;padding:6px 10px;flex:none}
 /* ── Modalit\u00e0 semplice ── */
-.hd-mode{flex:none;width:38px;height:38px;border-radius:50%;border:1px solid rgba(152,128,96,.55);background:transparent;color:var(--cream);font-size:16px;margin-right:8px}
-.hd-mode:active{opacity:.7}
 .hd-btns{display:flex;gap:8px}
 .card-hd{-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .card-hd h3[contenteditable="true"]{-webkit-user-select:text;user-select:text;outline:1px dashed var(--brass);outline-offset:3px;border-radius:2px}
 .hd-edit{background:none;border:none;color:rgba(237,231,219,.55);font-size:14px;padding:2px 6px;margin-left:4px;vertical-align:middle}
 .card-hd h3[contenteditable="true"] .hd-edit{display:none}
 .modal-in .panel{display:block;border:none;background:none;padding:0;margin:6px 0 0}
+.seg-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 10px}
+.seg-lb{font-family:var(--sans);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--hair);border-radius:999px;overflow:hidden;background:#FBF9F4}
+.seg-b{border:none;background:none;padding:8px 14px;min-height:38px;font-family:var(--sans);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.seg-b.on{background:var(--brass);color:var(--cream)}
 .mode-link{display:block;width:100%;background:none;border:none;color:var(--brass);font-family:var(--sans);font-size:13.5px;text-align:center;padding:10px 0 2px;margin-top:4px}
 /* \u2500\u2500 Tour di benvenuto \u2500\u2500 */
 #tour{position:fixed;inset:0;z-index:80;display:none}
@@ -551,7 +554,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
       <p>Se resti fermo entro il raggio impostato per i minuti impostati (Impostazioni: default 60 m / 4 min), l'app registra da sola l'edificio, senza interromperti. In alternativa: il tondo <b>＋ Aggiungi edificio</b> nella posizione attuale, oppure Strumenti → coordinate manuali — in questi due casi l'app chiede subito <i>come</i> vuoi raccogliere i dati (capitolo 2).</p>
       <p><b>Indirizzo automatico:</b> quando registri un edificio con il GPS attivo, l'indirizzo si compila da solo (via OpenStreetMap) — se lo scrivi tu, il tuo vince. Manca? Nella riga delle coordinate c'è 📍 Trova indirizzo.</p>
       <p><b>Tour di benvenuto:</b> alla prima apertura un breve giro guidato illumina i cinque gesti che contano (Avvia giro, Registra edificio, la scheda, il wizard, la Bussola); lo ritrovi qui sopra con «↻ Rivedi il tour». Poi è la Bussola a farti da tutor: ti propone il primo edificio e il primo wizard al momento giusto.</p>
-      <p><b>Due modalità:</b> alla prima apertura scegli tra <b>Semplice</b> — schede essenziali con 4 azioni (🪄 Wizard, 💬 Coach, 📷 Foto, ✨ Report): ogni inserimento passa dai wizard e dalla cascata di completamento — e <b>Completa</b>, con tutte le sezioni a vista. La modalità si governa <b>scheda per scheda</b>: sulla fascia scura di ogni edificio c'è l'interruttore (📋 apre la completa, 🪄 torna alla semplice) e la scelta resta salvata su quell'edificio — il condominio complesso in Completa, le villette in Semplice, insieme. In Impostazioni scegli solo la modalità <i>predefinita</i> per le schede senza scelta propria.</p>
+      <p><b>Due modalità:</b> alla prima apertura scegli tra <b>Semplice</b> — schede essenziali con 4 azioni (🪄 Wizard, 💬 Coach, 📷 Foto, ✨ Report): ogni inserimento passa dai wizard e dalla cascata di completamento — e <b>Completa</b>, con tutte le sezioni a vista. La modalità si governa <b>scheda per scheda</b>: in cima a ogni scheda aperta c'è il selettore <b>Semplice ∣ Completa</b> (la voce attiva è piena in ottone) e la scelta resta salvata su quell'edificio — il condominio complesso in Completa, le villette in Semplice, insieme. In Impostazioni scegli solo la modalità <i>predefinita</i> per le schede senza scelta propria.</p>
       <p><b>Installa l'app:</b> su iPhone apri in Safari → Condividi → <i>Aggiungi alla schermata Home</i>; su Android, Chrome → menù ⋮ → <i>Installa app</i>. Da lì in poi è un'icona BABOO a tutto schermo che <b>si apre anche senza rete</b>: in cantina o in centrale termica l'app c'è sempre, aspettano il segnale solo le funzioni AI e l'indirizzo automatico.</p>
       <p>Limiti di piattaforma: serve una pagina <b>https://</b> e lo <b>schermo acceso</b> — a schermo spento i browser sospendono il GPS.</p>
     </div></details>
@@ -1316,9 +1319,12 @@ function cardHTML(b,isNewest){
         <h3 id="nm-${b.id}" onclick="if(this.isContentEditable){event.preventDefault();event.stopPropagation()}" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}" onblur="if(this.isContentEditable){this.contentEditable=false;upd(${b.id},'name',this.textContent.trim()||'Edificio')}">${esc(b.name)}<button class="hd-edit" title="Rinomina" onclick="event.preventDefault();event.stopPropagation();editName(${b.id})">✎</button></h3>
         <div class="hd-meta">${meta}</div>
       </div>
-      <button class="hd-mode" title="${FULL?'Passa alla vista semplice':'Apri la vista completa'}" onclick="event.preventDefault();event.stopPropagation();togVista(${b.id})">${FULL?'\u{1FA84}':'\u{1F4CB}'}</button>
     </summary>
     <div class="card-bd">
+      <div class="seg-row"><span class="seg-lb">Modalit\u00e0 di compilazione</span><div class="seg" role="group" aria-label="Modalit\u00e0 di compilazione">
+        <button class="seg-b ${!FULL?'on':''}" onclick="setVista(${b.id},'semplice')">Semplice</button>
+        <button class="seg-b ${FULL?'on':''}" onclick="setVista(${b.id},'completa')">Completa</button>
+      </div></div>
       <div class="coords">ORE ${time} \u00b7 ${coords}${(b.lat&&!b.addr)?` \u00b7 <button class="mini" style="min-height:32px;padding:4px 10px;font-size:12px" onclick="fetchAddr(${b.id},true).then(()=>render())">\u{1F4CD} Trova indirizzo</button>`:''}</div>
       ${(()=>{const c=completeness(b);const ks=missingStepKeys(b);
         return `<div class="compl">Completezza <b>${c.pct}%</b>${c.missing.length?' \u00b7 mancano: '+c.missing.slice(0,3).join(', ')+(c.missing.length>3?'\u2026':''):' \u2713'}<div class="compl-bar"><i style="width:${c.pct}%"></i></div></div>`+
@@ -1542,6 +1548,8 @@ function editName(id){const el=$('nm-'+id);if(!el)return;
   el.contentEditable=true;el.focus();
   try{const r=document.createRange();r.selectNodeContents(el);r.collapse(false);
     const sl=window.getSelection();sl.removeAllRanges();sl.addRange(r)}catch(e){}}
+function setVista(id,v){const b=S.buildings.find(x=>x.id===id);if(!b)return;
+  if((b.vista||(S.mode||'semplice'))===v)return;b.vista=v;save();render()}
 function togVista(id){const b=S.buildings.find(x=>x.id===id);
   const cur=b.vista||(S.mode||'semplice');
   b.vista=cur==='semplice'?'completa':'semplice';save();render()}
@@ -1863,7 +1871,7 @@ let TOUR=null;
 const TOUR_STEPS=[
  {sel:'#btn-track',n:'Il giro',t:'\u25b6 Avvia giro accende il GPS: quando sosti qualche minuto vicino a un edificio, la scheda nasce da sola. A fine visita, la fermi.'},
  {sel:'#btn-mark',n:'Al volo',t:'Il tondo \uFF0B aggiunge subito un edificio dove ti trovi \u2014 anche a giro spento. \u00c8 il gesto pi\u00f9 usato.'},
- {sel:'.card .card-hd',n:'La scheda',t:'Ogni edificio \u00e8 una scheda: tocca la fascia per aprirla e chiuderla, \u270e rinomina, e l\u2019interruttore tondo passa dalla vista semplice alla completa.'},
+ {sel:'.card .card-hd',n:'La scheda',t:'Ogni edificio \u00e8 una scheda: tocca la fascia per aprirla e chiuderla, \u270e rinomina. Appena aperta, in alto trovi il selettore Semplice \u2223 Completa della vista.'},
  {sel:'.card .compl',n:'Il wizard',t:'La completezza dice cosa manca. \u25b8 Completa apre il wizard: una domanda alla volta, coi soli passi mancanti. \u00c8 la via pi\u00f9 rapida per una scheda piena.'},
  {sel:'#bus-fab',n:'La Bussola',t:'\u2726 \u00e8 l\u2019assistente di rotta: suggerisce la prossima mossa giusta, elabora i racconti e risponde alle domande. Se ti perdi, riparti da qui.'}
 ];
