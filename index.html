@@ -166,6 +166,75 @@ footer{max-width:760px;margin:30px auto 0;padding:14px;border-top:1px solid var(
 .dock{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;gap:10px;padding:10px 12px calc(12px + env(safe-area-inset-bottom));background:var(--paper);border-top:1px solid var(--hair);box-shadow:0 -4px 14px rgba(42,39,35,.08)}
 .dock .btn{flex:1;min-height:56px;font-size:18px}
 @media(max-width:520px){.fields{grid-template-columns:1fr}.status-in{grid-template-columns:repeat(2,1fr)}}
+
+/* ── Rifinitura grafica ─────────────────────────── */
+::selection{background:var(--brass);color:var(--cream)}
+:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brass)!important;box-shadow:0 0 0 3px rgba(152,128,96,.14)}
+
+/* testata come quadro strumenti */
+header{background:linear-gradient(180deg,#332E28 0%,var(--ink) 100%)}
+.status{border-top:1px solid rgba(152,128,96,.45)}
+.stat .n{font-variant-numeric:tabular-nums lining-nums}
+.logo{text-shadow:0 1px 0 rgba(0,0,0,.35)}
+
+/* schede: dorso colorato per esito + profondità di carta */
+.card{border-left:4px solid var(--hair);
+  box-shadow:0 1px 0 rgba(42,39,35,.05),0 10px 22px -16px rgba(42,39,35,.35);
+  transition:box-shadow .2s ease,border-color .2s ease}
+.card.caldo{border-left-color:var(--caldo)}
+.card.tiepido{border-left-color:var(--tiepido)}
+.card.freddo{border-left-color:var(--freddo)}
+.card[open]{box-shadow:0 1px 0 rgba(42,39,35,.05),0 16px 30px -18px rgba(42,39,35,.42)}
+.card-hd{background:linear-gradient(180deg,#332F29,#2A2723);box-shadow:inset 0 -1px 0 rgba(152,128,96,.35)}
+.hd-meta{font-variant-numeric:tabular-nums}
+
+/* pulsanti: pressione fisica, ottone materico */
+.btn,.mini,.linea,.esito,.wiz-big,.chk-cam,.help-btn,.wiz-x{transition:transform .06s ease,box-shadow .18s ease,background-color .18s ease,border-color .18s ease,color .18s ease}
+.btn:active,.mini:active,.linea:active,.esito:active,.wiz-big:active,.chk-cam:active{transform:scale(.982)}
+.btn{box-shadow:0 2px 8px -4px rgba(42,39,35,.45)}
+.btn.brass{background:linear-gradient(180deg,#A38A67,#8F7756)}
+.btn.ghost{box-shadow:none}
+.mini:hover,.linea:hover,.esito:hover{border-color:var(--brass)}
+.linea.on,.esito.sel-caldo,.esito.sel-tiepido,.esito.sel-freddo{box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),0 2px 6px -3px rgba(42,39,35,.4)}
+
+/* soffietti: apertura che respira */
+details.sec{transition:box-shadow .2s ease}
+details.sec[open]{box-shadow:0 6px 16px -12px rgba(42,39,35,.3)}
+details.sec[open]>summary{color:var(--ink)}
+details.sec>summary:hover::after{color:var(--ink)}
+
+/* ricerca e dock: vetro caldo */
+.search{box-shadow:inset 0 1px 3px rgba(42,39,35,.07)}
+.dock{background:rgba(245,242,235,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+
+/* barre di avanzamento: ottone vivo */
+.compl-bar i,.wiz-bar b{background:linear-gradient(90deg,#8F7756,#B39A76);transition:width .45s ease}
+.compl .linea{font-size:11px}
+
+/* separatore del giorno: filetto editoriale */
+.daysep span{color:var(--brass);letter-spacing:3px}
+.daysep::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,transparent,var(--hair) 20%,var(--hair) 80%,transparent)}
+.daysep span{position:relative}
+
+/* wizard: scelte con spunta, testata coerente */
+.wiz-top{background:linear-gradient(180deg,#332F29,#2A2723);box-shadow:inset 0 -1px 0 rgba(152,128,96,.35)}
+.wiz-big{position:relative;box-shadow:0 1px 0 rgba(42,39,35,.04)}
+.wiz-big:hover{border-color:var(--brass)}
+.wiz-big.on{background:linear-gradient(180deg,#A38A67,#8F7756);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}
+.wiz-big.on::after{content:"\2713";position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--cream)}
+
+/* foto: piccole stampe */
+.photos img,.chk-th{border-radius:3px;box-shadow:0 2px 6px -3px rgba(42,39,35,.4)}
+
+/* barre di scorrimento discrete */
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-thumb{background:var(--hair);border-radius:5px;border:2px solid var(--paper)}
+::-webkit-scrollbar-track{background:transparent}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important}
+}
 </style>
 </head>
 <body>
@@ -244,18 +313,33 @@ footer{max-width:760px;margin:30px auto 0;padding:14px;border-top:1px solid var(
 
     <details class="sec"><summary>1 · Il giro e gli edifici</summary><div class="sec-bd">
       <p><b>▶ Avvia giro</b> attiva il GPS: la barra scura in alto conta i km, gli edifici visitati, gli esiti caldi e la <b>pipeline stimata</b> del giorno.</p>
-      <p>Se resti fermo entro il raggio impostato per i minuti impostati (Impostazioni: default 60 m / 4 min), l'app registra da sola l'edificio. In alternativa: <b>⌂ Registra edificio</b> nella posizione attuale, oppure Strumenti → coordinate manuali.</p>
-      <p><b>Wizard o scheda?</b> Quando registri un edificio a mano, l'app chiede come preferisci raccogliere i dati: <b>🪄 Wizard rapido</b> — 8 domande (≈2 minuti) con foto bolletta e APE lette dall'AI, tutte saltabili — oppure <b>📋 Raccolta dettagliata</b>, direttamente sulla scheda completa. La scheda mostra sempre la <b>completezza %</b> con cosa manca — e da lì l'affinamento è a cascata: <b>▸ Completa (N passi)</b> lancia un mini-wizard con i soli passi mancanti, mentre i chip (+ APE, + Consumi, + Foto…) aprono il singolo passo. Il passo <b>Foto guidate</b> propone una voce della guida rilievi alla volta, con scatto immediato. Il wizard completo si rilancia in ogni momento (🪄 Wizard).</p>
+      <p>Se resti fermo entro il raggio impostato per i minuti impostati (Impostazioni: default 60 m / 4 min), l'app registra da sola l'edificio, senza interromperti. In alternativa: <b>⌂ Registra edificio</b> nella posizione attuale, oppure Strumenti → coordinate manuali — in questi due casi l'app chiede subito <i>come</i> vuoi raccogliere i dati (capitolo 2).</p>
       <p>Limiti di piattaforma: serve una pagina <b>https://</b> e lo <b>schermo acceso</b> — a schermo spento i browser sospendono il GPS.</p>
     </div></details>
 
-    <details class="sec"><summary>2 · La scheda edificio</summary><div class="sec-bd">
+    <details class="sec"><summary>2 · Wizard rapido e affinamento a cascata</summary><div class="sec-bd">
+      <p>Alla registrazione manuale di un edificio scegli tra due strade:</p>
+      <ul>
+        <li><b>🪄 Wizard rapido</b> — 8 domande (≈2 minuti), una per schermata: nome e contatti → tipologia → interventi (con optional SOLERO) → <b>profilo d'uso</b> → foto bolletta → foto APE → formula di spesa → esito. Ogni passo è saltabile ("Salta / Avanti"); bolletta e APE si leggono con l'AI direttamente dal wizard.</li>
+        <li><b>📋 Raccolta dettagliata</b> — apre subito la scheda completa, per compilare con calma.</li>
+      </ul>
+      <p>Il passo <b>profilo d'uso</b> si adatta alla tipologia scelta: al condominio chiede unità, amministratore e prossima assemblea; alla villa occupanti e abitudini; alla PMI turni e macchinari; all'attività commerciale orari e frigoriferi. Sono i dati che tarano stime e proposta.</p>
+      <p>Al termine, il riepilogo mostra la <b>completezza</b> e cosa manca. La stessa barra vive poi sulla scheda ("Completezza 64% · mancano: APE, Foto…") ed è <b>cliccabile</b>:</p>
+      <ul>
+        <li><b>▸ Completa (N passi)</b> — lancia un mini-wizard con i <i>soli</i> passi mancanti, in sequenza. Hai due minuti? Fai due passi e chiudi: il progresso resta.</li>
+        <li><b>Chip per voce</b> (+ APE, + Consumi, + Uso, + Foto…) — aprono il singolo passo: entra, rispondi, esci.</li>
+      </ul>
+      <p>Il passo <b>Foto guidate</b> (solo in cascata) propone una voce della guida rilievi alla volta — "Centrale termica: locale e generatore · 4 di 14" — con lo scatto grande e "Salta questa voce": lo scatto spunta la voce da solo e passa alla successiva.</p>
+      <p>Il wizard completo si rilancia in ogni momento dalla scheda (🪄 Wizard). Wizard e scheda scrivono negli stessi campi: sono due porte sulla stessa stanza.</p>
+    </div></details>
+
+    <details class="sec"><summary>3 · La scheda edificio</summary><div class="sec-bd">
       <p>Ogni edificio è una scheda a soffietto: la fascia scura mostra nome (toccalo per rinominare), esito, valore e linee; tocca la fascia per aprire/chiudere. Il campo <b>🔍 Cerca</b> sopra la timeline filtra per nome, indirizzo, referente, tipologia, linea o POD.</p>
       <p><b>Esito</b> (🔥 caldo · 🌤 tiepido · ❄ freddo) colora i contatori e cambia la frase di chiusura del Suggeritore. <b>Complessità</b> (1–5 pallini) stima l'onere d'installazione. <b>Valore stimato €</b> alimenta la pipeline del giorno.</p>
       <p>Gli <b>Interventi proposti</b> sono a vista sotto l'esito: le linee BABOO (con gli optional SOLERO: ⚡ Accumulo e 🔌 Ricarica EV) compongono guida rilievi, stime, Scheda AI e Report cliente. In <b>Dati edificio</b>: la <b>Tipologia</b> (Condominio, Villa singola, PMI produttiva, Attività commerciale) pilota checklist, stime e suggerimenti — sceglila per prima.</p>
     </div></details>
 
-    <details class="sec"><summary>3 · Suggeritore commerciale e Coach live</summary><div class="sec-bd">
+    <details class="sec"><summary>4 · Suggeritore commerciale e Coach live</summary><div class="sec-bd">
       <p>Il primo soffietto della scheda è il copione in tasca: <b>domande che aprono</b>, <b>frasi che orientano</b> (con i numeri reali del cliente, se hai compilato i consumi), la <b>leva finanziaria</b> coerente col profilo, <b>l'obiezione tipica con la risposta</b> e <b>la chiusura</b>, che cambia con l'esito selezionato.</p>
       <p><b>Coach live:</b> tre modi per catturare la conversazione, tutti confluiscono nello stesso campo di testo:</p>
       <ul>
@@ -267,52 +351,54 @@ footer{max-width:760px;margin:30px auto 0;padding:14px;border-top:1px solid var(
       <p>⚖️ <b>Informa sempre il cliente</b> che registri o trascrivi: l'app te lo ricorda prima di partire. L'audio e il testo restano sul tuo dispositivo; il testo va all'AI solo quando premi Analizza.</p>
     </div></details>
 
-    <details class="sec"><summary>4 · Consumi attuali, bolletta e APE</summary><div class="sec-bd">
+    <details class="sec"><summary>5 · Consumi attuali, bolletta e APE</summary><div class="sec-bd">
       <p>La baseline dei consumi è il denominatore dell'analisi finanziaria: senza, niente numeri in proposta né nel Report cliente.</p>
       <p>Compila <b>Elettrico</b> (kWh, spesa, potenza, <b>% consumo diurno</b> — decide l'autoconsumo FV), <b>Gas</b> (Smc, spesa, uso) e <b>Altro combustibile</b> (gasolio, GPL, pellet). La riga <b>Baseline</b> calcola da sola spesa annua totale e costi unitari €/kWh e €/Smc.</p>
       <p><b>📄 Leggi bolletta con AI:</b> fotografa la bolletta e i campi si compilano da soli (POD/PDR compresi); la foto si aggancia alla voce "Bolletta" della guida rilievi. Verifica sempre i valori estratti.</p>
       <p><b>APE:</b> raccogli classe, indice EPgl,nren e anno di emissione — è il "prima" ufficiale contro cui la proposta certificherà il miglioramento. <b>📄 Leggi APE con AI</b> estrae tutto dalla foto della prima pagina; la classe compare nella baseline e nel Report cliente.</p>
+      <p>Entrambe le letture AI sono disponibili anche come passi del wizard (capitolo 2).</p>
     </div></details>
 
-    <details class="sec"><summary>4b · Profilo finanziario</summary><div class="sec-bd">
+    <details class="sec"><summary>5b · Profilo finanziario</summary><div class="sec-bd">
       <p>La qualificazione economica del cliente, a tocchi rapidi: <b>formula preferita</b> (investimento diretto, rate, zero esborso) con la <b>rata mensile sostenibile</b>; <b>accesso ai contributi</b> con le opzioni giuste per la tipologia (capienza fiscale per la villa, fondo lavori per il condominio, dimensione impresa per la PMI — con i documenti da raccogliere già in guida rilievi); <b>servizi finanziari</b> d'interesse (banca, leasing, EPC/PPA, canale contributi); <b>driver decisionale</b>, chi firma e tempi.</p>
       <p>Il profilo alimenta la <b>Leva finanziaria</b> del Suggeritore, orienta la Scheda AI, aggiunge il risparmio <i>al mese</i> nel Report cliente quando il cliente ragiona a rata, ed esce in chiaro nel report .md.</p>
     </div></details>
 
-    <details class="sec"><summary>5 · Guida rilievi e foto</summary><div class="sec-bd">
+    <details class="sec"><summary>6 · Guida rilievi e foto</summary><div class="sec-bd">
       <p>La checklist di cosa fotografare e raccogliere, su <b>tre strati</b>: <i>Sempre</i> + <i>Tipo edificio</i> + <i>Linee proposte</i> (con blocchi extra per gli optional SOLERO). Il contatore nel titolo mostra l'avanzamento; il soffietto si chiude da solo a checklist completa.</p>
-      <p>Ogni voce ha il suo <b>📷</b>: fino a <b>3 foto per voce</b> (scatto o selezione multipla); lo scatto spunta la voce da solo e la miniatura resta accanto. Tocca una miniatura per ingrandirla o eliminarla (✕).</p>
+      <p>Ogni voce ha il suo <b>📷</b>: fino a <b>3 foto per voce</b> (scatto o selezione multipla); lo scatto spunta la voce da solo e la miniatura resta accanto. Tocca una miniatura per ingrandirla o eliminarla (✕). Per farsi accompagnare voce per voce c'è il passo <b>Foto guidate</b> della cascata (capitolo 2).</p>
       <p>In <b>Documentazione</b> trovi tutte le foto (bordo ottone = agganciate a una voce), le note (✏️) e i memo vocali (🎙️, max 3 minuti). Il 📷 in fondo alla scheda è per gli scatti liberi, senza limite.</p>
     </div></details>
 
-    <details class="sec"><summary>6 · Scheda AI</summary><div class="sec-bd">
-      <p><b>↻ Scheda AI</b> genera con ricerca web: <b>Profilo energetico</b>, <b>Opportunità BABOO</b> (con il modello contrattuale preferenziale per la tipologia: CER per il condominio, PPA on-site per la PMI, chiavi in mano per la villa, EPC light per il commerciale) e <b>Incentivi applicabili</b>.</p>
+    <details class="sec"><summary>7 · Scheda AI</summary><div class="sec-bd">
+      <p><b>↻ Scheda AI</b> genera con ricerca web: <b>Profilo energetico</b>, <b>Opportunità BABOO</b> (con il modello contrattuale preferenziale per la tipologia: CER per il condominio, PPA on-site per la PMI, chiavi in mano per la villa, EPC light per il commerciale) e <b>Incentivi applicabili</b>. Riceve anche profilo d'uso e profilo finanziario, quando rilevati.</p>
       <p>Le <b>foto etichettate</b> della guida rilievi vengono inviate all'AI con la loro didascalia (max 8, priorità alle etichettate): il profilo si basa su ciò che si vede davvero. La nota in calce dichiara quante foto sono state analizzate.</p>
       <p>⚠️ Contenuto AI: verificare sempre prima dell'offerta.</p>
     </div></details>
 
-    <details class="sec"><summary>7 · Report cliente (l'aggancio)</summary><div class="sec-bd">
+    <details class="sec"><summary>8 · Report cliente (l'aggancio)</summary><div class="sec-bd">
       <p><b>✨ Report cliente</b> genera l'anteprima persuasiva da mostrare sul telefono o scaricare e inviare: quanto spende oggi (con la classe APE se rilevata), quanto costerà non fare nulla in 10 anni, la <b>forchetta di risparmio</b> stimata (tarata su tipologia e % diurna, con il risparmio al mese se il cliente ragiona a rata), la CO₂ tradotta in alberi, gli interventi, <b>la formula contrattuale per la sua tipologia</b> e la chiamata all'azione con scadenza a 15 giorni e telefono BABOO.</p>
-      <p>Le stime sono indicative e non vincolanti (c'è il disclaimer): la proposta vera segue lo studio di fattibilità. Senza consumi compilati esce la versione qualitativa.</p>
+      <p>Le stime sono indicative e non vincolanti (c'è il disclaimer): la proposta vera segue lo studio di fattibilità. Senza consumi compilati esce la versione qualitativa. Raggiungibile anche dal riepilogo finale del wizard.</p>
     </div></details>
 
-    <details class="sec"><summary>8 · Fine giornata: export</summary><div class="sec-bd">
-      <p>Da Strumenti: <b>Scarica report (.md)</b> — il riepilogo del giro per chi prepara le proposte: dati, APE, baseline consumi, profilo finanziario in chiaro, checklist con [x] e conteggio foto, scheda AI, obiezioni e segnali dalla conversazione. <b>Scarica con foto (.html)</b> — il dossier completo con immagini e memo, tutti i soffietti aperti.</p>
+    <details class="sec"><summary>9 · Fine giornata: export</summary><div class="sec-bd">
+      <p>Da Strumenti: <b>Scarica report (.md)</b> — il riepilogo del giro per chi prepara le proposte: dati, profilo d'uso, APE, baseline consumi, profilo finanziario in chiaro, checklist con [x] e conteggio foto, scheda AI, obiezioni e segnali dalla conversazione. <b>Scarica con foto (.html)</b> — il dossier completo con immagini e memo, tutti i soffietti aperti.</p>
       <p><b>Svuota diario</b> cancella tutto (irreversibile): esporta prima.</p>
     </div></details>
 
-    <details class="sec"><summary>9 · Impostazioni, chiavi e privacy</summary><div class="sec-bd">
+    <details class="sec"><summary>10 · Impostazioni, chiavi e privacy</summary><div class="sec-bd">
       <p>In <b>Strumenti</b>: chiave API <b>Anthropic</b> (Scheda AI, lettura bolletta/APE, analisi conversazione) e motore <b>Whisper</b> — OpenAI API (serve la chiave OpenAI, ~0,006 $/min) oppure il server BABOO (l'audio resta nel perimetro aziendale). Le chiavi restano <b>solo sul dispositivo</b>.</p>
       <p><b>Dove stanno i dati:</b> tutto nel browser di questo dispositivo (IndexedDB), niente server dell'app, niente account. Cambiando telefono o cancellando i dati di navigazione il diario si perde: <b>gli export sono il backup</b>. In navigazione privata o in anteprima il salvataggio non è disponibile e l'app lo segnala.</p>
       <p>Chiamate esterne solo quando le attivi tu: API Anthropic/OpenAI o server Whisper.</p>
     </div></details>
 
-    <details class="sec"><summary>10 · Problemi frequenti</summary><div class="sec-bd">
+    <details class="sec"><summary>11 · Problemi frequenti</summary><div class="sec-bd">
       <p><b>I pulsanti non rispondono</b> → probabile versione vecchia in cache: ricarica aggiungendo <code>?v=nuovo</code> all'indirizzo o apri in finestra privata.</p>
       <p><b>GPS/microfono/fotocamera non partono</b> → la pagina dev'essere aperta in https:// e non dall'anteprima di un'app di messaggistica.</p>
       <p><b>Il diario è sparito</b> → navigazione privata, o dati di navigazione cancellati: ripartire dagli export.</p>
       <p><b>La trascrizione Whisper fallisce</b> → l'audio resta in memoria: controlla chiave/URL in Strumenti e riprova, o scarica l'audio.</p>
       <p><b>Lettura bolletta/APE imprecisa</b> → rifotografa in piano, con luce, inquadrando la pagina giusta.</p>
+      <p><b>Il wizard non compare</b> → appare per gli edifici registrati a mano; per quelli rilevati dal GPS apri la scheda e usa ▸ Completa o 🪄 Wizard.</p>
     </div></details>
 
     <p style="margin-top:14px;font-size:13px;color:var(--muted);font-style:italic">Sopralluoghi BABOO · agosto 2026 — un unico file, nessuna installazione. Per assistenza: 0323 63934.</p>
@@ -863,7 +949,7 @@ function cardHTML(b,isNewest){
   const hasDoc=!!(b.notes||b.photos.length||b.memos.length);
   const sec=(key,def,label,inner)=>`<details class="sec" ${ (UI.sec[b.id+'-'+key]??def)?'open':'' } ontoggle="UI.sec['${b.id}-${key}']=this.open">
     <summary>${label}</summary><div class="sec-bd">${inner}</div></details>`;
-  return `<details class="card" ${cardOpen} data-id="${b.id}" ontoggle="UI.card[${b.id}]=this.open">
+  return `<details class="card ${b.esito||''}" ${cardOpen} data-id="${b.id}" ontoggle="UI.card[${b.id}]=this.open">
     <summary class="card-hd">
       <div class="hd-l">
         <h3 contenteditable onclick="event.preventDefault();event.stopPropagation()" onblur="upd(${b.id},'name',this.textContent)">${esc(b.name)}</h3>
