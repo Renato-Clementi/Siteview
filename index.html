@@ -439,6 +439,23 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
 .sp-sub{font-family:var(--sans);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--brass);animation:spUp .55s ease .34s both}
 @keyframes spUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes spLine{from{width:0;opacity:0}to{width:64px;opacity:1}}
+/* \u2500\u2500 Diario di visita \u2500\u2500 */
+.chat-body{display:flex;flex-direction:column;gap:10px;padding-bottom:12px}
+.cb-msg{max-width:82%;padding:10px 13px;border-radius:10px;font-size:16px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+.cb-msg.user{margin-left:auto;background:#fff;border:1px solid var(--hair);border-bottom-right-radius:3px}
+.cb-msg.ai{margin-right:auto;background:var(--ink);color:var(--cream);border-left:3px solid var(--brass);border-bottom-left-radius:3px}
+.cb-msg.ai .who{display:block;font-family:var(--sans);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--brass);margin-bottom:3px}
+.cb-msg img{max-width:100%;border-radius:6px;display:block}
+.cb-time{font-family:var(--sans);font-size:9.5px;color:var(--muted);margin-top:4px;text-align:right}
+.cb-msg.ai .cb-time{color:rgba(237,231,219,.55);text-align:left}
+.chat-hint{text-align:center;color:var(--muted);font-style:italic;padding:26px 18px;font-size:15px}
+.chat-riord{position:sticky;bottom:0;display:flex;justify-content:center;padding:6px 0 2px}
+.chat-riord .btn{min-height:46px;padding:10px 20px}
+.chat-comp{flex:none;display:flex;align-items:flex-end;gap:8px;padding:10px 12px calc(12px + env(safe-area-inset-bottom));background:var(--ivory);border-top:1px solid var(--hair);max-width:640px;width:100%;margin:0 auto}
+.chat-comp textarea{flex:1;min-height:46px;max-height:120px;padding:11px 12px;border:1px solid var(--hair);border-radius:10px;font-size:16px;resize:none;background:#fff}
+.chat-cb{flex:none;width:46px;height:46px;border-radius:50%;border:1px solid var(--hair);background:#fff;font-size:18px}
+.chat-cb.send{background:var(--brass);border-color:var(--brass);color:var(--cream)}
+.chat-cb.rec{background:#7a2f22;border-color:#7a2f22;color:#fff;animation:pulse 1.6s ease infinite}
 @media (prefers-reduced-motion:reduce){
 #splash svg,.sp-name,.sp-line,.sp-sub{animation:none}
   *,*::before,*::after{transition:none!important;animation:none!important}
@@ -593,7 +610,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
       <p>Alla registrazione manuale di un edificio scegli tra due strade:</p>
       <ul>
         <li><b>🪄 Wizard rapido</b> — 8 domande (≈2 minuti), una per schermata: nome e contatti → tipologia → interventi (con optional SOLERO) → <b>profilo d'uso</b> → foto bolletta → foto APE → formula di spesa → esito. Ogni passo è saltabile ("Salta / Avanti"); bolletta e APE si leggono con l'AI direttamente dal wizard.</li>
-        <li><b>🎙️ Racconta</b> — la via conversazionale: parli (o scrivi) tutto d'un fiato e l'AI compila i campi, mostrandoti <b>prima</b> il riepilogo delle modifiche da confermare voce per voce; poi al massimo due domande su ciò che manca. <b>Offline funziona lo stesso</b>: il racconto va in coda e la Bussola lo elabora al ritorno della rete. Il 🎙️ è anche su ogni scheda, per arricchire edifici esistenti.</li>
+        <li><b>🎙️ Racconta</b> — il <b>diario di visita</b>: una chat per edificio dove butti dentro appunti, dettati vocali e <b>foto</b> (targhe, bollette, APE, ambienti) mentre giri. Quando vuoi, <b>✦ Riordina nei campi</b>: l'AI legge tutto — foto comprese — e propone le modifiche <b>da confermare voce per voce</b>; poi la Bussola fa al massimo due domande, in chat, su ciò che manca. <b>Offline non si perde nulla</b>: gli appunti restano nel diario e la Bussola ti ricorda di riordinare al ritorno della rete. Le foto della chat finiscono anche nella Documentazione della scheda.</li>
         <li><b>📋 Raccolta dettagliata</b> — apre subito la scheda completa, per compilare con calma.</li>
       </ul>
       <p>Il passo <b>profilo d'uso</b> si adatta alla tipologia scelta: al condominio chiede unità, amministratore e prossima assemblea; alla villa occupanti e abitudini; alla PMI turni e macchinari; all'attività commerciale orari e frigoriferi. Sono i dati che tarano stime e proposta.</p>
@@ -744,6 +761,19 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
   <div class="modal-in"><button class="modal-x" onclick="$('m-video').classList.remove('open')">✕</button>
     <h2>🎬 Video da mostrare</h2>
     <div id="video-body"></div>
+  </div>
+</div>
+
+<!-- Diario di visita (chat) -->
+<div class="wiz" id="m-chat" style="z-index:61">
+  <div class="wiz-top"><span class="n" id="chat-n">🎙️ Racconta</span><button class="wiz-x" onclick="chatClose()">✕</button></div>
+  <div class="wiz-bar"><b style="width:0%"></b></div>
+  <div class="wiz-body chat-body" id="chat-body"></div>
+  <div class="chat-comp">
+    <button class="chat-cb" title="Foto" onclick="chatPhoto()">📷</button>
+    <button class="chat-cb" id="chat-mic" title="Detta" onclick="chatListen()">🎤</button>
+    <textarea id="chat-in" rows="1" placeholder="Scrivi o detta un appunto…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatSend()}"></textarea>
+    <button class="chat-cb send" title="Invia" onclick="chatSend()">➤</button>
   </div>
 </div>
 
@@ -1489,7 +1519,7 @@ function cardHTML(b,isNewest){
       <div class="act-t" style="border-top:1px solid var(--hair);padding-top:10px">Raccogli dati</div>
       <div class="card-actions acts-r" style="border-top:none;padding-top:0;margin-top:6px">
         <button class="mini" onclick="openWizard(${b.id})">\ud83e\ude84 Wizard</button>
-        <button class="mini" onclick="raccOpen(${b.id})">\u{1F399} Racconta</button>
+        <button class="mini" onclick="chatOpen(${b.id})">\u{1F399} Racconta</button>
         <button class="mini" onclick="addPhoto(${b.id})">📷 Foto</button>
         <button class="mini" onclick="editNote(${b.id})">✏️ Nota</button>
         <button class="mini" id="memo-${b.id}" onclick="toggleMemo(${b.id})">🎙️ Memo</button>
@@ -1525,7 +1555,7 @@ function cardHTML(b,isNewest){
       <div class="act-t">Raccogli dati</div>
       <div class="card-actions acts-r" style="border-top:none;padding-top:0;margin-top:6px">
         <button class="mini" onclick="openWizard(${b.id})">\ud83e\ude84 Wizard</button>
-        <button class="mini" onclick="raccOpen(${b.id})">\u{1F399} Racconta</button>
+        <button class="mini" onclick="chatOpen(${b.id})">\u{1F399} Racconta</button>
         <button class="mini" onclick="addPhoto(${b.id})">📷 Foto${b.photos.length?' ('+b.photos.length+')':''}</button>
       </div>
       <div class="act-t" style="border-top:1px dashed var(--hair);padding-top:10px">Presenta</div>
@@ -2029,6 +2059,100 @@ function tourNext(){if(!TOUR)return;TOUR.i++;tourStep()}
 function tourEnd(){const wasMain=TOUR&&TOUR.main;TOUR=null;TOUR_TARGET=null;$('tour').classList.remove('on');if(wasMain&&!S.tourDone){S.tourDone=true;save()}}
 window.addEventListener('resize',()=>{if(TOUR)tourStep()});
 
+/* \u2500\u2500 Diario di visita: flusso continuo \u2192 riordino AI \u2500\u2500 */
+let CHAT=null,CSR=null;
+function chatOpen(id){const b=S.buildings.find(x=>x.id===id);if(!b)return;
+  b.chat=b.chat||[];if(b.chatMark==null)b.chatMark=0;
+  CHAT={id};$('m-chat').classList.add('open');
+  $('chat-n').textContent='\u{1F399} Racconta \u00b7 '+b.name;
+  chatRender(true)}
+function chatClose(){if(CSR){try{CSR.onend=null;CSR.stop()}catch(e){}CSR=null}
+  $('m-chat').classList.remove('open');CHAT=null}
+function chatDirty(b){return (b.chat||[]).slice(b.chatMark||0).some(m=>m.role==='user')}
+function chatRender(scroll){
+  if(!CHAT)return;const b=S.buildings.find(x=>x.id===CHAT.id);
+  const body=$('chat-body');
+  const fmt=ts=>{const d=new Date(ts);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
+  const ph=cid=>{const i=b.photos.findIndex(p=>p.cid===cid);
+    return i>=0?`<img src="${b.photos[i].src}" onclick="lightbox(${b.id},${i})">`:'<i>\u{1F4F7} foto rimossa</i>'};
+  body.innerHTML=(b.chat.length?'':`<div class="chat-hint">Racconta il sopralluogo come viene: un appunto, una foto della targa o della bolletta, trenta secondi a voce\u2026<br>Quando vuoi, <b>\u2726 Riordina</b>: l\u2019AI mette tutto nei campi giusti e ti mostra le modifiche da confermare.</div>`)+
+    b.chat.map(m=>`<div class="cb-msg ${m.role}">${m.role==='ai'?'<span class="who">\u2726 Bussola</span>':''}${m.kind==='photo'?ph(m.cid):esc(m.text||'')}<div class="cb-time">${fmt(m.ts)}</div></div>`).join('')+
+    (chatDirty(b)?`<div class="chat-riord"><button class="btn brass" onclick="chatRiordina()">\u2726 Riordina nei campi</button></div>`:'');
+  if(scroll!==false)body.scrollTop=body.scrollHeight;
+}
+function chatSend(){
+  if(!CHAT)return;const b=S.buildings.find(x=>x.id===CHAT.id);
+  const inp=$('chat-in');const t=(inp.value||'').trim();if(!t)return;
+  b.chat.push({role:'user',kind:'text',text:t,ts:Date.now()});
+  inp.value='';save();chatRender()}
+function chatListen(){
+  const btn=$('chat-mic');
+  if(CSR){CSR.onend=null;try{CSR.stop()}catch(e){}CSR=null;btn.classList.remove('rec');return}
+  const Rec=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!Rec){alert('Dettatura del browser non disponibile: usa il microfono della tastiera.');return}
+  try{CSR=new Rec();CSR.lang='it-IT';CSR.continuous=true;CSR.interimResults=false;
+    CSR.onresult=e=>{let add='';for(let i=e.resultIndex;i<e.results.length;i++)if(e.results[i].isFinal)add+=e.results[i][0].transcript+' ';
+      if(add){const inp=$('chat-in');inp.value=(inp.value+' '+add).trim()}};
+    CSR.onend=()=>{if(CSR)try{CSR.start()}catch(e){}};
+    CSR.start();btn.classList.add('rec');
+  }catch(e){CSR=null;alert('Microfono non disponibile (serve HTTPS).')}}
+let _cinp=null;
+function chatPhoto(){
+  if(!CHAT)return;const b=S.buildings.find(x=>x.id===CHAT.id);
+  if(_cinp)_cinp.remove();
+  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.multiple=true;
+  inp.style.display='none';document.body.appendChild(inp);_cinp=inp;
+  inp.onchange=()=>{[...inp.files].forEach(f=>{
+    const img=new Image();
+    img.onload=()=>{const c=document.createElement('canvas'),k=Math.min(1,1280/Math.max(img.width,img.height));
+      c.width=img.width*k;c.height=img.height*k;c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      const cid=Date.now()+Math.random();
+      b.photos.push({src:c.toDataURL('image/jpeg',.8),tag:null,cid});
+      b.chat.push({role:'user',kind:'photo',cid,ts:Date.now()});
+      URL.revokeObjectURL(img.src);save();chatRender();render()};
+    img.onerror=()=>alert('Formato foto non leggibile.');
+    img.src=URL.createObjectURL(f)})};
+  inp.click()}
+async function chatRiordina(){
+  if(!CHAT)return;const b=S.buildings.find(x=>x.id===CHAT.id);
+  const nuovi=b.chat.slice(b.chatMark||0).filter(m=>m.role==='user');
+  if(!nuovi.length)return;
+  const txt=nuovi.filter(m=>m.kind==='text').map(m=>m.text).join('\n');
+  const imgs=nuovi.filter(m=>m.kind==='photo').slice(-4)
+    .map(m=>{const p=b.photos.find(x=>x.cid===m.cid);return p&&p.src}).filter(Boolean);
+  b.chat.push({role:'ai',kind:'text',text:'\u2026 riordino gli appunti nei campi',ts:Date.now()});
+  save();chatRender();
+  try{
+    const prompt=`Sei l'assistente di raccolta dati di GIRO ESCo (BABOO). Il commerciale ha buttato gi\u00f9 appunti (testo e foto: targhe, bollette, APE, ambienti) durante un sopralluogo. Estrai SOLO i dati presenti e rispondi SOLO con JSON puro senza backtick.
+Appunti: \u00ab${txt.slice(0,5000)||'(solo foto)'}\u00bb
+Valori attuali (proponi solo cambi o campi nuovi): ${JSON.stringify({name:b.name,addr:b.addr,ref:b.ref,tipologia:b.tipologia,anno:b.anno,sup:b.sup,impianto:b.impianto,pod:b.pod,esito:b.esito,val:b.val,linee:b.linee,cons:b.cons,ape:b.ape,fin:b.fin,extra:b.extra,fup:b.fup}).slice(0,1200)}
+Schema: {"campi":{"name":str,"addr":str,"ref":str,"tipologia":str,"anno":str,"sup":str,"impianto":str,"pod":str,"esito":str,"cx":int,"val":number,"linee":[str],"solOpt":{"storage":bool,"ev":bool},"cons":{"elKwh":str,"elSpesa":str,"elPot":str,"elF1":str,"gasSmc":str,"gasSpesa":str,"gasUso":str,"altroTipo":str,"altroQta":str,"altroSpesa":str},"ape":{"classe":str,"ep":str,"anno":str},"fin":{"formula":str,"rata":str,"contributi":str,"driver":str,"decisore":str,"tempi":str},"extra":{"unita":str,"ammin":str,"assemblea":str,"turni":str,"macchine":str,"orari":str,"frigo":str,"occupanti":str,"uso":str},"fup":{"giorni":int,"why":str},"vani":[{"nome":str,"l":str,"h":str,"n":str}],"note":str},"domande":[str]}
+Regole: ometti ogni campo non menzionato n\u00e9 visibile in foto. tipologia una di ${JSON.stringify(TIPI)}. linee tra ${JSON.stringify(LINEE)}. esito tra ["caldo","tiepido","freddo"]. fin.formula tra ${JSON.stringify(FIN_FORMULE)}. fin.driver tra ${JSON.stringify(FIN_DRIVER)}. fin.tempi tra ${JSON.stringify(FIN_TEMPI)}. Numeri puri. fup.giorni = tra quanti giorni ricontattare. Dalle foto di targhe estrai marca/modello/potenza in "impianto"; da bollette i consumi; da APE la classe. "domande": al massimo 2, solo su ci\u00f2 che manca ed \u00e8 commercialmente prezioso, altrimenti [].`;
+    const content=[{type:'text',text:prompt}];
+    imgs.forEach(u=>content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:u.split(',')[1]}}));
+    const hdrs={'Content-Type':'application/json'};
+    if(S.apiKey){hdrs['x-api-key']=S.apiKey;hdrs['anthropic-version']='2023-06-01';hdrs['anthropic-dangerous-direct-browser-access']='true'}
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:hdrs,
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:900,messages:[{role:'user',content}]})});
+    const data=await res.json();
+    const out=(data.content||[]).filter(x=>x.type==='text').map(x=>x.text).join('').replace(/```json|```/g,'').trim();
+    const j=JSON.parse(out);
+    b.chat.pop(); /* via il messaggio d'attesa */
+    const rows=raccDiff(b,j.campi||{});
+    if(!rows.length){
+      b.chat.push({role:'ai',kind:'text',text:'Niente di nuovo da scrivere: i campi sono gi\u00e0 allineati agli appunti.',ts:Date.now()});
+      b.chatMark=b.chat.length;save();chatRender();return}
+    RACC={id:b.id,state:'diff',rows,domande:(j.domande||[]).slice(0,2),qIdx:null,fromChat:true,text:''};
+    $('m-racc').classList.add('open');raccRender();
+  }catch(e){
+    b.chat.pop();
+    b.chat.push({role:'ai',kind:'text',text:navigator.onLine===false?
+      '\u26A0 Sei offline: gli appunti sono al sicuro qui. Al ritorno della rete ti ricordo io di riordinare.':
+      '\u26A0 Riordino non riuscito'+(S.apiKey?'':' (chiave API mancante: Impostazioni)')+'. Gli appunti restano salvati: riprova tra poco.',ts:Date.now()});
+    save();chatRender();
+  }
+}
+
 /* \u2500\u2500 Racconta: parla, l'AI compila (diff con conferma) \u2500\u2500 */
 let RACC=null,RSR=null;
 function raccOpen(id,queuedIdx){
@@ -2124,6 +2248,12 @@ function raccApply(){
   sel.forEach(r=>r.apply(b));
   if(RACC.qIdx!=null){S.raccQueue.splice(RACC.qIdx,1);RACC.qIdx=null}
   save();render();
+  if(RACC.fromChat){
+    b.chat.push({role:'ai',kind:'text',text:'✓ '+sel.length+' campi aggiornati dagli appunti.',ts:Date.now()});
+    (RACC.domande||[]).forEach(q=>b.chat.push({role:'ai',kind:'text',text:q,ts:Date.now()}));
+    b.chatMark=b.chat.length;save();
+    $('m-racc').classList.remove('open');RACC=null;
+    chatRender();return}
   RACC.applied=sel.length;
   RACC.state=RACC.domande.length?'gap':'done';
   raccRender();
@@ -2204,6 +2334,11 @@ function bussolaMoves(){
     add('conv-'+id,1,'\u25cf','Trascrivi la conversazione \u00b7 '+b.name,
       'L\u2019audio vive solo finch\u00e9 la pagina resta aperta: trascrivilo o scaricalo ora.',
       el=>{bussolaOpen(b.id,'coach');transcribeConv(b.id,el)},'Trascrivi ora')});
+  S.buildings.filter(b=>chatDirty(b)).slice(0,2).forEach(b=>{
+    const n=(b.chat||[]).slice(b.chatMark||0).filter(m=>m.role==='user').length;
+    add('chat-'+b.id,2,'\u{1F399}','Riordina gli appunti \u00b7 '+b.name,
+      n+' appunti in attesa: l\u2019AI li mette nei campi giusti (con la tua conferma).',
+      ()=>{chatOpen(b.id);chatRiordina()},'Riordina ora')});
   if((S.raccQueue||[]).length)add('raccq',1,'\u{1F399}','Racconti da elaborare ('+S.raccQueue.length+')',
     'Salvati offline: ora c\u2019\u00e8 rete, l\u2019AI li trasforma in campi (con la tua conferma).',
     ()=>raccProcessNext(),'Elabora ora');
@@ -2316,7 +2451,7 @@ let WZ=null;
 function wzB(){return S.buildings.find(x=>x.id===WZ.id)}
 function openWizard(id,ask){WZ={id,step:ask?-1:0,plan:WZ_STEPS.filter(st=>st.key!=='foto'),fotoSkip:[]};$('m-wiz').classList.add('open');wzRender()}
 function wzStart(){WZ.step=0;wzRender()}
-function raccFromChoice(){const id=WZ&&WZ.id;$('m-wiz').classList.remove('open');WZ=null;render();if(id)raccOpen(id)}
+function raccFromChoice(){const id=WZ&&WZ.id;$('m-wiz').classList.remove('open');WZ=null;render();if(id)chatOpen(id)}
 function closeWizard(openCard){const id=WZ&&WZ.id;$('m-wiz').classList.remove('open');if(openCard&&id)UI.card[id]=true;WZ=null;render()}
 function wzField(k,v){const b=wzB();b[k]=v;save()}
 function wzFinField(k,v){const b=wzB();b.fin=b.fin||{servizi:[]};b.fin[k]=v;save()}
