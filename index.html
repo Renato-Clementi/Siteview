@@ -610,7 +610,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
       <p>Alla registrazione manuale di un edificio scegli tra due strade:</p>
       <ul>
         <li><b>🪄 Wizard rapido</b> — 8 domande (≈2 minuti), una per schermata: nome e contatti → tipologia → interventi (con optional SOLERO) → <b>profilo d'uso</b> → foto bolletta → foto APE → formula di spesa → esito. Ogni passo è saltabile ("Salta / Avanti"); bolletta e APE si leggono con l'AI direttamente dal wizard.</li>
-        <li><b>🎙️ Racconta</b> — il <b>diario di visita</b>: una chat per edificio dove butti dentro appunti, dettati vocali e <b>foto</b> (targhe, bollette, APE, ambienti) mentre giri. Quando vuoi, <b>✦ Riordina nei campi</b>: l'AI legge tutto — foto comprese — e propone le modifiche <b>da confermare voce per voce</b>; poi la Bussola fa al massimo due domande, in chat, su ciò che manca. <b>Offline non si perde nulla</b>: gli appunti restano nel diario e la Bussola ti ricorda di riordinare al ritorno della rete. Le foto della chat finiscono anche nella Documentazione della scheda.</li>
+        <li><b>🎙️ Racconta</b> — il <b>diario di visita</b>: una chat per edificio dove butti dentro appunti, dettati vocali, <b>foto</b> e <b>🎬 video</b> (targhe, bollette, APE, ambienti) mentre giri: dal video l'app estrae da sola i fotogrammi e trascrive la tua voce. Quando vuoi, <b>✦ Riordina nei campi</b>: l'AI legge tutto — foto comprese — e propone le modifiche <b>da confermare voce per voce</b>; poi la Bussola fa al massimo due domande, in chat, su ciò che manca. <b>Offline non si perde nulla</b>: gli appunti restano nel diario e la Bussola ti ricorda di riordinare al ritorno della rete. Le foto della chat finiscono anche nella Documentazione della scheda.</li>
         <li><b>📋 Raccolta dettagliata</b> — apre subito la scheda completa, per compilare con calma.</li>
       </ul>
       <p>Il passo <b>profilo d'uso</b> si adatta alla tipologia scelta: al condominio chiede unità, amministratore e prossima assemblea; alla villa occupanti e abitudini; alla PMI turni e macchinari; all'attività commerciale orari e frigoriferi. Sono i dati che tarano stime e proposta.</p>
@@ -771,6 +771,7 @@ details.sec[open]>.sec-bd>.tip:nth-of-type(3){animation-delay:.1s}
   <div class="wiz-body chat-body" id="chat-body"></div>
   <div class="chat-comp">
     <button class="chat-cb" title="Foto" onclick="chatPhoto()">📷</button>
+    <button class="chat-cb" title="Video" onclick="chatVideo()">🎬</button>
     <button class="chat-cb" id="chat-mic" title="Detta" onclick="chatListen()">🎤</button>
     <textarea id="chat-in" rows="1" placeholder="Scrivi o detta un appunto…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatSend()}"></textarea>
     <button class="chat-cb send" title="Invia" onclick="chatSend()">➤</button>
@@ -2075,8 +2076,15 @@ function chatRender(scroll){
   const fmt=ts=>{const d=new Date(ts);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
   const ph=cid=>{const i=b.photos.findIndex(p=>p.cid===cid);
     return i>=0?`<img src="${b.photos[i].src}" onclick="lightbox(${b.id},${i})">`:'<i>\u{1F4F7} foto rimossa</i>'};
+  const vid=m=>{const first=m.cids&&m.cids.length?ph(m.cids[0]):'';
+    const mm=Math.floor((m.dur||0)/60),ss=String((m.dur||0)%60).padStart(2,'0');
+    const st=m.stt==='ok'?'trascritto \u2713':m.stt==='\u2026'?'\u2026 trascrivo l\u2019audio':
+      m.stt==='err'?`<span onclick="chatSttRetry(${m.ts})" style="text-decoration:underline">audio non trascritto \u26A0</span>`:
+      m.stt==='no'?(m.sttNote||'audio non trascritto'):'';
+    return first+`<div style="font-family:var(--sans);font-size:11px;color:var(--muted);margin-top:4px">\u{1F3AC} ${mm}:${ss} \u00b7 ${(m.cids||[]).length} fotogrammi \u00b7 ${st}</div>`+
+      (m.transcript?`<div style="font-size:13.5px;font-style:italic;margin-top:4px">\u00ab${esc(m.transcript.slice(0,400))}${m.transcript.length>400?'\u2026':''}\u00bb</div>`:'')};
   body.innerHTML=(b.chat.length?'':`<div class="chat-hint">Racconta il sopralluogo come viene: un appunto, una foto della targa o della bolletta, trenta secondi a voce\u2026<br>Quando vuoi, <b>\u2726 Riordina</b>: l\u2019AI mette tutto nei campi giusti e ti mostra le modifiche da confermare.</div>`)+
-    b.chat.map(m=>`<div class="cb-msg ${m.role}">${m.role==='ai'?'<span class="who">\u2726 Bussola</span>':''}${m.kind==='photo'?ph(m.cid):esc(m.text||'')}<div class="cb-time">${fmt(m.ts)}</div></div>`).join('')+
+    b.chat.map(m=>`<div class="cb-msg ${m.role}">${m.role==='ai'?'<span class="who">\u2726 Bussola</span>':''}${m.kind==='photo'?ph(m.cid):m.kind==='video'?vid(m):esc(m.text||'')}<div class="cb-time">${fmt(m.ts)}</div></div>`).join('')+
     (chatDirty(b)?`<div class="chat-riord"><button class="btn brass" onclick="chatRiordina()">\u2726 Riordina nei campi</button></div>`:'');
   if(scroll!==false)body.scrollTop=body.scrollHeight;
 }
@@ -2113,17 +2121,89 @@ function chatPhoto(){
     img.onerror=()=>alert('Formato foto non leggibile.');
     img.src=URL.createObjectURL(f)})};
   inp.click()}
+/* Estrae N fotogrammi equidistanti da un file video (solo browser). */
+function vidFrames(file,maxN){
+  return new Promise((res,rej)=>{
+    const v=document.createElement('video');
+    v.muted=true;v.playsInline=true;v.preload='metadata';
+    v.src=URL.createObjectURL(file);
+    const out=[];let times=[],i=0;
+    v.onerror=()=>rej(new Error('video non leggibile'));
+    v.onloadedmetadata=()=>{
+      const d=v.duration;
+      if(!isFinite(d)||d<=0)return rej(new Error('durata non disponibile'));
+      const n=Math.max(2,Math.min(maxN||6,Math.ceil(d/4)));
+      for(let k=0;k<n;k++)times.push(Math.min(d-.3,.4+(d-.8)*k/Math.max(1,n-1)));
+      v.currentTime=times[0]};
+    v.onseeked=()=>{
+      if(out.length>=times.length)return; /* eventi seeked doppi (Chromium) */
+      const c=document.createElement('canvas'),k=Math.min(1,960/Math.max(v.videoWidth,v.videoHeight));
+      c.width=v.videoWidth*k;c.height=v.videoHeight*k;
+      c.getContext('2d').drawImage(v,0,0,c.width,c.height);
+      out.push(c.toDataURL('image/jpeg',.72));
+      i++;if(i<times.length){v.currentTime=times[i]}
+      else{v.onseeked=null;const d=v.duration;URL.revokeObjectURL(v.src);res({frames:out,dur:d})}};
+  })}
+/* Trascrive l'audio di un blob con l'infrastruttura Whisper esistente. */
+async function sttBlob(blob,name){
+  if((S.sttMode||'openai')==='openai'){
+    if(!S.openaiKey)throw new Error('manca la chiave OpenAI (Impostazioni)');
+    const fd=new FormData();fd.append('file',blob,name);
+    fd.append('model','whisper-1');fd.append('language','it');
+    const r=await fetch('https://api.openai.com/v1/audio/transcriptions',
+      {method:'POST',headers:{'Authorization':'Bearer '+S.openaiKey},body:fd});
+    const j=await r.json();if(j.error)throw new Error(j.error.message);return j.text||'';
+  }else{
+    if(!S.sttUrl)throw new Error('configura l\u2019URL del server Whisper (Impostazioni)');
+    const fd=new FormData();fd.append('file',blob,name);
+    const r=await fetch(S.sttUrl,{method:'POST',body:fd});
+    const j=await r.json();if(!j.text)throw new Error('risposta vuota dal server');return j.text;
+  }}
+let _vinp=null;
+function chatVideo(){
+  if(!CHAT)return;const b=S.buildings.find(x=>x.id===CHAT.id);
+  if(_vinp)_vinp.remove();
+  const inp=document.createElement('input');inp.type='file';inp.accept='video/*';
+  inp.style.display='none';document.body.appendChild(inp);_vinp=inp;
+  inp.onchange=async()=>{
+    const f=inp.files[0];if(!f)return;
+    if(f.size>150*1024*1024){alert('Video oltre 150 MB: troppo pesante da elaborare sul telefono. Girane uno pi\u00f9 corto.');return}
+    b.chat.push({role:'ai',kind:'text',text:'\u2026 leggo il video (fotogrammi e audio)',ts:Date.now()});
+    save();chatRender();
+    let fr=null;
+    try{fr=await vidFrames(f,6)}
+    catch(e){b.chat.pop();b.chat.push({role:'ai',kind:'text',text:'\u26A0 Video non leggibile dal browser ('+e.message+').',ts:Date.now()});save();chatRender();return}
+    const cids=fr.frames.map(src=>{const cid=Date.now()+Math.random();
+      b.photos.push({src,tag:null,cid});return cid});
+    const msg={role:'user',kind:'video',cids,dur:Math.round(fr.dur),ts:Date.now()};
+    b.chat.pop();b.chat.push(msg);save();chatRender();render();
+    if(f.size>24*1024*1024){
+      msg.stt='no';msg.sttNote='audio oltre 24 MB: detta a voce i punti chiave';
+      save();chatRender();return}
+    try{
+      msg.stt='\u2026';save();chatRender();
+      const t=await sttBlob(f,f.name||'visita.mp4');
+      msg.transcript=t;msg.stt='ok';save();chatRender();
+    }catch(e){
+      msg.stt='err';msg.sttNote=e.message;save();chatRender();
+    }};
+  inp.click()}
+function chatSttRetry(ts){
+  alert('Il file video non \u00e8 conservato nell\u2019app (troppo pesante): per trascrivere l\u2019audio ricarica il video con 🎬, oppure detta a voce i punti chiave.')}
 async function chatRiordina(){
   if(!CHAT)return;const b=S.buildings.find(x=>x.id===CHAT.id);
   const nuovi=b.chat.slice(b.chatMark||0).filter(m=>m.role==='user');
   if(!nuovi.length)return;
-  const txt=nuovi.filter(m=>m.kind==='text').map(m=>m.text).join('\n');
-  const imgs=nuovi.filter(m=>m.kind==='photo').slice(-4)
-    .map(m=>{const p=b.photos.find(x=>x.cid===m.cid);return p&&p.src}).filter(Boolean);
+  const txt=nuovi.map(m=>m.kind==='text'?m.text:
+    m.kind==='video'&&m.transcript?'[Dal video] '+m.transcript:'').filter(Boolean).join('\n');
+  const cids=[];
+  nuovi.forEach(m=>{if(m.kind==='photo')cids.push(m.cid);
+    if(m.kind==='video')(m.cids||[]).forEach(c=>cids.push(c))});
+  const imgs=cids.slice(-6).map(c=>{const p=b.photos.find(x=>x.cid===c);return p&&p.src}).filter(Boolean);
   b.chat.push({role:'ai',kind:'text',text:'\u2026 riordino gli appunti nei campi',ts:Date.now()});
   save();chatRender();
   try{
-    const prompt=`Sei l'assistente di raccolta dati di GIRO ESCo (BABOO). Il commerciale ha buttato gi\u00f9 appunti (testo e foto: targhe, bollette, APE, ambienti) durante un sopralluogo. Estrai SOLO i dati presenti e rispondi SOLO con JSON puro senza backtick.
+    const prompt=`Sei l'assistente di raccolta dati di GIRO ESCo (BABOO). Il commerciale ha buttato gi\u00f9 appunti durante un sopralluogo: testi, foto e fotogrammi estratti da video (targhe, bollette, APE, ambienti); i passaggi [Dal video] sono trascrizioni della sua voce mentre girava. Estrai SOLO i dati presenti e rispondi SOLO con JSON puro senza backtick.
 Appunti: \u00ab${txt.slice(0,5000)||'(solo foto)'}\u00bb
 Valori attuali (proponi solo cambi o campi nuovi): ${JSON.stringify({name:b.name,addr:b.addr,ref:b.ref,tipologia:b.tipologia,anno:b.anno,sup:b.sup,impianto:b.impianto,pod:b.pod,esito:b.esito,val:b.val,linee:b.linee,cons:b.cons,ape:b.ape,fin:b.fin,extra:b.extra,fup:b.fup}).slice(0,1200)}
 Schema: {"campi":{"name":str,"addr":str,"ref":str,"tipologia":str,"anno":str,"sup":str,"impianto":str,"pod":str,"esito":str,"cx":int,"val":number,"linee":[str],"solOpt":{"storage":bool,"ev":bool},"cons":{"elKwh":str,"elSpesa":str,"elPot":str,"elF1":str,"gasSmc":str,"gasSpesa":str,"gasUso":str,"altroTipo":str,"altroQta":str,"altroSpesa":str},"ape":{"classe":str,"ep":str,"anno":str},"fin":{"formula":str,"rata":str,"contributi":str,"driver":str,"decisore":str,"tempi":str},"extra":{"unita":str,"ammin":str,"assemblea":str,"turni":str,"macchine":str,"orari":str,"frigo":str,"occupanti":str,"uso":str},"fup":{"giorni":int,"why":str},"vani":[{"nome":str,"l":str,"h":str,"n":str}],"note":str},"domande":[str]}
